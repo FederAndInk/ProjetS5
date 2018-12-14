@@ -1,13 +1,23 @@
 #!/bin/bash
 
-arm-linux-gnueabi-gcc -mno-thumb-interwork -S test1.c
-arm-linux-gnueabi-gcc -mno-thumb-interwork -S test1_include.c
+if [ `command -v arm-linux-gnueabihf-gcc` ]; then
+    TOOLCHAIN=arm-linux-gnueabihf-
+    
+elif [ `command -v arm-linux-gnueabi-gcc` ]; then
+    TOOLCHAIN=arm-linux-gnueabi-
+fi
+# ADD An elif block for other toolchain
 
-arm-linux-gnueabi-as -o test1.o test1.s
-arm-linux-gnueabi-as -o test1_include.o test1_include.s
 
-arm-linux-gnueabi-ld -r -o test1Linked.o test1.o test1_include.o
 
-arm-linux-gnueabi-gcc -o test1 test1Linked.o
+${TOOLCHAIN}gcc -mno-thumb-interwork -S test1.c
+${TOOLCHAIN}gcc -mno-thumb-interwork -S test1_include.c
+
+${TOOLCHAIN}as -o test1.o test1.s
+${TOOLCHAIN}as -o test1_include.o test1_include.s
+
+${TOOLCHAIN}ld -r -o test1Linked.o test1.o test1_include.o
+
+${TOOLCHAIN}gcc --static -o test1 test1Linked.o
 
 echo "compilation finished"

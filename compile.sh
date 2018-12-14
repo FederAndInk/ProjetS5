@@ -1,9 +1,13 @@
 #!/bin/bash
 
-mkdir build
+mkdir -p build
 
 cd build
 
 cmake ..
 
 make -j`nproc`
+
+cd test
+
+ctest -V
