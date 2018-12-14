@@ -1,6 +1,12 @@
-Custom ELF Loader intended for pedagogic use
+# Custom ELF Loader intended for pedagogic use
 
-To do:
+## Pour compiler:
+`./compile.sh`
+
+## Executer
+`build/src/<program>`
+
+## To do:
 - [ ] Affichage de l’en-tête
 - [ ] Affichage de la table des sections et des détails relatifs à chaque section
 - [ ] Affichage du contenu d’une section
