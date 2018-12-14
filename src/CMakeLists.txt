@@ -9,6 +9,9 @@ add_library(ElfReader
             ./ElfReader.h
             ./Elf.h)
 
-add_executable(ElfHeader ElfHeader.c)
+add_library(ElfParser ./ElfParser.c ./ElfReader.h)
+target_link_libraries(ElfParser ElfReader)
 
-target_link_libraries(ElfHeader ElfReader)
+add_executable(ElfHeader ElfHeader.c)
+target_link_libraries(ElfHeader ElfParser
+                      ElfReader)

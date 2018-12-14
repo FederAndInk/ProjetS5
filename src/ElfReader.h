@@ -10,7 +10,7 @@ typedef enum ElfMode
   WRITE
 } ElfMode;
 
-typedef struct Elf
+typedef struct
 {
   char const* fileName;
   FILE*       f;
@@ -77,4 +77,4 @@ void elfGoTo(Elf f, size_t to);
  */
 void elfGoToRel(Elf f, size_t offset);
 
-void close(Elf);
+void close(Elf f);
