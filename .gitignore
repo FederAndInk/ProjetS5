@@ -2,3 +2,4 @@
 build
 *.o
 *.s
+/test/test1

@@ -1,16 +1,19 @@
 # Custom ELF Loader intended for pedagogic use
 
 ## Pour compiler:
-`./compile.sh`
+```
+./compile.sh
+```
+lance les tests à la fin
 
 ## Executer
-`build/src/<program>`
+```
+build/src/<program>
+```
 
 ## Tests
-test avec ctest:
 ```
-cd build/test
-ctest
+./launchTest.sh
 ```
 0. **test1** (test1.c test1_include.{ch}): programme compilé avec la toolchain ARM avec `compileTest1.sh`
 1. **testElfReader** test du lecteur de fichier elf utilise:

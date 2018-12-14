@@ -1,4 +1,5 @@
 #include "ElfReader.h"
+#include <stdio.h>
 
 // Implementation function
 
@@ -14,6 +15,17 @@ void ElfOpenIn(Elf f, ElfMode m);
 void ElfOpenIn(Elf f, ElfMode m) {}
 
 // End Implementation function
+
+bool isElf(char const* file)
+{
+  FILE* f = fopen(file, "r");
+  fgetc(f);
+  char elf[4] = {0};
+  elf[0] = fgetc(f);
+  elf[1] = fgetc(f);
+  elf[2] = fgetc(f);
+  return elf[0] == 'E' && elf[1] == 'L' && elf[2] == 'F';
+}
 
 Elf elfOpen(char const* fileName) {}
 

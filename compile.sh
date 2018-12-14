@@ -6,8 +6,4 @@ cd build
 
 cmake ..
 
-make -j`nproc`
-
-cd test
-
-ctest -V
+make -j`nproc` && cd .. && ./launchTest.sh

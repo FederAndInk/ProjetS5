@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -16,6 +17,8 @@ typedef struct
   FILE*       f;
   ElfMode     openMode;
 } * Elf;
+
+bool isElf(char const* file);
 
 Elf elfOpen(char const* fileName);
 
