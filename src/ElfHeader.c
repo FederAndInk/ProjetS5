@@ -6,7 +6,14 @@
 void showHeader(Elf32_Ehdr hdr)
 {
   printf("ELF Header:\n");
-  printf("  Magic:   7f 45 4c 46 01 01 01 00 00 00 00 00 00 00 00 00\n");
+  printf("  Magic:   \n");
+
+  printf("%x", hdr.e_ident[0]);
+  for (size_t i = 1; i < EI_NIDENT; i++)
+  {
+    printf(" %x", hdr.e_ident[i]);
+  }
+
   printf("  Class:                             ELF32\n");
   printf("  Data:                              2's complement, little endian\n");
   printf("  Version:                           1 (current)\n");
@@ -39,7 +46,9 @@ int main(int argc, char* argv[])
 
   if (!isElf(argv[1]))
   {
-    fprintf(stderr, "not an ELF file\n");
+    fprintf(stderr,
+            "%s: Error: Not an ELF file - it has the wrong magic bytes at the start\n",
+            argv[0]);
     return 1;
   }
 

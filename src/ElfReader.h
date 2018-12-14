@@ -45,6 +45,16 @@ uint32_t elfRead32(Elf f);
 uint16_t elfRead16(Elf f);
 
 /**
+ * @brief lit un unsigned char du fichier elf f
+ * 
+ * change potentiellement le mode de f
+ * 
+ * @param f 
+ * @return uint16_t 
+ */
+unsigned char elfReadUC(Elf f);
+
+/**
  * @brief ecrit 32 bits (e) dans le fichier f à la position du curseur
  * 
  * change potentiellement le mode de f
@@ -63,6 +73,16 @@ void elfWrite32(Elf f, uint32_t e);
  * @param e 
  */
 void elfWrite16(Elf f, uint16_t e);
+
+/**
+ * @brief ecrit un unsigned char dans le fichier f à la position du curseur
+ * 
+ * change potentiellement le mode de f
+ * 
+ * @param f 
+ * @return uint16_t 
+ */
+void elfWriteUC(Elf f, unsigned char e);
 
 /**
  * @brief aller à l'octet to
