@@ -1,6 +1,14 @@
 dist: trusty
 language: c
 
+addons:
+  apt:
+    packages:
+      - libc6-armel-cross
+      - libc6-dev-armel-cross
+      - binutils-arm-linux-gnueabi 
+      - libncurses5-dev
+
 script:
   - mkdir -p build
   - cd build
