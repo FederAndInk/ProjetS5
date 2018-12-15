@@ -1,18 +1,11 @@
 dist: Xenial
 language: c
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
-      - libc6-armel-cross
-      - libc6-dev-armel-cross
-      - binutils-arm-linux-gnueabi 
-      - libncurses5-dev
-
 before_install:
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+    - sudo apt update
+    - sudo apt install g++-7 -y
+    - sudo apt install libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi libncurses5-dev
     - export CC=/usr/bin/gcc-7
     - export CXX=/usr/bin/g++-7
 
