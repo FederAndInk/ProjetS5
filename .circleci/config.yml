@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/classic:201808-01
+    steps:
+      - checkout
+      
+      - run:
+          command: |
+              sudo apt install cmake
+              sudo apt-get -y install lib32z1 lib32ncurses5 lib32bz2-1.0
+              sudo apt-get install libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi libncurses5-dev
+
+      - run:
+          command: |
+              mkdir -p build
+              cd build
+              cmake ..
+
+workflow:
+  version: 2
+  workflow:
+    jobs:
+      - build
