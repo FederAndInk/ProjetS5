@@ -7,6 +7,9 @@ elif [ `command -v arm-linux-gnueabi-gcc` ]; then
     TOOLCHAIN=arm-linux-gnueabi-
 elif [ `command -v arm-eabi-gcc` ]; then
     TOOLCHAIN=arm-eabi-
+else
+    echo "no toolchain found"
+    exit 1
 fi
 # ADD An elif block for other toolchain
 

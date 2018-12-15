@@ -6,6 +6,7 @@ before_install:
     - sudo apt update -y
     - sudo apt install g++-7 -y
     - sudo apt install libc6-armel-cross libc6-dev-armel-cross binutils-arm-linux-gnueabi libncurses5-dev -y
+    - sudo apt-get install gcc-arm-linux-gnueabi g++-arm-linux-gnueabi -y
     - export CC=/usr/bin/gcc-7
     - export CXX=/usr/bin/g++-7
 
@@ -14,3 +15,5 @@ script:
   - cd build
   - cmake ..
   - cmake --build . -- -j`nproc`
+  - cd test
+  - ctest
