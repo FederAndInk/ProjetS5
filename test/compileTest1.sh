@@ -5,6 +5,8 @@ if [ `command -v arm-linux-gnueabihf-gcc` ]; then
     
 elif [ `command -v arm-linux-gnueabi-gcc` ]; then
     TOOLCHAIN=arm-linux-gnueabi-
+elif [ `command -v arm-eabi-gcc` ]; then
+    TOOLCHAIN=arm-eabi-
 fi
 # ADD An elif block for other toolchain
 
