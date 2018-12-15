@@ -1,5 +1,6 @@
 #pragma once
 
+#include <linux/elf.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -13,13 +14,30 @@ typedef enum ElfMode
 
 typedef struct
 {
-  char const* fileName;
-  FILE*       f;
-  ElfMode     openMode;
+  char const*   fileName;
+  FILE*         f;
+  ElfMode       openMode;
+  unsigned char eiData;
 } * Elf;
 
-bool isElf(char const* file);
+bool isElf(Elf f);
 
+/**
+ * @brief indique si f à la meme indianess que la plateform courante
+ * 
+ * @param f  
+ * @return true si f à la meme indianess que la plateform courante
+ * @return false sinon
+ */
+bool elfIsSameIndianess(Elf f);
+
+/**
+ * @brief ouvre fileName en tant que fichier ELF
+ * retourne NULL si fileName n'est pas un fichier elf (traité par isElf)
+ * 
+ * @param fileName 
+ * @return Elf 
+ */
 Elf elfOpen(char const* fileName);
 
 // TODO : Voir comment prendre en compte l'endianess (when read and write), s' il faut la prendre en compte

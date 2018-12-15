@@ -44,15 +44,15 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  if (!isElf(argv[1]))
+  Elf e = elfOpen(argv[1]);
+
+  if (!isElf(e))
   {
     fprintf(stderr,
             "%s: Error: Not an ELF file - it has the wrong magic bytes at the start\n",
             argv[0]);
     return 1;
   }
-
-  Elf e = elfOpen(argv[1]);
 
   Elf32_Ehdr hdr;
   parseHeader(e, &hdr);

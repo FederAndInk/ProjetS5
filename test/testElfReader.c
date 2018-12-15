@@ -8,11 +8,10 @@ int main(int argc, char* argv[])
 
   // TODO make tests with ElfReader
 
-  if (!isElf(argv[1]))
+  Elf e = elfOpen(argv[1]);
+  if (!isElf(e))
   {
     fprintf(stderr, "(isElf): File given isn't an ELF file !\n");
     return 1;
   }
-
-  // elfOpen(argv[1]);
 }

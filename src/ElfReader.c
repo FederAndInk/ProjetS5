@@ -1,4 +1,5 @@
 #include "ElfReader.h"
+#include "util.h"
 #include <stdio.h>
 
 // Implementation function
@@ -16,15 +17,15 @@ void ElfOpenIn(Elf f, ElfMode m) {}
 
 // End Implementation function
 
-bool isElf(char const* file)
+bool isElf(Elf f)
 {
-  FILE* f = fopen(file, "r");
-  char  elf[5] = {0};
-  elf[0] = fgetc(f);
-  elf[1] = fgetc(f);
-  elf[2] = fgetc(f);
-  elf[3] = fgetc(f);
-  return elf[0] == 0x7f && elf[1] == 'E' && elf[2] == 'L' && elf[3] == 'F';
+  return f != NULL;
+}
+
+bool elfIsSameIndianess(Elf f)
+{
+  return (f->eiData == ELFDATA2MSB && is_big_endian()) ||
+         (f->eiData == ELFDATA2LSB && !is_big_endian());
 }
 
 Elf elfOpen(char const* fileName) {}
