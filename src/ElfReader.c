@@ -24,7 +24,7 @@ bool isElf(char const* file)
   elf[1] = fgetc(f);
   elf[2] = fgetc(f);
   elf[3] = fgetc(f);
-  return elf[0] == 75 && elf[1] == 'E' && elf[2] == 'L' && elf[3] == 'F';
+  return elf[0] == 0x7f && elf[1] == 'E' && elf[2] == 'L' && elf[3] == 'F';
 }
 
 Elf elfOpen(char const* fileName) {}
