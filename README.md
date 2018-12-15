@@ -1,4 +1,5 @@
 # Custom ELF Loader intended for pedagogic use
+![Travis](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=master)
 
 ## Pour compiler:
 ```
