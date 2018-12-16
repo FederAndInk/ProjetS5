@@ -29,14 +29,15 @@ bool elfIsSameIndianess(Elf f)
          (f->eiData == ELFDATA2LSB && !is_big_endian());
 }
 
-Elf elfOpen(char const* fileName) {
+Elf elfOpen(char const* fileName)
+{
   Elf res = NULL;
   res = malloc(sizeof(Elf));
-  if(res != NULL)
+  if (res != NULL)
   {
-    res->fileName = fileName ;
+    res->fileName = fileName;
     res->f = fopen(res->fileName, "rb");
-    if(res->f == NULL)
+    if (res->f == NULL)
     {
       fprintf(stderr, "Erreur d'ouverture de fichier.\n");
     }
@@ -45,33 +46,36 @@ Elf elfOpen(char const* fileName) {
   return res;
 }
 
-uint32_t elfRead32(Elf f) {
+uint32_t elfRead32(Elf f)
+{
   uint32_t res = 0;
-  uint8_t c ;
-  int len = 4;
-  while(len--)
+  uint8_t  c;
+  int      len = 4;
+  while (len--)
   {
     res <<= 8;
     c = fgetc(f->f);
-    res = c | res ;
+    res = c | res;
   }
   return res;
 }
 
-uint16_t elfRead16(Elf f) {
+uint16_t elfRead16(Elf f)
+{
   uint32_t res = 0;
-  uint8_t c ;
-  int len = 2;
-  while(len--)
+  uint8_t  c;
+  int      len = 2;
+  while (len--)
   {
     res <<= 8;
     c = fgetc(f->f);
-    res = c | res ;
+    res = c | res;
   }
   return res;
 }
 
-unsigned char elfReadUC(Elf f) {
+unsigned char elfReadUC(Elf f)
+{
   unsigned char res = 0;
   return res;
 }
@@ -86,6 +90,7 @@ void elfGoTo(Elf f, size_t to) {}
 
 void elfGoToRel(Elf f, size_t offset) {}
 
-void close(Elf f) {
+void close(Elf f)
+{
   fclose(f->f);
 }

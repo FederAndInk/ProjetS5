@@ -1,4 +1,5 @@
 # Custom ELF Loader intended for pedagogic use
+![Travis](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=master)
 
 ## Pour compiler:
 ```
@@ -32,3 +33,7 @@ build/src/<program>
 - [ ] Réimplantation de type R_ARM_JUMP24 et R ARM CALL
 - [ ] Interfaçage avec le simulateur ARM
 - [ ] Exécution à l’aide du simulateur arm-eabi-run.
+
+## Docs:
+- [Elf reading](https://wiki.osdev.org/ELF_Tutorial)
+- [Elf structure](https://wiki.osdev.org/ELF)
