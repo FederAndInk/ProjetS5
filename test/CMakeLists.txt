@@ -20,16 +20,20 @@ add_custom_command(OUTPUT test1 test1.o
 add_custom_target(RunCompileTest1 ALL
                   DEPENDS test1)
 
+add_library(UnitTest UnitTest.c UnitTest.h)
+
 add_executable(TestElfReader testElfReader.c)
 
 target_include_directories(
   TestElfReader
   PRIVATE "${CMAKE_SOURCE_DIR}/src/")
 
-target_link_libraries(TestElfReader ElfReader)
+target_link_libraries(TestElfReader ElfReader
+                      UnitTest)
 
 add_test(TestElfReader TestElfReader
          ${CMAKE_CURRENT_BINARY_DIR}/test1.o)
 
-
-
+add_test(TestElfHeader
+         "${CMAKE_BINARY_DIR}/src/ElfHeader"
+         ${CMAKE_CURRENT_BINARY_DIR}/test1.o)

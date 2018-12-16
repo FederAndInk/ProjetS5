@@ -1,0 +1,15 @@
+
+Todo:
+  Test:
+    ☐ Add supplementary tests for ElfReader
+      - 32 fct R/W
+      - 16 fct R/W
+      - test endianess R/W
+      - add some files (elfs or not) to git for testing (do not base the test upon compiling these files)
+    ☐ ElfHeader
+      - Unsupported elf
+      - Unsupported files (not elf)
+      - Big/little endian -> one of the two is not the same endianess of the plateform !
+      - Rel/Exec elf
+      - ARM of course
+      - ask for precision ?

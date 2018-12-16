@@ -16,12 +16,12 @@ void unknownX(uint32_t i)
 void showHeader(Elf32_Ehdr hdr)
 {
   printf("ELF Header:\n");
-  printf("  Magic:   \n");
+  printf("  Magic:   ");
 
   printf("%x", hdr.e_ident[0]);
   for (size_t i = 1; i < EI_NIDENT; i++)
   {
-    printf(" %x", hdr.e_ident[i]);
+    printf(" %.2x", hdr.e_ident[i]);
   }
   printf("\n");
   printf("  Class:                             ");
@@ -47,10 +47,10 @@ void showHeader(Elf32_Ehdr hdr)
     printf("none\n");
     break;
   case ELFDATA2LSB:
-    printf("2's complement, big endian\n");
+    printf("2's complement, little endian\n");
     break;
   case ELFDATA2MSB:
-    printf("2's complement, little endian\n");
+    printf("2's complement, big endian\n");
     break;
   default:
     unknown(hdr.e_ident[EI_DATA]);
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-      fprintf(stderr, "Unsupported class, parse only ELF32\n");
+      fprintf(stderr, "Unsupported class, parses only ELF32\n");
       return 1;
     }
   }
