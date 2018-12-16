@@ -1,5 +1,7 @@
 
 Todo:
+  ☐ Add error handling for ElfReader
+
   Test:
     ☐ Add supplementary tests for ElfReader
       - 32 fct R/W
