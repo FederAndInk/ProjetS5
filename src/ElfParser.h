@@ -1,6 +1,6 @@
 #pragma once
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include <elf.h>
 
 /**
  * @brief parse the header of the elf file e

@@ -1,6 +1,6 @@
 #include "ElfReader.h"
 #include "util.h"
-#include <linux/elf.h>
+#include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

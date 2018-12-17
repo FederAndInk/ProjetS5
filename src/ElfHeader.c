@@ -1,6 +1,6 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include <elf.h>
 #include <stdio.h>
 
 void unknown(uint32_t i)
