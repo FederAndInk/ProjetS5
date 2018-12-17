@@ -1,6 +1,5 @@
 #pragma once
 
-#include <linux/elf.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -12,7 +11,8 @@ typedef enum ElfMode
   WRITE
 } ElfMode;
 
-typedef struct
+// TODO: Handle errors (R/W + goto)
+typedef struct Elf_t
 {
   char const*   fileName;
   FILE*         f;
@@ -23,13 +23,13 @@ typedef struct
 bool isElf(Elf f);
 
 /**
- * @brief indique si f à la meme indianess que la plateform courante
+ * @brief indique si f à la meme endianess que la plateform courante
  * 
  * @param f  
- * @return true si f à la meme indianess que la plateform courante
+ * @return true si f à la meme endianess que la plateform courante
  * @return false sinon
  */
-bool elfIsSameIndianess(Elf f);
+bool elfIsSameEndianess(Elf f);
 
 /**
  * @brief ouvre fileName en tant que fichier ELF
@@ -39,8 +39,6 @@ bool elfIsSameIndianess(Elf f);
  * @return Elf 
  */
 Elf elfOpen(char const* fileName);
-
-// TODO : Voir comment prendre en compte l'endianess (when read and write), s' il faut la prendre en compte
 
 /**
  * @brief lit 32 bits brut du fichier elf f
@@ -118,4 +116,4 @@ void elfGoTo(Elf f, size_t to);
  */
 void elfGoToRel(Elf f, size_t offset);
 
-void close(Elf f);
+void elfClose(Elf f);
