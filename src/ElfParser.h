@@ -21,4 +21,4 @@ void parseHeader(Elf e, Elf32_Ehdr* hdr);
     shdr must be a valid pointeur
 
 */
-void parseSectionHeader(Elf e, Elf32_Shdr* shdr);
+void parseSectionHeader(Elf e, Elf32_Shdr* tabshdr[],ElfN_Off shoff,uint16_t shnum)

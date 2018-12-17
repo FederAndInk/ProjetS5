@@ -29,7 +29,7 @@ void parseHeader(Elf e, Elf32_Ehdr* hdr)
   }
 }
 
-void parseSectionHeader(Elf e, Elf32_Shdr* tabshdr,ElfN_Off shoff,uint16_t shnum)
+void parseSectionHeader(Elf e, Elf32_Shdr* tabshdr[],ElfN_Off shoff,uint16_t shnum)
 {
     elfGoTo(e,shoff);
     for (int i = 0 ; i < shnum ; i++)
