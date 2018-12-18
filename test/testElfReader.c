@@ -1,6 +1,6 @@
 #include "ElfReader.h"
 #include "UnitTest.h"
-#include "linux/elf.h"
+#include <elf.h>
 #include <stdlib.h>
 
 int main(int argc, char* argv[])

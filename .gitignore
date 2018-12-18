@@ -3,3 +3,4 @@ build
 *.o
 *.s
 /test/test1
+!/test/bin/*.o
