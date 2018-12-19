@@ -152,3 +152,23 @@ void elfClose(Elf f)
   fclose(f->f);
   free(f);
 }
+
+/*
+    Function for getting a string from a strtable
+
+    e must be the elf file with the strtable you  want
+    offset is the index of the beginning of your string from the beginning of the file.
+
+    return the pointer to the string that must be free
+
+*/
+char* StrtableGetString(Elf e,uint32_t offset)
+{
+    elfGoTo(e,offset);
+
+    char* str=NULL;
+    size_t n;
+    getdelim(&src,&n,'\0',e->f);
+
+    return str;
+}

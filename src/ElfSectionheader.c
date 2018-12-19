@@ -1,10 +1,10 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
 #include "ElfString.h"
-#include "Elfstrtable.h"
 #include "util.h"
 #include <elf.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void showSectionHeader(Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum,uint16_t stind,Elf e)
 {
@@ -19,9 +19,11 @@ void showSectionHeader(Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum,uint16
 
 
         char* str=StrtableGetString(e,(tabshdr[stind].sh_offset+tabshdr[i].sh_name));
-        fixPrint(str,18);
+        fixPrint(str,20);
+        free(str);
 
-        fixPrint(getElfType(sht,tabshdr[i].sh_type),17);
+        char const * strType=getElfType(sht,tabshdr[i].sh_type);
+        fixPrint(strType,17);
 
         printf("%.8x %.6x %.6x %.2x ",tabshdr[i].sh_addr,
                tabshdr[i].sh_offset,tabshdr[i].sh_size,tabshdr[i].sh_entsize);
