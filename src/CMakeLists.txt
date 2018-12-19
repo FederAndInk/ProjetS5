@@ -6,21 +6,21 @@ add_compile_options($<$<CONFIG:Debug>:-Wall>
 
 add_library(util util.c util.h)
 
-add_library(ElfReader
-            ./ElfReader.c
-            ./ElfReader.h
-            ./Elf.h)
+add_library(ElfReader ./ElfReader.c ./ElfReader.h)
 target_link_libraries(ElfReader util)
 
 add_library(ElfString ElfString.c ElfString.h)
 
-add_library(ElfParser ./ElfParser.c ./ElfReader.h)
+add_library(ElfParser ./ElfParser.c ./ElfParser.h)
 target_link_libraries(ElfParser ElfReader)
 
 add_executable(ElfHeader ElfHeader.c)
 target_link_libraries(ElfHeader ElfParser
                       ElfReader)
 
-add_executable(ElfSectionheader ElfSectionheader.c)
-target_link_libraries(ElfSectionheader ElfParser
-                      ElfReader ElfString)
+add_executable(ElfSectionheader
+               ElfSectionheader.c)
+target_link_libraries(ElfSectionheader
+                      ElfParser
+                      ElfReader
+                      ElfString)

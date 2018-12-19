@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(test)
 
-enable_testing()
-
 configure_file(compileTest1.sh compileTest1.sh
                COPYONLY)
 configure_file(test1.c test1.c COPYONLY)
@@ -31,9 +29,14 @@ target_include_directories(
 target_link_libraries(TestElfReader ElfReader
                       UnitTest)
 
-add_test(TestElfReader TestElfReader
-         ${CMAKE_CURRENT_BINARY_DIR}/test1.o)
+add_test(
+  NAME TestElfHeader
+  COMMAND "${CMAKE_BINARY_DIR}/src/ElfHeader"
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-add_test(TestElfHeader
-         "${CMAKE_BINARY_DIR}/src/ElfHeader"
-         ${CMAKE_CURRENT_BINARY_DIR}/test1.o)
+add_test(
+  NAME TestElfReader
+  COMMAND TestElfReader
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})

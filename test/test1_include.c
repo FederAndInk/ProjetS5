@@ -1,7 +1,6 @@
 #include "test1_include.h"
-#include <stdio.h>
 
-void test()
+int test()
 {
-  printf("test\n");
+  return 1;
 }

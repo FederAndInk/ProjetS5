@@ -1,6 +1,6 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include <elf.h>
 #include <stdio.h>
 
 void unknown(uint32_t i)
@@ -73,7 +73,7 @@ void showHeader(Elf32_Ehdr hdr)
   printf("  OS/ABI:                            ");
   switch (hdr.e_ident[EI_OSABI])
   {
-  case 0:
+  case ELFOSABI_SYSV:
     printf("UNIX - System V\n");
     break;
   default:
