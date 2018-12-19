@@ -91,19 +91,19 @@ Elf elfOpen(char const* fileName)
   return res;
 }
 
-uint32_t elfRead32(Elf f)
+Elf32_Word elfRead32(Elf f)
 {
   elfOpenIn(f, READ);
-  uint32_t res = 0;
+  Elf32_Word res = 0;
   fread(&res, sizeof(res), 1, f->f);
   fixEndianess(f, res);
   return res;
 }
 
-uint16_t elfRead16(Elf f)
+Elf32_Half elfRead16(Elf f)
 {
   elfOpenIn(f, READ);
-  uint16_t res = 0;
+  Elf32_Half res = 0;
   fread(&res, sizeof(res), 1, f->f);
   fixEndianess(f, res);
   return res;
@@ -117,14 +117,14 @@ unsigned char elfReadUC(Elf f)
   return res;
 }
 
-void elfWrite32(Elf f, uint32_t e)
+void elfWrite32(Elf f, Elf32_Word e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfWrite16(Elf f, uint16_t e)
+void elfWrite16(Elf f, Elf32_Half e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
@@ -153,22 +153,13 @@ void elfClose(Elf f)
   free(f);
 }
 
-/*
-    Function for getting a string from a strtable
-
-    e must be the elf file with the strtable you  want
-    offset is the index of the beginning of your string from the beginning of the file.
-
-    return the pointer to the string that must be free
-
-*/
-char* StrtableGetString(Elf e,uint32_t offset)
+unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
 {
-    elfGoTo(e,offset);
+  elfGoTo(e, offset);
 
-    char* str=NULL;
-    size_t n;
-    getdelim(&str,&n,'\0',e->f);
+  unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
 
-    return str;
+  fread(str, sizeof(unsigned char), size, e->f);
+
+  return str;
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <elf.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -46,9 +47,9 @@ Elf elfOpen(char const* fileName);
  * change potentiellement le mode de f
  *
  * @param f
- * @return uint32_t
+ * @return Elf32_Word
  */
-uint32_t elfRead32(Elf f);
+Elf32_Word elfRead32(Elf f);
 
 /**
  * @brief lit 16 bits brut du fichier elf f
@@ -56,9 +57,9 @@ uint32_t elfRead32(Elf f);
  * change potentiellement le mode de f
  *
  * @param f
- * @return uint16_t
+ * @return Elf32_Half
  */
-uint16_t elfRead16(Elf f);
+Elf32_Half elfRead16(Elf f);
 
 /**
  * @brief lit un unsigned char du fichier elf f
@@ -66,7 +67,7 @@ uint16_t elfRead16(Elf f);
  * change potentiellement le mode de f
  *
  * @param f
- * @return uint16_t
+ * @return Elf32_Half
  */
 unsigned char elfReadUC(Elf f);
 
@@ -78,7 +79,7 @@ unsigned char elfReadUC(Elf f);
  * @param f
  * @param e
  */
-void elfWrite32(Elf f, uint32_t e);
+void elfWrite32(Elf f, Elf32_Word e);
 
 /**
  * @brief ecrit 16 bits (e) dans le fichier f à la position du curseur
@@ -88,7 +89,7 @@ void elfWrite32(Elf f, uint32_t e);
  * @param f
  * @param e
  */
-void elfWrite16(Elf f, uint16_t e);
+void elfWrite16(Elf f, Elf32_Half e);
 
 /**
  * @brief ecrit un unsigned char dans le fichier f à la position du curseur
@@ -96,7 +97,7 @@ void elfWrite16(Elf f, uint16_t e);
  * change potentiellement le mode de f
  *
  * @param f
- * @return uint16_t
+ * @return Elf32_Half
  */
 void elfWriteUC(Elf f, unsigned char e);
 
@@ -118,13 +119,8 @@ void elfGoToRel(Elf f, size_t offset);
 
 void elfClose(Elf f);
 
-/*
-    Function for get a string from a strtable
-
-    e must be the elf file with the strtable you  want
-    offset is the index of the beginning of your string from the beginning of the file.
-
-    return the pointer to the string
-
-*/
-char* StrtableGetString(Elf e,uint32_t offset);
+/**
+ *  get a chunk of data of size size at offset
+ *  @return a pointer to the chunk allocated onto the heap
+ */
+unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size);

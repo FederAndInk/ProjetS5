@@ -2,7 +2,12 @@
 
 cd ./build/test
 
-ctest -V
+if ctest -V; then
+  exit 0
+else
+  exit 1
+fi
+
 
 cd ..
 
