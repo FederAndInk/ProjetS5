@@ -35,16 +35,12 @@ target_link_libraries(TestElfReader ElfReader
 #           ${CMAKE_CURRENT_BINARY_DIR}/test1.o
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-add_test(
-  NAME TestElfReader
-  COMMAND TestElfReader
-          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
 configure_file(bin/ex1.o ex1.o COPYONLY)
 
 add_test(
-  NAME TestElfReader_ex1
+  NAME TestElfReader
   COMMAND TestElfReader
-          ${CMAKE_CURRENT_BINARY_DIR}/ex1.o
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.o 
+          ${CMAKE_CURRENT_BINARY_DIR}/ex1.o 
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.c
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
