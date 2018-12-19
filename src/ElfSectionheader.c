@@ -10,7 +10,7 @@ void showSectionHeader(Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum,uint16
 {
     printf("There are %d section headers, starting at offset 0x%x:\n",shnum,shoff);
     printf("Section Headers:\n");
-    printf("Nr  Name              Type             Address  Offset Size   ES Flags Link  Info  Align\n");
+    printf("Nr  Name                Type             Address  Offset Size   ES Flags Link  Info  Align\n");
     for (int i = 0 ; i<shnum ; i++)
     {
         char id[4];
