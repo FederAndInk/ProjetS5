@@ -1,6 +1,6 @@
 #pragma once
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include <elf.h>
 
 /**
  * @brief parse the header of the elf file e
@@ -21,4 +21,4 @@ void parseHeader(Elf e, Elf32_Ehdr* hdr);
     shdr must be a valid pointeur
 
 */
-void parseSectionHeader(Elf e, Elf32_Shdr* tabshdr[],ElfN_Off shoff,uint16_t shnum)
+void parseSectionHeader(Elf e, Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum);

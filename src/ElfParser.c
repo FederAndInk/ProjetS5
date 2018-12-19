@@ -29,20 +29,20 @@ void parseHeader(Elf e, Elf32_Ehdr* hdr)
   }
 }
 
-void parseSectionHeader(Elf e, Elf32_Shdr* tabshdr[],ElfN_Off shoff,uint16_t shnum)
+void parseSectionHeader(Elf e, Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum)
 {
     elfGoTo(e,shoff);
     for (int i = 0 ; i < shnum ; i++)
     {
-        tabshdr[i]->sh_name=elfRead32(e);
-        tabshdr[i]->sh_type=elfRead32(e);
-        tabshdr[i]->sh_flags elfRead32(e);
-        tabshdr[i]->sh_addr=elfRead32(e);
-        tabshdr[i]->sh_offset=elfRead32(e);
-        tabshdr[i]->sh_size=elfRead32(e);
-        tabshdr[i]->sh_link=elfRead32(e);
-        tabshdr[i]->sh_info=elfRead32(e);
-        tabshdr[i]->sh_addralign=elfRead32(e);
-        tabshdr[i]->sh_entsize=elfRead32(e);
+        tabshdr[i].sh_name=elfRead32(e);
+        tabshdr[i].sh_type=elfRead32(e);
+        tabshdr[i].sh_flags=elfRead32(e);
+        tabshdr[i].sh_addr=elfRead32(e);
+        tabshdr[i].sh_offset=elfRead32(e);
+        tabshdr[i].sh_size=elfRead32(e);
+        tabshdr[i].sh_link=elfRead32(e);
+        tabshdr[i].sh_info=elfRead32(e);
+        tabshdr[i].sh_addralign=elfRead32(e);
+        tabshdr[i].sh_entsize=elfRead32(e);
     }
 }

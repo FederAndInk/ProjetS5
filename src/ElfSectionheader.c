@@ -1,42 +1,80 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include "ElfString.h"
+#include "Elfstrtable.h"
+#include "util.h"
+#include <elf.h>
 #include <stdio.h>
 
-void showSectionHeader(Elf32_Ehdr* tabshdr[],ElfN_Off shoff,uint16_t shnum)
+void showSectionHeader(Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum,uint16_t stind,Elf e)
 {
-    printf("There are %d section headers, starting at offset 0x%d:",shnum,shoff);
+    printf("There are %d section headers, starting at offset 0x%x:\n",shnum,shoff);
+    printf("Section Headers:\n");
+    printf("Nr  Name              Type             Address  Offset Size   ES Flags Link  Info  Align\n");
+    for (int i = 0 ; i<shnum ; i++)
+    {
+        char id[4];
+        sprintf( id,  "%d", i );
+        fixPrint(id,4);
 
-    /*
-There are 7 section headers, starting at offset 0x40:
 
-Section Headers:
-  [Nr] Name              Type             Address           Offset
-       Size              EntSize          Flags  Link  Info  Align
-  [ 0]                   NULL             0000000000000000  00000000
-       0000000000000000  0000000000000000           0     0     0
-  [ 1] .data             PROGBITS         0000000000000000  00000200
-       000000000000000d  0000000000000000  WA       0     0     4
-  [ 2] .text             PROGBITS         0000000000000000  00000210
-       0000000000000027  0000000000000000  AX       0     0     16
-  [ 3] .shstrtab         STRTAB           0000000000000000  00000240
-       0000000000000032  0000000000000000           0     0     1
-  [ 4] .symtab           SYMTAB           0000000000000000  00000280
-       00000000000000a8  0000000000000018           5     6     4
-  [ 5] .strtab           STRTAB           0000000000000000  00000330
-       0000000000000034  0000000000000000           0     0     1
-  [ 6] .rela.text        RELA             0000000000000000  00000370
-       0000000000000018  0000000000000018           4     2     4
-Key to Flags:
-  W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
-  I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
-  O (extra OS processing required) o (OS specific), p (processor specific)
-*/
+        char* str=StrtableGetString(e,(tabshdr[stind].sh_offset+tabshdr[i].sh_name));
+        fixPrint(str,18);
+
+        fixPrint(getElfType(sht,tabshdr[i].sh_type),17);
+
+        printf("%.8x %.6x %.6x %.2x ",tabshdr[i].sh_addr,
+               tabshdr[i].sh_offset,tabshdr[i].sh_size,tabshdr[i].sh_entsize);
+
+        int x = 0;
+
+        if (tabshdr[i].sh_flags & SHF_WRITE)
+            {printf("W");x++;}
+        if (tabshdr[i].sh_flags & SHF_ALLOC)
+            {printf("A");x++;}
+        if (tabshdr[i].sh_flags & SHF_EXECINSTR)
+            {printf("X");x++;}
+        if (tabshdr[i].sh_flags & SHF_MERGE)
+            {printf("M");x++;}
+        if (tabshdr[i].sh_flags & SHF_STRINGS)
+            {printf("S");x++;}
+        if (tabshdr[i].sh_flags & SHF_INFO_LINK)
+            {printf("I");x++;}
+        if (tabshdr[i].sh_flags & SHF_LINK_ORDER)
+            {printf("L");x++;}
+        if (tabshdr[i].sh_flags & SHF_GROUP)
+            {printf("G");x++;}
+        if (tabshdr[i].sh_flags & SHF_TLS)
+            {printf("T");x++;}
+        if (tabshdr[i].sh_flags & SHF_MASKOS)
+            {printf("o");x++;}
+        if (tabshdr[i].sh_flags & SHF_MASKPROC)
+            {printf("p");x++;}
+
+
+        for(int j=0;j<(5-x);j++)
+            putchar(' ');
+
+        char lnk[16];
+        printf(" ");
+        sprintf( lnk,  "%d", tabshdr[i].sh_link );
+        fixPrint(lnk,5);
+
+        char info[16];
+        printf(" ");
+        sprintf( info,  "%d", tabshdr[i].sh_info );
+        fixPrint(info,6);
+
+        printf("%d \n",tabshdr[i].sh_addralign);
+    }
+    printf("\nKey to Flags:\n");
+    printf("W (write), A (alloc), X (execute), M (merge), S (strings), l (large)\n");
+    printf("I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)\n");
+    printf("O (extra OS processing required) o (OS specific), p (processor specific)\n");
 }
 
 int main(int argc, char* argv[])
 {
-  // TODO: parse header and show it
 
   if (argc != 2)
   {
@@ -60,8 +98,8 @@ int main(int argc, char* argv[])
     if (hdr.e_ident[EI_CLASS] == ELFCLASS32)
     {
       Elf32_Shdr tabshdr[hdr.e_shnum];
-      parseSectionHeader(e, &tabshdr,hdr.e_shoff,hdr.e_shnum);
-      showSectionHeader(&tabshdr,hdr.e_shoff,hdr.e_shnum);
+      parseSectionHeader(e, tabshdr,hdr.e_shoff,hdr.e_shnum);
+      showSectionHeader(tabshdr,hdr.e_shoff,hdr.e_shnum,hdr.e_shstrndx,e);
       return 0;
     }
     else

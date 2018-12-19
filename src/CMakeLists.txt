@@ -18,3 +18,9 @@ target_link_libraries(ElfParser ElfReader)
 add_executable(ElfHeader ElfHeader.c)
 target_link_libraries(ElfHeader ElfParser
                       ElfReader)
+
+add_library(Elfstrtable Elfstrtable.c Elfstrtable.h)
+
+add_executable(ElfSectionheader ElfSectionheader.c)
+target_link_libraries(ElfSectionheader ElfParser
+                      ElfReader Elfstrtable)
