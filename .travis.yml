@@ -15,5 +15,14 @@ script:
   - cd build
   - cmake ..
   - cmake --build . -- -j`nproc`
-  - cd test
-  - ctest
+  - cd ..
+  - ./launchTest.sh
+  - cp build/coverage/*.gc* .
+  - gcov *.gcda
+
+env:
+  global:
+    - CODECOV_TOKEN=f364999a-5f28-463b-9249-28da928e70c1
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

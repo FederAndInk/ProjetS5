@@ -1,6 +1,6 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
-#include <linux/elf.h>
+#include <elf.h>
 #include <stdio.h>
 
 void unknown(uint32_t i)
@@ -13,19 +13,19 @@ void unknownX(uint32_t i)
   printf("<unknown: %x>\n", i);
 }
 
-void showHeader(Elf32_Ehdr hdr)
+void showHeader(ElfImageP elfI)
 {
   printf("ELF Header:\n");
-  printf("  Magic:   \n");
+  printf("  Magic:   ");
 
-  printf("%x", hdr.e_ident[0]);
+  printf("%x", elfI->hdr.e_ident[0]);
   for (size_t i = 1; i < EI_NIDENT; i++)
   {
-    printf(" %x", hdr.e_ident[i]);
+    printf(" %.2x", elfI->hdr.e_ident[i]);
   }
   printf("\n");
   printf("  Class:                             ");
-  switch (hdr.e_ident[EI_CLASS])
+  switch (elfI->hdr.e_ident[EI_CLASS])
   {
   case ELFCLASSNONE:
     printf("none\n");
@@ -37,28 +37,28 @@ void showHeader(Elf32_Ehdr hdr)
     printf("ELF64\n");
     break;
   default:
-    unknown(hdr.e_ident[EI_CLASS]);
+    unknown(elfI->hdr.e_ident[EI_CLASS]);
     break;
   }
   printf("  Data:                              ");
-  switch (hdr.e_ident[EI_DATA])
+  switch (elfI->hdr.e_ident[EI_DATA])
   {
   case ELFDATANONE:
     printf("none\n");
     break;
   case ELFDATA2LSB:
-    printf("2's complement, big endian\n");
-    break;
-  case ELFDATA2MSB:
     printf("2's complement, little endian\n");
     break;
+  case ELFDATA2MSB:
+    printf("2's complement, big endian\n");
+    break;
   default:
-    unknown(hdr.e_ident[EI_DATA]);
+    unknown(elfI->hdr.e_ident[EI_DATA]);
     break;
   }
   printf("  Version:                           ");
-  printf("%d", hdr.e_ident[EI_VERSION]);
-  switch (hdr.e_ident[EI_VERSION])
+  printf("%d", elfI->hdr.e_ident[EI_VERSION]);
+  switch (elfI->hdr.e_ident[EI_VERSION])
   {
   case EV_NONE:
     printf("\n");
@@ -71,18 +71,18 @@ void showHeader(Elf32_Ehdr hdr)
     break;
   }
   printf("  OS/ABI:                            ");
-  switch (hdr.e_ident[EI_OSABI])
+  switch (elfI->hdr.e_ident[EI_OSABI])
   {
-  case 0:
+  case ELFOSABI_SYSV:
     printf("UNIX - System V\n");
     break;
   default:
-    unknown(hdr.e_ident[EI_OSABI]);
+    unknown(elfI->hdr.e_ident[EI_OSABI]);
     break;
   }
-  printf("  ABI Version:                       %d\n", hdr.e_ident[EI_OSABI + 1]);
+  printf("  ABI Version:                       %d\n", elfI->hdr.e_ident[EI_OSABI + 1]);
   printf("  Type:                              ");
-  switch (hdr.e_type)
+  switch (elfI->hdr.e_type)
   {
   case ET_NONE:
     printf("none");
@@ -100,12 +100,12 @@ void showHeader(Elf32_Ehdr hdr)
     printf("CORE (Core file)\n");
     break;
   default:
-    unknown(hdr.e_type);
+    unknown(elfI->hdr.e_type);
     break;
   }
   printf("  Machine:                           ");
 
-  switch (hdr.e_machine)
+  switch (elfI->hdr.e_machine)
   {
   case EM_NONE:
     printf("none\n");
@@ -123,20 +123,22 @@ void showHeader(Elf32_Ehdr hdr)
     printf("x86\n");
     break;
   default:
-    unknownX(hdr.e_machine);
+    unknownX(elfI->hdr.e_machine);
     break;
   }
-  printf("  Version:                           0x%x\n", hdr.e_version);
-  printf("  Entry point address:               0x%x\n", hdr.e_entry);
-  printf("  Start of program headers:          %d (bytes into file)\n", hdr.e_phoff);
-  printf("  Start of section headers:          %d (bytes into file)\n", hdr.e_shoff);
-  printf("  Flags:                             0x%x\n", hdr.e_flags);
-  printf("  Size of this header:               %d (bytes)\n", hdr.e_ehsize);
-  printf("  Size of program headers:           %d (bytes)\n", hdr.e_phentsize);
-  printf("  Number of program headers:         %d\n", hdr.e_phnum);
-  printf("  Size of section headers:           %d (bytes)\n", hdr.e_shentsize);
-  printf("  Number of section headers:         %d\n", hdr.e_shnum);
-  printf("  Section header string table index: %d\n", hdr.e_shstrndx);
+  printf("  Version:                           0x%x\n", elfI->hdr.e_version);
+  printf("  Entry point address:               0x%x\n", elfI->hdr.e_entry);
+  printf("  Start of program headers:          %d (bytes into file)\n",
+         elfI->hdr.e_phoff);
+  printf("  Start of section headers:          %d (bytes into file)\n",
+         elfI->hdr.e_shoff);
+  printf("  Flags:                             0x%x\n", elfI->hdr.e_flags);
+  printf("  Size of this header:               %d (bytes)\n", elfI->hdr.e_ehsize);
+  printf("  Size of program headers:           %d (bytes)\n", elfI->hdr.e_phentsize);
+  printf("  Number of program headers:         %d\n", elfI->hdr.e_phnum);
+  printf("  Size of section headers:           %d (bytes)\n", elfI->hdr.e_shentsize);
+  printf("  Number of section headers:         %d\n", elfI->hdr.e_shnum);
+  printf("  Section header string table index: %d\n", elfI->hdr.e_shstrndx);
 }
 
 int main(int argc, char* argv[])
@@ -160,16 +162,23 @@ int main(int argc, char* argv[])
   }
   else
   {
-    Elf32_Ehdr hdr;
-    parseHeader(e, &hdr);
-    if (hdr.e_ident[EI_CLASS] == ELFCLASS32)
+    ElfImage  elfI;
+    ElfImageP elfIp = &elfI;
+    initElfImage(elfIp);
+
+    parseHeader(elfIp, e);
+    if (elfIp->hdr.e_ident[EI_CLASS] == ELFCLASS32)
     {
-      showHeader(hdr);
+      showHeader(elfIp);
+      deleteElfImage(elfIp);
+      elfClose(e);
       return 0;
     }
     else
     {
-      fprintf(stderr, "Unsupported class, parse only ELF32\n");
+      fprintf(stderr, "Unsupported class, parses only ELF32\n");
+      deleteElfImage(elfIp);
+      elfClose(e);
       return 1;
     }
   }

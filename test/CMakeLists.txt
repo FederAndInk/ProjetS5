@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(test)
 
-enable_testing()
-
 configure_file(compileTest1.sh compileTest1.sh
                COPYONLY)
 configure_file(test1.c test1.c COPYONLY)
@@ -20,16 +18,25 @@ add_custom_command(OUTPUT test1 test1.o
 add_custom_target(RunCompileTest1 ALL
                   DEPENDS test1)
 
+add_library(UnitTest UnitTest.c UnitTest.h)
+
 add_executable(TestElfReader testElfReader.c)
 
 target_include_directories(
   TestElfReader
   PRIVATE "${CMAKE_SOURCE_DIR}/src/")
 
-target_link_libraries(TestElfReader ElfReader)
+target_link_libraries(TestElfReader ElfReader
+                      UnitTest)
 
-add_test(TestElfReader TestElfReader
-         ${CMAKE_CURRENT_BINARY_DIR}/test1.o)
+add_test(
+  NAME TestElfHeader
+  COMMAND "${CMAKE_BINARY_DIR}/src/ElfHeader"
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-
-
+add_test(
+  NAME TestElfReader
+  COMMAND TestElfReader
+          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
