@@ -91,19 +91,19 @@ Elf elfOpen(char const* fileName)
   return res;
 }
 
-uint32_t elfRead32(Elf f)
+Elf32_Word elfRead32(Elf f)
 {
   elfOpenIn(f, READ);
-  uint32_t res = 0;
+  Elf32_Word res = 0;
   fread(&res, sizeof(res), 1, f->f);
   fixEndianess(f, res);
   return res;
 }
 
-uint16_t elfRead16(Elf f)
+Elf32_Half elfRead16(Elf f)
 {
   elfOpenIn(f, READ);
-  uint16_t res = 0;
+  Elf32_Half res = 0;
   fread(&res, sizeof(res), 1, f->f);
   fixEndianess(f, res);
   return res;
@@ -117,14 +117,14 @@ unsigned char elfReadUC(Elf f)
   return res;
 }
 
-void elfWrite32(Elf f, uint32_t e)
+void elfWrite32(Elf f, Elf32_Word e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfWrite16(Elf f, uint16_t e)
+void elfWrite16(Elf f, Elf32_Half e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
@@ -149,6 +149,20 @@ void elfGoToRel(Elf f, size_t offset)
 
 void elfClose(Elf f)
 {
-  fclose(f->f);
-  free(f);
+  if (f)
+  {
+    fclose(f->f);
+    free(f);
+  }
+}
+
+unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
+{
+  elfGoTo(e, offset);
+
+  unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
+
+  fread(str, sizeof(unsigned char), size, e->f);
+
+  return str;
 }

@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,4 +23,30 @@ void reverseEndianess(void* ptr, size_t size)
   {
     p[i] = pTmp[size - i - 1];
   }
+}
+
+void fixPrint(char const* str, int len)
+{
+  len -= strlen(str);
+  printf("%s", str);
+  if (len > 0)
+  {
+    for (; len > 0; len--)
+    {
+      putchar(' ');
+    }
+  }
+}
+
+void fixPrintaddr(char const* str, int len)
+{
+  len -= strlen(str);
+  if (len > 0)
+  {
+    for (; len > 0; len--)
+    {
+      putchar('0');
+    }
+  }
+  printf("%s", str);
 }

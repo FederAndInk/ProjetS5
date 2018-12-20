@@ -11,7 +11,11 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   Elf e = elfOpen(fStr);
   check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
-  elfClose(e);
+
+  if (isElf(e))
+  {
+    elfClose(e);
+  }
 
   FILE* f = fopen(fStr, "rb");
 
@@ -19,8 +23,8 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   size_t nbRead = fread(a, sizeof(*a), 4, f);
   if (hasToBeElf)
   {
-    if (check((nbRead == 4),
-              "%s should have at least 4 characters to be an Elf file.", fStr))
+    if (check((nbRead == 4), "%s should have at least 4 characters to be an Elf file.",
+              fStr))
     {
       check(a[0] == ELFMAG0, "First byte of %s should be MAG0", fStr);
       check(a[1] == ELFMAG1, "Second byte of %s should be MAG1", fStr);

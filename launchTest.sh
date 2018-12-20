@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 cd ./build/test
-
 ctest -V
+if [[ $? != 0 ]]; then
+  exit 1
+fi
 
 cd ..
 

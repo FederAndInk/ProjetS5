@@ -18,8 +18,7 @@ cd build
 
 C_FLAGS="-mbig-endian"
 LD_FLAGS="-nostdlib --entry main -n --section-start .text=0x20 --section-start .data=0x2800 -EB"
-LD_FLAGS="-nostdlib --entry main -n --section-start .text=0x20 --section-start .data=0x2800 -EB"
-GCC_LD_FLAGS="-no-pie -nostdlib --entry main -n -Wl,--section-start,.text=0x20,--section-start,.data=0x2800,-EB"
+GCC_LD_FLAGS="-no-pie -nostdlib --entry main -mno-thumb-interwork -n -Wl,--section-start,.text=0x20,--section-start,.data=0x2800,-EB"
 
 ${TOOLCHAIN}as ${C_FLAGS} -o ex1.o ../example1.s
 ${TOOLCHAIN}as ${C_FLAGS} -o ex2.o ../example2.s
