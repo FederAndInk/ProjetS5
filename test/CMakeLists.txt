@@ -27,7 +27,7 @@ target_include_directories(
   PRIVATE "${CMAKE_SOURCE_DIR}/src/")
 
 target_link_libraries(TestElfReader ElfReader
-                      UnitTest)
+                      UnitTest cunit)
 
 # add_test(
 #   NAME TestElfHeader
