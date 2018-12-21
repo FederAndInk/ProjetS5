@@ -168,7 +168,7 @@ char* StrtableGetString(Elf e,uint32_t offset)
 
     char* str=NULL;
     size_t n;
-    getdelim(&src,&n,'\0',e->f);
+    getdelim(&str,&n,'\0',e->f);
 
     return str;
 }
