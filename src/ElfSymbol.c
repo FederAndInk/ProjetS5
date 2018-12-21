@@ -9,24 +9,25 @@
 
 void showSymboleTable(ElfImageP elfI)
 {
-  printf("La table de symboles « .symtab » contient %i entrées", elfI->symbols.size);
-  printf("   Num:    Valeur Tail Type    Lien   Vis      Ndx Nom\n");
+  printf("\nSymbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
+  printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
 
   for (size_t i = 0; i < elfI->symbols.size; i++)
   {
     // num
-    char* strNum[7];
-    sprintf(strNum, "%i:", i);
-    fixPrint(strNum, 7);
+    char strNum[7];
+    snprintf(strNum, 6, "%ld:", i);
+    fixPrintR(strNum, 7);
     // value
-    printf(" %.8x:", elfI->symbols.tab[i].st_size);
+    printf(" %.8x ", elfI->symbols.tab[i].st_value);
     // length
-    printf(" %.6x:", elfI->symbols.tab[i].st_size);
+    snprintf(strNum, 5, "%d", elfI->symbols.tab[i].st_size);
+    fixPrintR(strNum, 5);
     // type
     unsigned char info = elfI->symbols.tab[i].st_info;
-    printf(getElfType(stt, ELF32_ST_BIND(info)));
+    printf(getElfType(stt, ELF32_ST_TYPE(info)));
     //link
-    printf(getElfType(stb, ELF32_ST_TYPE(info)));
+    printf(getElfType(stb, ELF32_ST_BIND(info)));
     // range
     printf(getElfType(stv, ELF32_ST_VISIBILITY(elfI->symbols.tab[i].st_other)));
     // section index
@@ -52,13 +53,14 @@ void showSymboleTable(ElfImageP elfI)
       break;
 
     default:
-      printf("%i", elfI->symbols.tab[i].st_shndx);
+      printf("%3i ", elfI->symbols.tab[i].st_shndx);
       break;
     }
 
     // name
     char* strName = getSymbolString(elfI, elfI->symbols.tab[i].st_name);
     fixPrint(strName, 20);
+    putchar('\n');
   }
 }
 
@@ -89,8 +91,11 @@ int main(int argc, char* argv[])
     parseHeader(elfIp, e);
     if (elfI.hdr.e_ident[EI_CLASS] == ELFCLASS32)
     {
+      parseHeader(elfIp, e);
       parseSectionHeaders(elfIp, e);
       parseStringTable(elfIp, e);
+
+      parseSymboleTable(elfIp, e);
 
       showSymboleTable(elfIp);
 

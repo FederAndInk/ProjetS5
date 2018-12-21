@@ -6,6 +6,8 @@ typedef struct
   char const* name;
 } ElfType;
 
+extern char const ELF_UNKNOWN[];
+
 extern ElfType sht[];
 extern ElfType stb[];
 extern ElfType stt[];

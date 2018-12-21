@@ -2,6 +2,8 @@
 #include <elf.h>
 #include <stdlib.h>
 
+char const ELF_UNKNOWN[] = "Unknown";
+
 ElfType sht[] = {{SHT_NULL, "NULL"},
                  {SHT_PROGBITS, "PROGBITS"},
                  {SHT_SYMTAB, "SYMTAB"},
@@ -28,31 +30,29 @@ ElfType sht[] = {{SHT_NULL, "NULL"},
                  {SHT_ARM_EXIDX, "ARM_EXIDX"},
                  {SHT_ARM_ATTRIBUTES, "ARM_ATTRIBUTES"},
                  {SHT_ARM_PREEMPTMAP, "ARM_PREEMPTMAP"},
-                 {-1, NULL}};
+                 {-1, ELF_UNKNOWN}};
 
-ElfType stb[] = {{STB_LOCAL, "LOCAL   "},  {STB_GLOBAL, "GLOBAL  "},
-                 {STB_HIOS, "HIOS    "},   {STB_LOPROC, "LOPROS  "},
-                 {STB_WEAK, "WEAK    "},   {STB_LOOS, "LOOS    "},
-                 {STB_HIPROC, "HIPROC  "}, {-1, NULL}};
+ElfType stb[] = {{STB_LOCAL, "LOCAL  "},  {STB_GLOBAL, "GLOBAL "}, {STB_HIOS, "HIOS   "},
+                 {STB_LOPROC, "LOPROS "}, {STB_WEAK, "WEAK   "},   {STB_LOOS, "LOOS   "},
+                 {STB_HIPROC, "HIPROC "}, {-1, ELF_UNKNOWN}};
 
-ElfType stt[] = {{STT_NOTYPE, " NOTYPE  "},  {STT_OBJECT, " OBJECT  "},
-                 {STT_FUNC, " FUNCTION"},    {STT_SECTION, " SECTION "},
-                 {STT_FILE, " FILE    "},    {STT_COMMON, " COMMON   "},
-                 {STT_TLS, " TLS     "},     {STT_NUM, " NUM     "},
-                 {STT_LOOS, " LOOS    "},    {STT_GNU_IFUNC, " GNUIFCT "},
-                 {STT_HIOS, " HIOS     "},   {STT_LOPROC, " LOPROC  "},
-                 {STT_HIPROC, " HIPROC   "}, {-1, NULL}};
+ElfType stt[] = {
+    {STT_NOTYPE, " NOTYPE  "},    {STT_OBJECT, " OBJECT  "}, {STT_FUNC, " FUNCTION"},
+    {STT_SECTION, " SECTION "},   {STT_FILE, " FILE    "},   {STT_COMMON, " COMMON   "},
+    {STT_TLS, " TLS     "},       {STT_NUM, " NUM     "},    {STT_LOOS, " LOOS    "},
+    {STT_GNU_IFUNC, " GNUIFCT "}, {STT_HIOS, " HIOS     "},  {STT_LOPROC, " LOPROC  "},
+    {STT_HIPROC, " HIPROC   "},   {-1, ELF_UNKNOWN}};
 
-ElfType stv[] = {{STV_DEFAULT, "DEFAULT   "},
-                 {STV_INTERNAL, "INTERNAL  "},
-                 {STV_HIDDEN, "HIDDEN    "},
-                 {STV_PROTECTED, "PROTECTED "},
-                 {-1, NULL}};
+ElfType stv[] = {{STV_DEFAULT, "DEFAULT  "},
+                 {STV_INTERNAL, "INTERN   "},
+                 {STV_HIDDEN, "HIDDEN   "},
+                 {STV_PROTECTED, "PROTECT  "},
+                 {-1, ELF_UNKNOWN}};
 
 char const* getElfType(ElfType t[], long i)
 {
   int ind = 0;
-  while (t[ind].name != NULL && t[ind].i != i)
+  while (t[ind].name != ELF_UNKNOWN && t[ind].i != i)
   {
     ind++;
   }

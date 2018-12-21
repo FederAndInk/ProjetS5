@@ -73,10 +73,13 @@ void parseStringTable(ElfImageP elfI, Elf e)
 
 void parseSymboleTable(ElfImageP elfI, Elf e)
 {
-  elfI->symbols.size = elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_size /
-                       elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_entsize;
-  Elf32_Off currentOffset =
-      elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_offset;
+
+  Elf32_Word index = getSectionIdFromStr(elfI, ".symtab");
+  elfI->symbols.size =
+      elfI->sections.tab[index].sh_size / elfI->sections.tab[index].sh_entsize;
+  elfI->symbols.tab = (Elf32_Sym*)malloc(elfI->symbols.size * sizeof(Elf32_Sym));
+  Elf32_Off currentOffset = elfI->sections.tab[index].sh_offset;
+  elfGoTo(e, currentOffset);
   for (size_t i = 0; i < (elfI->symbols.size); i++)
   {
     elfI->symbols.tab[i].st_name = elfRead32(e);
