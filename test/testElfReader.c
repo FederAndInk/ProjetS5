@@ -10,7 +10,7 @@
 void testIsElf(char const* fStr, bool hasToBeElf)
 {
   // SEE: On declare notre test
-  DECLARE_TEST();
+  DECLARE_TEST("hasToBeElf: %s", hasToBeElf ? "true" : "false");
 
   bool isElfTmp;
   Elf  e = elfOpen(fStr);

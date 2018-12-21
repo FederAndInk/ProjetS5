@@ -6,7 +6,7 @@ bool check(bool cond, char const* expl, ...);
 void beginTests();
 void endTests();
 
-void addTest(char const* testName);
+void addTest(char const* testName, char const* format, ...);
 void finishTest(char const* testName);
 
 bool checksPassed();
@@ -29,4 +29,9 @@ bool testsPassed();
     return 1;                                                                            \
   }
 
-#define DECLARE_TEST() addTest(__func__)
+/**
+ * @brief declare a test with a description of the current test
+ * use a format string
+ * and may use args like printf
+ */
+#define DECLARE_TEST(formatArgs...) addTest(__func__, formatArgs)

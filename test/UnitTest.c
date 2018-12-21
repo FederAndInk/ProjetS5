@@ -44,7 +44,7 @@ void endTests()
   {
     finishTest(currentTest);
 
-    puts("<~~~~~~~~~~~~Result~~~~~~~~~~~~>");
+    puts("\e[1m<~~~~~~~~~~~~Result~~~~~~~~~~~~>\e[0m");
     printf("Tests finished\n");
     printf("\e[1;36m%ld/%ld\e[0m tests passed\n", nbTestPassed, nbTest);
     puts(">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<");
@@ -71,7 +71,7 @@ void endTests()
   putchar('\n');
 }
 
-void addTest(char const* testName)
+void addTest(char const* testName, char const* format, ...)
 {
   if (currentTest)
   {
@@ -82,7 +82,12 @@ void addTest(char const* testName)
   nbTest++;
   nbCheck = 0;
   nbCheckPassed = 0;
-  printf("Launch %s\n", testName);
+  printf("\e[35;4mLaunch %s\e[0m\n", testName);
+  va_list args;
+  va_start(args, format);
+  vprintf(format, args);
+  va_end(args);
+  putchar('\n');
   puts("<========Program Output========>");
 }
 
