@@ -11,12 +11,12 @@
 void testIsElf(char const* fStr, bool hasToBeElf)
 {
   bool isElfTmp;
-  Elf e = elfOpen(fStr);
+  Elf  e = elfOpen(fStr);
   isElfTmp = isElf(e);
-  check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
+  check(isElf(e) == hasToBeElf, "(isElf): %s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
 
-  if (isElfTmp)
+  if (e)
   {
     elfClose(e);
   }
@@ -27,25 +27,25 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   size_t nbRead = fread(a, sizeof(*a), 4, f);
   if (isElfTmp)
   {
-    if (check((nbRead == 4), "%s should have at least 4 characters to be an Elf file.",
-              fStr))
+    if (check((nbRead == 4),
+              "(isElf): %s should have at least 4 characters to be an Elf file.", fStr))
     {
-      check(a[0] == ELFMAG0, "First byte of %s should be MAG0", fStr);
-      check(a[1] == ELFMAG1, "Second byte of %s should be MAG1", fStr);
-      check(a[2] == ELFMAG2, "Third byte of %s should be MAG2", fStr);
-      check(a[3] == ELFMAG3, "Fourth byte of %s should be MAG3", fStr);
+      check(a[0] == ELFMAG0, "(isElf): First byte of %s should be MAG0", fStr);
+      check(a[1] == ELFMAG1, "(isElf): Second byte of %s should be MAG1", fStr);
+      check(a[2] == ELFMAG2, "(isElf): Third byte of %s should be MAG2", fStr);
+      check(a[3] == ELFMAG3, "(isElf): Fourth byte of %s should be MAG3", fStr);
     }
   }
   else
   {
     check((nbRead != 4) || (strcmp(a, ELFMAG) != 0),
-          "%s was expected to be non Elf but it matches Elf format.", fStr);
+          "(isElf): %s was expected to be non Elf but it matches Elf format.", fStr);
   }
 
   fclose(f);
 }
 
-  /*int testHeader(char const* f)
+/*int testHeader(char const* f)
 {
   printf("===> test on: %s\n", f);
   fflush(stdout);
@@ -80,30 +80,30 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   elfClose(e);
 }*/
 
-  int main(int argc, char* argv[])
+int main(int argc, char* argv[])
+{
+
+  if (argc != 4)
   {
-
-    if (argc != 4)
-    {
-      fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
-      return 1;
-    }
-
-    testIsElf(argv[1], true);
-    testIsElf(argv[2], true);
-    testIsElf(argv[3], false);
-
-    // TODO: add more tests
-    // Pour ex1.o : type
-
-    // Pour ex1.o : type
-
-    if (checksPassed())
-    {
-      return 0;
-    }
-    else
-    {
-      return 1;
-    }
+    fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
+    return 1;
   }
+
+  testIsElf(argv[1], true);
+  testIsElf(argv[2], true);
+  testIsElf(argv[3], false);
+
+  // TODO: add more tests
+  // Pour ex1.o : type
+
+  // Pour ex1.o : type
+
+  if (checksPassed())
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
+}
