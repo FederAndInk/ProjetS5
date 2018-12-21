@@ -1,6 +1,5 @@
 #include "ElfReader.h"
 #include "UnitTest.h"
-// #include <CUnit/Basic.h>
 #include <elf.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -9,8 +8,11 @@
 
 void testIsElf(char const* fStr, bool hasToBeElf)
 {
+  // SEE: On declare notre test
+  DECLARE_TEST("hasToBeElf: %s", hasToBeElf ? "true" : "false");
+
   bool isElfTmp;
-  Elf e = elfOpen(fStr);
+  Elf  e = elfOpen(fStr);
   isElfTmp = isElf(e);
   check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
@@ -40,17 +42,18 @@ void testIsElf(char const* fStr, bool hasToBeElf)
     check((nbRead != 4) || (strcmp(a, ELFMAG) != 0),
           "%s was expected to be non Elf but it matches Elf format.", fStr);
   }
-
   fclose(f);
 }
 
 void testElfRead32(const char* f, Elf32_Word expect_vers)
 {
+  DECLARE_TEST("expect_vers: %u", expect_vers);
+
   Elf file_elf = elfOpen(f);
   elfGoTo(file_elf, 14);
   Elf32_Word mot = elfRead32(file_elf);
-  check(ftell(file_elf->f) == 18, "(ElfRead32): not well-placed cursor");
-  check(expect_vers == mot, "(ElfRead32): didn't read correctly");
+  check(ftell(file_elf->f) == 18, "not well-placed cursor");
+  check(expect_vers == mot, "didn't read correctly");
 }
 
 /*int testHeader(char const* f)
@@ -90,28 +93,17 @@ void testElfRead32(const char* f, Elf32_Word expect_vers)
 
 int main(int argc, char* argv[])
 {
-
   if (argc != 4)
   {
     fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
     return 1;
   }
 
+  // SEE: On encadre nos tests comme ça
+  BEGIN_TESTS("TestElfReader");
   testIsElf(argv[1], true);
   testIsElf(argv[2], true);
   testIsElf(argv[3], false);
-
   // TODO: add more tests
-  // Pour ex1.o : type
-
-  // Pour ex1.o : type
-
-  if (checksPassed())
-  {
-    return 0;
-  }
-  else
-  {
-    return 1;
-  }
+  END_TESTS();
 }
