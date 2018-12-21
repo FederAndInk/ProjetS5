@@ -1,30 +1,41 @@
 #pragma once
+#include <elf.h>
 
-#include <stdint.h>
-
-typedef uint32_t      Elf32_Addr;
-typedef uint16_t      Elf32_Half;
-typedef uint32_t      Elf32_Off;
-typedef int32_t       Elf32_Sword;
-typedef uint32_t      Elf32_Word;
-typedef unsigned char Elf32_char;
-
-#define EI_NIDENT 16
-
-typedef struct elf32_hdr
+typedef struct
 {
-  unsigned char e_ident[EI_NIDENT];
-  Elf32_Half    e_type;
-  Elf32_Half    e_machine;
-  Elf32_Word    e_version;
-  Elf32_Addr    e_entry;
-  Elf32_Off     e_phoff;
-  Elf32_Off     e_shoff;
-  Elf32_Word    e_flags;
-  Elf32_Half    e_ehsize;
-  Elf32_Half    e_phentsize;
-  Elf32_Half    e_phnum;
-  Elf32_Half    e_shentsize;
-  Elf32_Half    e_shnum;
-  Elf32_Half    e_shstrndx;
-} Elf32_Ehdr;
+  Elf32_Shdr* tab;
+  Elf32_Word  size;
+} Elf32Sections;
+
+typedef struct
+{
+  unsigned char* secStrs;
+  unsigned char* symStrs;
+} Elf32StringTable;
+
+typedef struct
+{
+  Elf32_Sym* tab;
+  Elf32_Word size;
+} Elf32Symbols;
+
+typedef struct
+{
+  unsigned char* tab;
+  Elf32_Word size;
+  Elf32_Word address;
+} Elf32Section;
+
+typedef struct
+{
+  Elf32_Ehdr       hdr;
+  Elf32Sections    sections;
+  Elf32StringTable strTable;
+  Elf32Symbols     symbols; // TODO: complete with other elf parts
+} ElfImage;
+
+typedef ElfImage* ElfImageP;
+
+void initElfImage(ElfImageP elfI);
+
+void deleteElfImage(ElfImageP elfI);

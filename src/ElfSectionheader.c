@@ -1,78 +1,112 @@
+#include "Elf.h"
 #include "ElfParser.h"
 #include "ElfReader.h"
 #include "ElfString.h"
+#include "ElfStringTable.h"
 #include "util.h"
-#include <elf.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-void showSectionHeader(Elf32_Shdr tabshdr[],uint16_t shoff,uint16_t shnum,uint16_t stind,Elf e)
+void showSectionHeader(ElfImageP elfI)
 {
-    printf("There are %d section headers, starting at offset 0x%x:\n",shnum,shoff);
-    printf("Section Headers:\n");
-    printf("Nr  Name              Type             Address  Offset Size   ES Flags Link  Info  Align\n");
-    for (int i = 0 ; i<shnum ; i++)
+  printf("There are %d section headers, starting at offset 0x%x:\n", elfI->hdr.e_shnum,
+         elfI->hdr.e_shoff);
+  printf("Section Headers:\n");
+  printf("Nr  Name                Type             Address  Offset Size   ES Flags Link  "
+         "Info  Align\n");
+  for (int i = 0; i < elfI->hdr.e_shnum; i++)
+  {
+    char id[4];
+    sprintf(id, "%d", i);
+    fixPrint(id, 4);
+
+    char* str = (char*)getSectionString(elfI, i);
+    fixPrint(str, 20);
+
+    char const* strType = getElfType(sht, elfI->sections.tab[i].sh_type);
+    fixPrint(strType, 17);
+
+    printf("%.8x %.6x %.6x %.2x ", elfI->sections.tab[i].sh_addr,
+           elfI->sections.tab[i].sh_offset, elfI->sections.tab[i].sh_size,
+           elfI->sections.tab[i].sh_entsize);
+
+    int x = 0;
+
+    if (elfI->sections.tab[i].sh_flags & SHF_WRITE)
     {
-        char id[4];
-        sprintf( id,  "%d", i );
-        fixPrint(id,4);
-
-
-        char* str=StrtableGetString(e,(tabshdr[stind].sh_offset+tabshdr[i].sh_name));
-        fixPrint(str,20);
-        free(str);
-
-        char const * strType=getElfType(sht,tabshdr[i].sh_type);
-        fixPrint(strType,17);
-
-        printf("%.8x %.6x %.6x %.2x ",tabshdr[i].sh_addr,
-               tabshdr[i].sh_offset,tabshdr[i].sh_size,tabshdr[i].sh_entsize);
-
-        int x = 0;
-
-        if (tabshdr[i].sh_flags & SHF_WRITE)
-            {printf("W");x++;}
-        if (tabshdr[i].sh_flags & SHF_ALLOC)
-            {printf("A");x++;}
-        if (tabshdr[i].sh_flags & SHF_EXECINSTR)
-            {printf("X");x++;}
-        if (tabshdr[i].sh_flags & SHF_MERGE)
-            {printf("M");x++;}
-        if (tabshdr[i].sh_flags & SHF_STRINGS)
-            {printf("S");x++;}
-        if (tabshdr[i].sh_flags & SHF_INFO_LINK)
-            {printf("I");x++;}
-        if (tabshdr[i].sh_flags & SHF_LINK_ORDER)
-            {printf("L");x++;}
-        if (tabshdr[i].sh_flags & SHF_GROUP)
-            {printf("G");x++;}
-        if (tabshdr[i].sh_flags & SHF_TLS)
-            {printf("T");x++;}
-        if (tabshdr[i].sh_flags & SHF_MASKOS)
-            {printf("o");x++;}
-        if (tabshdr[i].sh_flags & SHF_MASKPROC)
-            {printf("p");x++;}
-
-
-        for(int j=0;j<(5-x);j++)
-            putchar(' ');
-
-        char lnk[16];
-        printf(" ");
-        sprintf( lnk,  "%d", tabshdr[i].sh_link );
-        fixPrint(lnk,5);
-
-        char info[16];
-        printf(" ");
-        sprintf( info,  "%d", tabshdr[i].sh_info );
-        fixPrint(info,6);
-
-        printf("%d \n",tabshdr[i].sh_addralign);
+      printf("W");
+      x++;
     }
-    printf("\nKey to Flags:\n");
-    printf("W (write), A (alloc), X (execute), M (merge), S (strings), l (large)\n");
-    printf("I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)\n");
-    printf("O (extra OS processing required) o (OS specific), p (processor specific)\n");
+    if (elfI->sections.tab[i].sh_flags & SHF_ALLOC)
+    {
+      printf("A");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_EXECINSTR)
+    {
+      printf("X");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MERGE)
+    {
+      printf("M");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_STRINGS)
+    {
+      printf("S");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_INFO_LINK)
+    {
+      printf("I");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_LINK_ORDER)
+    {
+      printf("L");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_GROUP)
+    {
+      printf("G");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_TLS)
+    {
+      printf("T");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MASKOS)
+    {
+      printf("o");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MASKPROC)
+    {
+      printf("p");
+      x++;
+    }
+
+    for (int j = 0; j < (5 - x); j++)
+      putchar(' ');
+
+    char lnk[16];
+    printf(" ");
+    sprintf(lnk, "%d", elfI->sections.tab[i].sh_link);
+    fixPrint(lnk, 5);
+
+    char info[16];
+    printf(" ");
+    sprintf(info, "%d", elfI->sections.tab[i].sh_info);
+    fixPrint(info, 6);
+
+    printf("%d \n", elfI->sections.tab[i].sh_addralign);
+  }
+  printf("\nKey to Flags:\n");
+  printf("W (write), A (alloc), X (execute), M (merge), S (strings), l (large)\n");
+  printf("I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)\n");
+  printf("O (extra OS processing required) o (OS specific), p (processor specific)\n");
 }
 
 int main(int argc, char* argv[])
@@ -95,18 +129,28 @@ int main(int argc, char* argv[])
   }
   else
   {
-    Elf32_Ehdr hdr;
-    parseHeader(e, &hdr);
-    if (hdr.e_ident[EI_CLASS] == ELFCLASS32)
+    ElfImage  elfI;
+    ElfImageP elfIp = &elfI;
+    initElfImage(elfIp);
+
+    parseHeader(elfIp, e);
+    if (elfI.hdr.e_ident[EI_CLASS] == ELFCLASS32)
     {
-      Elf32_Shdr tabshdr[hdr.e_shnum];
-      parseSectionHeader(e, tabshdr,hdr.e_shoff,hdr.e_shnum);
-      showSectionHeader(tabshdr,hdr.e_shoff,hdr.e_shnum,hdr.e_shstrndx,e);
+      parseSectionHeaders(elfIp, e);
+      parseStringTable(elfIp, e);
+
+      showSectionHeader(elfIp);
+
+      deleteElfImage(elfIp);
+      elfClose(e);
       return 0;
     }
     else
     {
       fprintf(stderr, "Unsupported class, parses only ELF32\n");
+
+      deleteElfImage(elfIp);
+      elfClose(e);
       return 1;
     }
   }

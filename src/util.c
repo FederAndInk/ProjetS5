@@ -2,9 +2,9 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 int is_big_endian()
 {
@@ -28,7 +28,7 @@ void reverseEndianess(void* ptr, size_t size)
 void fixPrint(char const* str, int len)
 {
   len -= strlen(str);
-  printf("%s",str);
+  printf("%s", str);
   if (len > 0)
   {
     for (; len > 0; len--)
@@ -36,9 +36,7 @@ void fixPrint(char const* str, int len)
       putchar(' ');
     }
   }
-
 }
-
 
 void fixPrintaddr(char const* str, int len)
 {
@@ -50,5 +48,5 @@ void fixPrintaddr(char const* str, int len)
       putchar('0');
     }
   }
-  printf("%s",str);
+  printf("%s", str);
 }

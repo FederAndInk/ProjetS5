@@ -6,21 +6,35 @@ add_compile_options($<$<CONFIG:Debug>:-Wall>
 
 add_library(util util.c util.h)
 
-add_library(ElfReader
-            ./ElfReader.c
-            ./ElfReader.h
-            ./Elf.h)
+add_library(ElfReader ./ElfReader.c ./ElfReader.h)
 target_link_libraries(ElfReader util)
 
 add_library(ElfString ElfString.c ElfString.h)
 
-add_library(ElfParser ./ElfParser.c ./ElfReader.h)
-target_link_libraries(ElfParser ElfReader)
+add_library(Elf Elf.c Elf.h)
+
+add_library(ElfStringTable ElfStringTable.c
+            ElfStringTable.h)
+target_link_libraries(ElfStringTable ElfReader
+                      Elf)
+
+add_library(ElfParser ./ElfParser.c ./ElfParser.h)
+target_link_libraries(ElfParser
+                      ElfReader
+                      ElfStringTable
+                      Elf)
 
 add_executable(ElfHeader ElfHeader.c)
-target_link_libraries(ElfHeader ElfParser
-                      ElfReader)
+target_link_libraries(ElfHeader
+                      ElfParser
+                      ElfReader
+                      Elf)
 
-add_executable(ElfSectionheader ElfSectionheader.c)
-target_link_libraries(ElfSectionheader ElfParser
-                      ElfReader ElfString)
+add_executable(ElfSectionheader
+               ElfSectionheader.c)
+target_link_libraries(ElfSectionheader
+                      ElfParser
+                      ElfReader
+                      ElfString
+                      ElfStringTable
+                      Elf)
