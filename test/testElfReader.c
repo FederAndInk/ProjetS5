@@ -1,7 +1,6 @@
 #include "ElfReader.h"
 #include "UnitTest.h"
 // #include <CUnit/Basic.h>
-#include <CUnit/CUnitCI.h>
 #include <elf.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -10,8 +9,11 @@
 
 void testIsElf(char const* fStr, bool hasToBeElf)
 {
+  // SEE: On declare notre test
+  DECLARE_TEST();
+
   bool isElfTmp;
-  Elf e = elfOpen(fStr);
+  Elf  e = elfOpen(fStr);
   isElfTmp = isElf(e);
   check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
@@ -41,11 +43,10 @@ void testIsElf(char const* fStr, bool hasToBeElf)
     check((nbRead != 4) || (strcmp(a, ELFMAG) != 0),
           "%s was expected to be non Elf but it matches Elf format.", fStr);
   }
-
   fclose(f);
 }
 
-  /*int testHeader(char const* f)
+/*int testHeader(char const* f)
 {
   printf("===> test on: %s\n", f);
   fflush(stdout);
@@ -80,30 +81,20 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   elfClose(e);
 }*/
 
-  int main(int argc, char* argv[])
+int main(int argc, char* argv[])
+{
+
+  if (argc != 4)
   {
-
-    if (argc != 4)
-    {
-      fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
-      return 1;
-    }
-
-    testIsElf(argv[1], true);
-    testIsElf(argv[2], true);
-    testIsElf(argv[3], false);
-
-    // TODO: add more tests
-    // Pour ex1.o : type
-
-    // Pour ex1.o : type
-
-    if (checksPassed())
-    {
-      return 0;
-    }
-    else
-    {
-      return 1;
-    }
+    fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
+    return 1;
   }
+
+  // SEE: On encadre nos tests comme ça
+  BEGIN_TESTS("TestElfReader");
+  testIsElf(argv[1], true);
+  testIsElf(argv[2], true);
+  testIsElf(argv[3], false);
+  // TODO: add more tests
+  END_TESTS();
+}

@@ -1,12 +1,14 @@
 #include "UnitTest.h"
 #include <assert.h>
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 
-bool checksResults = true;
+size_t nbCheck = 0;
+size_t nbCheckPassed = 0;
 
 bool check(bool cond, char const* expl, ...)
 {
+  nbCheck++;
   if (!cond)
   {
     fflush(stdout);
@@ -16,15 +18,102 @@ bool check(bool cond, char const* expl, ...)
     va_start(list, expl);
     vfprintf(stderr, expl, list);
     va_end(list);
-    fputs("\e[1m", stderr);
+    fputs("\e[0m", stderr);
     fputc('\n', stderr);
     fflush(stderr);
   }
-  checksResults = cond && checksResults;
+  else
+  {
+    nbCheckPassed++;
+  }
   return cond;
+}
+
+size_t      nbTest = 0;
+size_t      nbTestPassed = 0;
+char const* currentTest = NULL;
+
+void beginTests(char const* name)
+{
+  printf("Testing %s\n", name);
+}
+
+void endTests()
+{
+  if (currentTest)
+  {
+    finishTest(currentTest);
+
+    puts("<~~~~~~~~~~~~Result~~~~~~~~~~~~>");
+    printf("Tests finished\n");
+    printf("\e[1;36m%ld/%ld\e[0m tests passed\n", nbTestPassed, nbTest);
+    puts(">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<");
+
+    if (testsPassed())
+    {
+      printf("\e[32;1m");
+      puts("Overall tests passed");
+      printf("\e[35;1mYay");
+      printf("\e[0m");
+    }
+    else
+    {
+      printf("\e[31;1m");
+      puts("Overall tests failed");
+      printf("\e[34;1m:'(");
+      printf("\e[0m");
+    }
+  }
+  else
+  {
+    printf("No Tests !");
+  }
+  putchar('\n');
+}
+
+void addTest(char const* testName)
+{
+  if (currentTest)
+  {
+    finishTest(currentTest);
+  }
+
+  currentTest = testName;
+  nbTest++;
+  nbCheck = 0;
+  nbCheckPassed = 0;
+  printf("Launch %s\n", testName);
+  puts("<========Program Output========>");
+}
+
+void finishTest(char const* testName)
+{
+  puts(">==============================<");
+  printf("Test %s finished\n", testName);
+  printf("\e[1;36m%ld/%ld\e[0m checks passed\n", nbCheckPassed, nbCheck);
+
+  if (checksPassed())
+  {
+    nbTestPassed++;
+    printf("\e[32m");
+    printf("Test %s passed", testName);
+    printf("\e[0m");
+  }
+  else
+  {
+    printf("\e[31m");
+    printf("Test %s failed", testName);
+    printf("\e[0m");
+  }
+  puts("\n");
 }
 
 bool checksPassed()
 {
-  return checksResults;
+  return nbCheck == nbCheckPassed;
+}
+
+bool testsPassed()
+{
+  return nbTest == nbTestPassed;
 }
