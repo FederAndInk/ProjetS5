@@ -38,3 +38,11 @@ target_link_libraries(ElfSectionheader
                       ElfString
                       ElfStringTable
                       Elf)
+                      
+add_executable(ElfSymbol ElfSymbol.c)
+target_link_libraries(ElfSymbol
+                      ElfParser
+                      ElfReader
+                      ElfString
+                      ElfStringTable
+                      Elf)

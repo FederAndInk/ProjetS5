@@ -7,6 +7,9 @@ typedef struct
 } ElfType;
 
 extern ElfType sht[];
+extern ElfType stb[];
+extern ElfType stt[];
+extern ElfType stv[];
 
 /**
  * @return the string for the type i in t

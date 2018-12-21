@@ -57,14 +57,33 @@ void parseStringTable(ElfImageP elfI, Elf e)
   elfI->strTable.secStrs =
       elfReadUC_s(e, elfI->sections.tab[elfI->hdr.e_shstrndx].sh_offset,
                   elfI->sections.tab[elfI->hdr.e_shstrndx].sh_size);
-                  
+
   Elf32_Word strIdx = getSectionIdFromStr(elfI, ".strtab");
 
   if (strIdx < elfI->sections.size)
   {
     elfI->strTable.symStrs = elfReadUC_s(e, elfI->sections.tab[strIdx].sh_offset,
                                          elfI->sections.tab[strIdx].sh_size);
-  }else {
+  }
+  else
+  {
     fputs(".strtab not found", stderr);
+  }
+}
+
+void parseSymboleTable(ElfImageP elfI, Elf e)
+{
+  elfI->symbols.size = elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_size /
+                       elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_entsize;
+  Elf32_Off currentOffset =
+      elfI->sections.tab[getSectionIdFromStr(e, ".symtab")].sh_offset;
+  for (size_t i = 0; i < (elfI->symbols.size); i++)
+  {
+    elfI->symbols.tab[i].st_name = elfRead32(e);
+    elfI->symbols.tab[i].st_value = elfRead32(e);
+    elfI->symbols.tab[i].st_size = elfRead32(e);
+    elfI->symbols.tab[i].st_info = elfReadUC(e);
+    elfI->symbols.tab[i].st_other = elfReadUC(e);
+    elfI->symbols.tab[i].st_shndx = elfRead16(e);
   }
 }

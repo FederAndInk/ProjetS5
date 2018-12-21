@@ -4,7 +4,7 @@
 typedef struct
 {
   Elf32_Shdr* tab;
-  Elf32_Word  size;
+  Elf32_Word  size; // nb elements
 } Elf32Sections;
 
 typedef struct
@@ -16,7 +16,7 @@ typedef struct
 typedef struct
 {
   Elf32_Sym* tab;
-  Elf32_Word size;
+  Elf32_Word size; // nb elements
 } Elf32Symbols;
 
 typedef struct

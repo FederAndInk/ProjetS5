@@ -25,3 +25,11 @@ void parseSectionHeaders(ElfImageP elfI, Elf e);
  * @param e Elf read/writer wrapper
  */
 void parseStringTable(ElfImageP elfI, Elf e);
+
+/**
+ * @brief parse the symbole table
+ * 
+ * @param elfI elf image with header and section headers already parsed (parseHeader, parseSectionHeaders)
+ * @param e Elf read/writer wrapper
+ */
+void parseSymboleTable(ElfImageP elfI, Elf e);
