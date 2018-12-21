@@ -11,8 +11,8 @@ cd ..
 rm -r coverage
 mkdir -p coverage
 
-covFile=`find . -name "*.gcda"`
-covFile="$covFile `find . -name "*.gcno"`"
+covFile=`find . -path ./external -prune -o -name "*.gcda" -print`
+covFile="$covFile `find . -path ./external -prune -o -name "*.gcno" -print`"
 
 cp $covFile coverage
 
