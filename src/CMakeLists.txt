@@ -46,3 +46,10 @@ target_link_libraries(ElfSymbol
                       ElfString
                       ElfStringTable
                       Elf)
+add_executable(ElfRelocation ElfRelocation.c)
+target_link_libraries(ElfRelocation
+                      ElfParser
+                      ElfReader
+                      ElfString
+                      ElfStringTable
+                      Elf)

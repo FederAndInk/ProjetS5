@@ -12,6 +12,7 @@ extern ElfType sht[];
 extern ElfType stb[];
 extern ElfType stt[];
 extern ElfType stv[];
+extern ElfType r_code[];
 
 /**
  * @return the string for the type i in t

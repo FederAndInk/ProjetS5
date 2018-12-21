@@ -7,9 +7,9 @@ char* getSectionString(ElfImageP elfI, Elf32_Word sectionNo)
   return (char*)&elfI->strTable.secStrs[elfI->sections.tab[sectionNo].sh_name];
 }
 
-char* getSymbolString(ElfImageP elfI, Elf32_Word offIntoTab)
+char* getSymbolString(ElfImageP elfI, Elf32_Word symbolNo)
 {
-  return (char*)&elfI->strTable.symStrs[offIntoTab];
+  return (char*)&elfI->strTable.symStrs[elfI->symbols.tab[symbolNo].st_name];
 }
 
 Elf32_Word getSectionIdFromStr(ElfImageP elfI, char const* name)

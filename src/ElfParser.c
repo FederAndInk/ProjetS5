@@ -1,6 +1,7 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
 #include "ElfStringTable.h"
+#include <stddef.h>
 #include <stdlib.h>
 
 void parseHeader(ElfImageP elfI, Elf e)
@@ -88,5 +89,44 @@ void parseSymboleTable(ElfImageP elfI, Elf e)
     elfI->symbols.tab[i].st_info = elfReadUC(e);
     elfI->symbols.tab[i].st_other = elfReadUC(e);
     elfI->symbols.tab[i].st_shndx = elfRead16(e);
+  }
+}
+
+void parseRelocations(ElfImageP elfI, Elf e)
+{
+  size_t nbrel = 0;
+  int    table[elfI->sections.size];
+  for (size_t i = 0; i < elfI->sections.size; i++)
+  {
+
+    if (elfI->sections.tab[i].sh_type == SHT_REL ||
+        elfI->sections.tab[i].sh_type == SHT_RELA)
+    {
+      table[nbrel] = i;
+      nbrel++;
+    }
+  }
+  elfI->rels.size = nbrel;
+  elfI->rels.tab = (Elf32Rels*)malloc(nbrel * sizeof(Elf32Rels));
+  for (size_t i = 0; i < nbrel; i++)
+  {
+    Elf32_Off currentOffset = elfI->sections.tab[table[i]].sh_offset;
+    elfGoTo(e, currentOffset);
+    elfI->rels.tab[i].relType = elfI->sections.tab[table[i]].sh_type;
+    elfI->rels.tab[i].nbRel =
+        elfI->sections.tab[table[i]].sh_size / elfI->sections.tab[table[i]].sh_entsize;
+    elfI->rels.tab[i].rela = malloc(sizeof(Elf32_Rela) * elfI->rels.tab[i].nbRel);
+    elfI->rels.tab[i].sectionIdx = table[i];
+    for (size_t j = 0; j < elfI->rels.tab[i].nbRel; j++)
+    {
+
+      elfI->rels.tab[i].rela[j].r_offset = elfRead32(e);
+      elfI->rels.tab[i].rela[j].r_info = elfRead32(e);
+
+      if (elfI->rels.tab[i].relType == SHT_RELA)
+      {
+        elfI->rels.tab[i].rela[j].r_addend = elfRead32(e);
+      }
+    }
   }
 }

@@ -30,5 +30,19 @@ void deleteElfImage(ElfImageP elfI)
     free(elfI->symbols.tab);
   }
 
+  for (size_t i = 0; i < elfI->rels.size; i++)
+  {
+
+    if (elfI->rels.tab[i].rela)
+    {
+      free(elfI->rels.tab[i].rela);
+    }
+  }
+
+  if (elfI->rels.tab)
+  {
+    free(elfI->rels.tab);
+  }
+
   // TODO: add other free function for ElfImage
 }
