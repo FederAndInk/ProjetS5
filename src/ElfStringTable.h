@@ -1,5 +1,5 @@
 #pragma once
-#include "Elf.h"
+#include "ElfImage.h"
 #include "ElfReader.h"
 
 char* getSectionString(ElfImageP elfI, Elf32_Word sectionNo);

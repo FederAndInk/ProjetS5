@@ -153,13 +153,13 @@ void elfClose(Elf f)
   free(f);
 }
 
-unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
+unsigned char* elfReadUC_s(Elf f, size_t offset, size_t size)
 {
-  elfGoTo(e, offset);
+  elfGoTo(f, offset);
 
   unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
 
-  fread(str, sizeof(unsigned char), size, e->f);
+  fread(str, sizeof(unsigned char), size, f->f);
 
   return str;
 }

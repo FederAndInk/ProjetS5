@@ -26,6 +26,7 @@ bool isElf(Elf f);
 /**
  * @brief indique si f à la meme endianess que la plateform courante
  *
+ * @pre isElf(f) == true
  * @param f
  * @return true si f à la meme endianess que la plateform courante
  * @return false sinon
@@ -46,6 +47,7 @@ Elf elfOpen(char const* fileName);
  *
  * change potentiellement le mode de f
  *
+ * @pre isElf(f) == true
  * @param f
  * @return Elf32_Word
  */
@@ -66,6 +68,7 @@ Elf32_Half elfRead16(Elf f);
  *
  * change potentiellement le mode de f
  *
+ * @pre isElf(f) == true
  * @param f
  * @return Elf32_Half
  */
@@ -76,6 +79,7 @@ unsigned char elfReadUC(Elf f);
  *
  * change potentiellement le mode de f
  *
+ * @pre isElf(f) == true
  * @param f
  * @param e
  */
@@ -86,6 +90,7 @@ void elfWrite32(Elf f, Elf32_Word e);
  *
  * change potentiellement le mode de f
  *
+ * @pre isElf(f) == true
  * @param f
  * @param e
  */
@@ -96,6 +101,7 @@ void elfWrite16(Elf f, Elf32_Half e);
  *
  * change potentiellement le mode de f
  *
+ * @pre isElf(f) == true
  * @param f
  * @return Elf32_Half
  */
@@ -104,6 +110,7 @@ void elfWriteUC(Elf f, unsigned char e);
 /**
  * @brief aller à l'octet to
  *
+ * @pre isElf(f) == true
  * @param f
  * @param to
  */
@@ -112,15 +119,23 @@ void elfGoTo(Elf f, size_t to);
 /**
  * @brief se deplace de offset octets
  *
+ * @pre isElf(f) == true
  * @param f
  * @param offset
  */
 void elfGoToRel(Elf f, size_t offset);
 
+/**
+ * @brief close the elf f
+ * 
+ * @pre isElf(f) == true
+ * @param f 
+ */
 void elfClose(Elf f);
 
 /**
- *  get a chunk of data of size size at offset
- *  @return a pointer to the chunk allocated onto the heap
+ * get a chunk of data of size size at offset
+ * @pre isElf(f) == true
+ * @return a pointer to the chunk allocated onto the heap
  */
-unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size);
+unsigned char* elfReadUC_s(Elf f, size_t offset, size_t size);

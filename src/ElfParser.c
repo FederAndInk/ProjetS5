@@ -3,7 +3,7 @@
 #include "ElfStringTable.h"
 #include <stdlib.h>
 
-void parseHeader(ElfImageP elfI, Elf e)
+bool parseHeader(ElfImageP elfI, Elf e)
 {
   elfGoTo(e, 0);
 
@@ -28,6 +28,9 @@ void parseHeader(ElfImageP elfI, Elf e)
     elfI->hdr.e_shentsize = elfRead16(e);
     elfI->hdr.e_shnum = elfRead16(e);
     elfI->hdr.e_shstrndx = elfRead16(e);
+    return true;
+  }else {
+    return false;
   }
 }
 
@@ -57,14 +60,28 @@ void parseStringTable(ElfImageP elfI, Elf e)
   elfI->strTable.secStrs =
       elfReadUC_s(e, elfI->sections.tab[elfI->hdr.e_shstrndx].sh_offset,
                   elfI->sections.tab[elfI->hdr.e_shstrndx].sh_size);
-                  
+
   Elf32_Word strIdx = getSectionIdFromStr(elfI, ".strtab");
 
   if (strIdx < elfI->sections.size)
   {
     elfI->strTable.symStrs = elfReadUC_s(e, elfI->sections.tab[strIdx].sh_offset,
                                          elfI->sections.tab[strIdx].sh_size);
-  }else {
+  }
+  else
+  {
     fputs(".strtab not found", stderr);
+  }
+}
+
+bool parseElf(ElfImageP elfI, Elf e)
+{
+  if (parseHeader(elfI, e))
+  {
+    parseSectionHeaders(elfI, e);
+    parseStringTable(elfI, e);
+    return true;
+  }else {
+    return false;
   }
 }

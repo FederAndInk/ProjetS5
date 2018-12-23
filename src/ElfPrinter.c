@@ -1,6 +1,7 @@
-#include "ElfParser.h"
-#include "ElfReader.h"
-#include <elf.h>
+#include "ElfPrinter.h"
+#include "ElfString.h"
+#include "ElfStringTable.h"
+#include "util.h"
 #include <stdio.h>
 
 void unknown(uint32_t i)
@@ -141,45 +142,117 @@ void showHeader(ElfImageP elfI)
   printf("  Section header string table index: %d\n", elfI->hdr.e_shstrndx);
 }
 
-int main(int argc, char* argv[])
+void showSectionHeader(ElfImageP elfI)
 {
-  // TODO: parse header and show it
-
-  if (argc != 2)
+  printf("There are %d section headers, starting at offset 0x%x:\n", elfI->hdr.e_shnum,
+         elfI->hdr.e_shoff);
+  printf("Section Headers:\n");
+  printf("Nr  Name                Type             Address  Offset Size   ES Flags Link  "
+         "Info  Align\n");
+  for (int i = 0; i < elfI->hdr.e_shnum; i++)
   {
-    printf("Usage: %s ELF_File\n", argv[0]);
-    return 1;
-  }
+    char id[4];
+    sprintf(id, "%d", i);
+    fixPrint(id, 4);
 
-  Elf e = elfOpen(argv[1]);
+    char* str = getSectionString(elfI, i);
+    fixPrint(str, 20); 
 
-  if (!isElf(e))
-  {
-    fprintf(stderr,
-            "%s: Error: Not an ELF file - it has the wrong magic bytes at the start\n",
-            argv[0]);
-    return 1;
-  }
-  else
-  {
-    ElfImage  elfI;
-    ElfImageP elfIp = &elfI;
-    initElfImage(elfIp);
+    char const* strType = getElfType(sht, elfI->sections.tab[i].sh_type);
+    fixPrint(strType, 17);
 
-    parseHeader(elfIp, e);
-    if (elfIp->hdr.e_ident[EI_CLASS] == ELFCLASS32)
+    printf("%.8x %.6x %.6x %.2x ", elfI->sections.tab[i].sh_addr,
+           elfI->sections.tab[i].sh_offset, elfI->sections.tab[i].sh_size,
+           elfI->sections.tab[i].sh_entsize);
+
+    int x = 0;
+
+    if (elfI->sections.tab[i].sh_flags & SHF_WRITE)
     {
-      showHeader(elfIp);
-      deleteElfImage(elfIp);
-      elfClose(e);
-      return 0;
+      printf("W");
+      x++;
     }
-    else
+    if (elfI->sections.tab[i].sh_flags & SHF_ALLOC)
     {
-      fprintf(stderr, "Unsupported class, parses only ELF32\n");
-      deleteElfImage(elfIp);
-      elfClose(e);
-      return 1;
+      printf("A");
+      x++;
     }
+    if (elfI->sections.tab[i].sh_flags & SHF_EXECINSTR)
+    {
+      printf("X");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MERGE)
+    {
+      printf("M");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_STRINGS)
+    {
+      printf("S");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_INFO_LINK)
+    {
+      printf("I");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_LINK_ORDER)
+    {
+      printf("L");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_GROUP)
+    {
+      printf("G");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_TLS)
+    {
+      printf("T");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MASKOS)
+    {
+      printf("o");
+      x++;
+    }
+    if (elfI->sections.tab[i].sh_flags & SHF_MASKPROC)
+    {
+      printf("p");
+      x++;
+    }
+
+    for (int j = 0; j < (5 - x); j++)
+      putchar(' ');
+
+    char lnk[16];
+    printf(" ");
+    sprintf(lnk, "%d", elfI->sections.tab[i].sh_link);
+    fixPrint(lnk, 5);
+
+    char info[16];
+    printf(" ");
+    sprintf(info, "%d", elfI->sections.tab[i].sh_info);
+    fixPrint(info, 6);
+
+    printf("%d \n", elfI->sections.tab[i].sh_addralign);
   }
+  printf("\nKey to Flags:\n");
+  printf("W (write), A (alloc), X (execute), M (merge), S (strings), l (large)\n");
+  printf("I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)\n");
+  printf("O (extra OS processing required) o (OS specific), p (processor specific)\n");
+}
+
+void showSection(ElfImageP elfI, char const* sectionName)
+{
+  printf("WIP");
+}
+void showSymbols(ElfImageP elfI)
+{
+  printf("WIP");
+}
+void showRelocations(ElfImageP elfI)
+{
+  printf("WIP");
 }

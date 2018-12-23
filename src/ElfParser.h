@@ -1,6 +1,7 @@
 #pragma once
-#include "Elf.h"
+#include "ElfImage.h"
 #include "ElfReader.h"
+#include <stdbool.h>
 
 /**
  * @brief parse the header of the elf file e
@@ -8,8 +9,10 @@
  * e_ident is valid
  * @param elfI allocated ElfImage
  * @param e
+ * @return true if the header has been parsed correctly and entirely
+ * @return false otherwise (not ELF32)
  */
-void parseHeader(ElfImageP elfI, Elf e);
+bool parseHeader(ElfImageP elfI, Elf e);
 
 /**
  * Parse the section header of the elf file e
@@ -25,3 +28,20 @@ void parseSectionHeaders(ElfImageP elfI, Elf e);
  * @param e Elf read/writer wrapper
  */
 void parseStringTable(ElfImageP elfI, Elf e);
+
+/**
+ * @brief parse the entire elf
+ * call:
+ * - parseHeader
+ * then if it is ELF32:
+ * - parseSectionHeaders
+ * - parseStringTable
+ * - parseSymbol
+ * - parseRelocations
+ * 
+ * @param elfI 
+ * @param e 
+ * @return true if the header has been parsed correctly and entirely
+ * @return false otherwise (not ELF32)
+ */
+bool parseElf(ElfImageP elfI, Elf e);
