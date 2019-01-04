@@ -18,12 +18,20 @@ void showRelocationTable(ElfImageP elfI)
 
   for (size_t i = 0; i < elfI->rels.size; i++)
   {
-    
+
     printf("\nRelocation section '%s' at offset 0x%x contains %i entries:\n",
            getSectionString(elfI, elfI->rels.tab[i].sectionIdx),
            elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset,
            elfI->rels.tab[i].nbRel);
-    printf(" Offset     Info    Type            Sym.Value  Sym. Name\n");
+
+    if (elfI->rels.tab[i].relType == SHT_RELA)
+    {
+      printf(" Offset     Info    Type            Sym.Value  Sym. Name + addend\n");
+    }
+    else
+    {
+      printf(" Offset     Info    Type            Sym.Value  Sym. Name\n");
+    }
 
     for (size_t j = 0; j < elfI->rels.tab[i].nbRel; j++)
     {
@@ -51,16 +59,22 @@ void showRelocationTable(ElfImageP elfI)
                                    ELF32_R_SYM(elfI->rels.tab[i].rela[j].r_info))) == 0)
         {
           printf(
-              "   %s\n",
+              "   %s",
               getSectionString(
                   elfI, elfI->symbols.tab[ELF32_R_SYM(elfI->rels.tab[i].rela[j].r_info)]
                             .st_shndx));
         }
         else
         {
-          printf("   %s\n",
+          printf("   %s",
                  getSymbolString(elfI, ELF32_R_SYM(elfI->rels.tab[i].rela[j].r_info)));
         }
+        // addend handle
+        if (elfI->rels.tab[i].relType == SHT_RELA)
+        {
+          printf(" + %.8x\n", elfI->rels.tab[i].rela[j].r_addend);
+        }
+        printf("\n");
         break;
       }
     }
