@@ -30,13 +30,27 @@ void parseSectionHeaders(ElfImageP elfI, Elf e);
 void parseStringTable(ElfImageP elfI, Elf e);
 
 /**
+ * @brief read an entire section as a chunk of bytes
+ * 
+ * @param elfI the pointer to the elf image
+ * @param e the elf file handler
+ * @param sectionNo the section id/no to read
+ * @return unsigned char* bytes of the section dynamically allocated
+ * @note the return value MUST BE FREE by 
+ * @code
+ * void free(void*)
+ * @endcode
+ */
+unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo);
+
+/**
  * @brief parse the entire elf
  * call:
  * - parseHeader
  * then if it is ELF32:
  * - parseSectionHeaders
  * - parseStringTable
- * - parseSymbol
+ * - parseSymbols
  * - parseRelocations
  * 
  * @param elfI 

@@ -1,5 +1,6 @@
 #include "util.h"
 #include <assert.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -49,4 +50,19 @@ void fixPrintaddr(char const* str, int len)
     }
   }
   printf("%s", str);
+}
+
+void printBytes(unsigned char const* bytes, int nb)
+{
+  for (int i = 0; i < nb; i++)
+  {
+    if (isgraph(bytes[i]))
+    {
+      putchar(bytes[i]);
+    }
+    else
+    {
+      putchar('.');
+    }
+  }
 }

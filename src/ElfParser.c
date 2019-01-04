@@ -74,6 +74,12 @@ void parseStringTable(ElfImageP elfI, Elf e)
   }
 }
 
+unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo) {
+  Elf32_Shdr* sH = &elfI->sections.tab[sectionNo];
+  unsigned char* section = elfReadUC_s(e, sH->sh_offset, sH->sh_size);
+  return section;
+}
+
 bool parseElf(ElfImageP elfI, Elf e)
 {
   if (parseHeader(elfI, e))

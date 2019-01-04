@@ -1,8 +1,10 @@
 #include "ElfParser.h"
 #include "ElfPrinter.h"
 #include "ElfReader.h"
+#include "ElfStringTable.h"
 #include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void printHelp(char const* command)
 {
@@ -54,10 +56,10 @@ int main(int argc, char* argv[])
       break;
     case 'x':
       choosenOpts |= HEX_DUMP_OPT;
+      sectionToDump = optarg;
       break;
     case 's':
       choosenOpts |= SYMBOLS_OPT;
-      sectionToDump = optarg;
       break;
     case 'r':
       choosenOpts |= RELOCS_OPT;
@@ -105,8 +107,21 @@ int main(int argc, char* argv[])
         }
         if (choosenOpts & HEX_DUMP_OPT)
         {
-          showSection(elfIp, sectionToDump);
-          putchar('\n');
+          Elf32_Word sectionId = getSectionIdFromStr(elfIp, sectionToDump);
+
+          if (sectionId >= elfIp->sections.size)
+          {
+            printf("readelf: Warning: Section '%s' was not dumped because it does not "
+                   "exist!\n",
+                   sectionToDump);
+          }
+          else
+          {
+            unsigned char* sectionContent = readSection(elfIp, e, sectionId);
+            showSection(elfIp, sectionId, sectionContent);
+            free(sectionContent);
+            putchar('\n');
+          }
         }
         if (choosenOpts & SYMBOLS_OPT)
         {

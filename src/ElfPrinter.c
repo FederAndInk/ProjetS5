@@ -156,7 +156,7 @@ void showSectionHeader(ElfImageP elfI)
     fixPrint(id, 4);
 
     char* str = getSectionString(elfI, i);
-    fixPrint(str, 20); 
+    fixPrint(str, 20);
 
     char const* strType = getElfType(sht, elfI->sections.tab[i].sh_type);
     fixPrint(strType, 17);
@@ -244,10 +244,51 @@ void showSectionHeader(ElfImageP elfI)
   printf("O (extra OS processing required) o (OS specific), p (processor specific)\n");
 }
 
-void showSection(ElfImageP elfI, char const* sectionName)
+void showSection(ElfImageP elfI, Elf32_Word sectionNo, unsigned char const* section)
 {
-  printf("WIP");
+  if (elfI->sections.tab[sectionNo].sh_size == 0)
+  {
+    printf("Section '%s' has no data to dump.\n", getSectionString(elfI, sectionNo));
+  }
+  else
+  {
+    Elf32_Word addr = elfI->sections.tab[sectionNo].sh_addr;
+
+    printf("Hex dump of section '%s':\n", getSectionString(elfI, sectionNo));
+    Elf32_Word size = elfI->sections.tab[sectionNo].sh_size;
+    for (Elf32_Word i = 0; i < size;)
+    {
+      printf("  0x%.8x ", addr);
+      size_t j;
+      for (j = 0; j < 16 && i + j < size; j++)
+      {
+        printf("%.2x", section[i + j]);
+
+        if (j % 4 == 3)
+        {
+          putchar(' ');
+        }
+      }
+
+      // complete with spaces
+      for (int spaces = j; spaces < 16; spaces++)
+      {
+        printf("  ");
+        if (spaces % 4 == 3)
+        {
+          putchar(' ');
+        }
+      }
+
+      printBytes(&section[i], j);
+      putchar('\n');
+
+      i += j;
+      addr += 0x10;
+    }
+  }
 }
+
 void showSymbols(ElfImageP elfI)
 {
   printf("WIP");
