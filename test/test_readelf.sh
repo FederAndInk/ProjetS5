@@ -1,12 +1,18 @@
 #!/usr/bin/env bash
 
+if (($# != 2 && $# != 3)); then
+	echo "Usage: $0 opt [sectionName] file"
+	echo "see readelf -H for opt"
+	exit 2
+fi
+
 p=$(dirname $0)
 
 tmp1=$(mktemp)
 tmp2=$(mktemp)
 
-readelf -x $1 $2 &>$tmp1
-$p/../build/src/readelf -x $1 $2 &>$tmp2
+readelf $1 $2 $3 &>$tmp1
+$p/../build/src/readelf $1 $2 $3 &>$tmp2
 
 if diff -ZBbE --old-group-format=$'\e[0;31m< %<\e[0m' \
 	--new-group-format=$'\e[0;32m> %>\e[0m' \
