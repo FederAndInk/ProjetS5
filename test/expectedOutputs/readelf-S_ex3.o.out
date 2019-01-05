@@ -1,0 +1,19 @@
+There are 10 section headers, starting at offset 0x2c4:
+Section Headers:
+Nr  Name                Type             Address  Offset Size   ES Flags Link  Info  Align
+0                       NULL             00000000 000000 000000 00       0     0     0 
+1   .text               PROGBITS         00000000 000034 00003c 00 AX    0     0     4 
+2   .rel.text           REL              00000000 0001e0 000050 08 I     7     1     4 
+3   .data               PROGBITS         00000000 000070 00003c 00 WA    0     0     4 
+4   .rel.data           REL              00000000 000230 000050 08 I     7     3     4 
+5   .bss                NOBITS           00000000 0000ac 000000 00 WA    0     0     1 
+6   .ARM.attributes     ARM_ATTRIBUTES   00000000 0000ac 000012 00       0     0     1 
+7   .symtab             SYMTAB           00000000 0000c0 0000f0 10       8     13    4 
+8   .strtab             STRTAB           00000000 0001b0 00002d 00       0     0     1 
+9   .shstrtab           STRTAB           00000000 000280 000044 00       0     0     1 
+
+Key to Flags:
+W (write), A (alloc), X (execute), M (merge), S (strings), l (large)
+I (info), L (link order), G (group), T (TLS), E (exclude), x (unknown)
+O (extra OS processing required) o (OS specific), p (processor specific)
+
