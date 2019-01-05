@@ -39,7 +39,7 @@ typedef struct
   Elf32_Ehdr       hdr;
   Elf32Sections    sections;
   Elf32StringTable strTable;
-  Elf32Symbols     symbols; // TODO: complete with other elf parts
+  Elf32Symbols     symbols;
   Elf32RelsTab     rels;
 } ElfImage;
 

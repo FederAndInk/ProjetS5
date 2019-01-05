@@ -9,7 +9,7 @@
 
 void showSymbolTable(ElfImageP elfI)
 {
-  printf("\nSymbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
+  printf("Symbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
   printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
 
   for (size_t i = 0; i < elfI->symbols.size; i++)
@@ -25,11 +25,11 @@ void showSymbolTable(ElfImageP elfI)
     fixPrintR(strNum, 5);
     // type
     unsigned char info = elfI->symbols.tab[i].st_info;
-    printf(getElfType(stt, ELF32_ST_TYPE(info)));
+    printf("%s", getElfType(stt, ELF32_ST_TYPE(info)));
     //link
-    printf(getElfType(stb, ELF32_ST_BIND(info)));
+    printf("%s", getElfType(stb, ELF32_ST_BIND(info)));
     // range
-    printf(getElfType(stv, ELF32_ST_VISIBILITY(elfI->symbols.tab[i].st_other)));
+    printf("%s", getElfType(stv, ELF32_ST_VISIBILITY(elfI->symbols.tab[i].st_other)));
     // section index
     switch (elfI->symbols.tab[i].st_shndx)
     {
@@ -58,7 +58,8 @@ void showSymbolTable(ElfImageP elfI)
     }
 
     // name
-    char* strName = getSymbolString(elfI, elfI->symbols.tab[i].st_name);
+    char* strName = getSymbolString(elfI, i);
+
     fixPrint(strName, 20);
     putchar('\n');
   }
