@@ -29,11 +29,10 @@ target_include_directories(
 target_link_libraries(TestElfReader ElfReader
                       UnitTest)
 
-add_test(
-  NAME TestElfHeader
-  COMMAND "${CMAKE_BINARY_DIR}/src/ElfHeader"
-          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+# add_test( NAME TestElfHeader COMMAND
+# "${CMAKE_BINARY_DIR}/src/ElfHeader"
+# ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+# WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(
   NAME TestElfReader
