@@ -382,24 +382,13 @@ void showRelocations(ElfImageP elfI)
       int symIdx = ELF32_R_SYM(info);
       printf(" %.8x", elfI->symbols.tab[symIdx].st_value);
       //name
-      switch (elfI->symbols.tab[i].st_shndx)
+      printf("   %s", getSymbolName(elfI, symIdx));
+      // addend handle
+      if (elfI->rels.tab[i].relType == SHT_RELA)
       {
-      case SHN_UNDEF:
-      case SHN_LOPROC:
-      case SHN_HIPROC:
-      case SHN_ABS:
-      case SHN_COMMON:
-      case SHN_HIRESERVE:
-      default:
-        printf("   %s", getSymbolName(elfI, symIdx));
-        // addend handle
-        if (elfI->rels.tab[i].relType == SHT_RELA)
-        {
-          printf(" + %.8x\n", elfI->rels.tab[i].rela[j].r_addend);
-        }
-        printf("\n");
-        break;
+        printf(" + %.8x", elfI->rels.tab[i].rela[j].r_addend);
       }
+      printf("\n");
     }
   }
 }
