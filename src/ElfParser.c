@@ -72,7 +72,7 @@ void parseStringTable(ElfImageP elfI, Elf e)
   }
 }
 
-void parseSymboleTable(ElfImageP elfI, Elf e)
+void parseSymbolTable(ElfImageP elfI, Elf e)
 {
 
   Elf32_Word index = getSectionIdFromStr(elfI, ".symtab");

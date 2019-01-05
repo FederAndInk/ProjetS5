@@ -176,7 +176,7 @@ ElfType r_code[] = {
     {R_ARM_RABS22, "R_ARM_RABS22"},
     {R_ARM_RPC24, "R_ARM_RPC24"},
     {R_ARM_RBASE, "R_ARM_RBASE"},
-    {-1, "Inconnu"},
+    {-1, ELF_UNKNOWN},
 };
 
 char const* getElfType(ElfType t[], long i)

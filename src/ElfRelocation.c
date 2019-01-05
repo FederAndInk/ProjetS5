@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
       parseSectionHeaders(elfIp, e);
       parseStringTable(elfIp, e);
 
-      parseSymboleTable(elfIp, e);
+      parseSymbolTable(elfIp, e);
 
       parseRelocations(elfIp, e);
 

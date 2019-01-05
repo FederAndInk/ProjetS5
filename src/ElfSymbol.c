@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void showSymboleTable(ElfImageP elfI)
+void showSymbolTable(ElfImageP elfI)
 {
   printf("\nSymbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
   printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
@@ -95,9 +95,9 @@ int main(int argc, char* argv[])
       parseSectionHeaders(elfIp, e);
       parseStringTable(elfIp, e);
 
-      parseSymboleTable(elfIp, e);
+      parseSymbolTable(elfIp, e);
 
-      showSymboleTable(elfIp);
+      showSymbolTable(elfIp);
 
       deleteElfImage(elfIp);
       elfClose(e);
