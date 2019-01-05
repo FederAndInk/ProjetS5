@@ -30,6 +30,22 @@ void parseSectionHeaders(ElfImageP elfI, Elf e);
 void parseStringTable(ElfImageP elfI, Elf e);
 
 /**
+ * @brief parse the symbol table
+ * 
+ * @param elfI elf image with header and section headers already parsed (parseHeader, parseSectionHeaders)
+ * @param e Elf read/writer wrapper
+ */
+void parseSymbolTable(ElfImageP elfI, Elf e);
+
+/**
+ * @brief parse the relocations table
+ * 
+ * @param elfI elf image with header and section headers already parsed (parseHeader, parseSectionHeaders)
+ * @param e Elf read/writer wrapper
+ */
+void parseRelocations(ElfImageP elfI, Elf e);
+
+/**
  * @brief read an entire section as a chunk of bytes
  * 
  * @param elfI the pointer to the elf image
@@ -50,7 +66,7 @@ unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo);
  * then if it is ELF32:
  * - parseSectionHeaders
  * - parseStringTable
- * - parseSymbols
+ * - parseSymbolTable
  * - parseRelocations
  * 
  * @param elfI 

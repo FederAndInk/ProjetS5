@@ -8,6 +8,8 @@ void reverseEndianess(void* ptr, size_t size);
 
 void fixPrint(char const* str, int len);
 
+void fixPrintR(char const* str, int len);
+
 void fixPrintaddr(char const* str, int len);
 
 /**

@@ -1,6 +1,7 @@
 #include "ElfParser.h"
 #include "ElfReader.h"
 #include "ElfStringTable.h"
+#include <stddef.h>
 #include <stdlib.h>
 
 bool parseHeader(ElfImageP elfI, Elf e)
@@ -74,8 +75,68 @@ void parseStringTable(ElfImageP elfI, Elf e)
   }
 }
 
-unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo) {
-  Elf32_Shdr* sH = &elfI->sections.tab[sectionNo];
+void parseSymbolTable(ElfImageP elfI, Elf e)
+{
+
+  Elf32_Word index = getSectionIdFromStr(elfI, ".symtab");
+  elfI->symbols.size =
+      elfI->sections.tab[index].sh_size / elfI->sections.tab[index].sh_entsize;
+  elfI->symbols.tab = (Elf32_Sym*)malloc(elfI->symbols.size * sizeof(Elf32_Sym));
+  Elf32_Off currentOffset = elfI->sections.tab[index].sh_offset;
+  elfGoTo(e, currentOffset);
+  for (size_t i = 0; i < (elfI->symbols.size); i++)
+  {
+    elfI->symbols.tab[i].st_name = elfRead32(e);
+    elfI->symbols.tab[i].st_value = elfRead32(e);
+    elfI->symbols.tab[i].st_size = elfRead32(e);
+    elfI->symbols.tab[i].st_info = elfReadUC(e);
+    elfI->symbols.tab[i].st_other = elfReadUC(e);
+    elfI->symbols.tab[i].st_shndx = elfRead16(e);
+  }
+}
+
+void parseRelocations(ElfImageP elfI, Elf e)
+{
+  size_t nbrel = 0;
+  int    table[elfI->sections.size];
+  for (size_t i = 0; i < elfI->sections.size; i++)
+  {
+
+    if (elfI->sections.tab[i].sh_type == SHT_REL ||
+        elfI->sections.tab[i].sh_type == SHT_RELA)
+    {
+      table[nbrel] = i;
+      nbrel++;
+    }
+  }
+  elfI->rels.size = nbrel;
+  elfI->rels.tab = (Elf32Rels*)malloc(nbrel * sizeof(Elf32Rels));
+  for (size_t i = 0; i < nbrel; i++)
+  {
+    Elf32_Off currentOffset = elfI->sections.tab[table[i]].sh_offset;
+    elfGoTo(e, currentOffset);
+    elfI->rels.tab[i].relType = elfI->sections.tab[table[i]].sh_type;
+    elfI->rels.tab[i].nbRel =
+        elfI->sections.tab[table[i]].sh_size / elfI->sections.tab[table[i]].sh_entsize;
+    elfI->rels.tab[i].rela = malloc(sizeof(Elf32_Rela) * elfI->rels.tab[i].nbRel);
+    elfI->rels.tab[i].sectionIdx = table[i];
+    for (size_t j = 0; j < elfI->rels.tab[i].nbRel; j++)
+    {
+
+      elfI->rels.tab[i].rela[j].r_offset = elfRead32(e);
+      elfI->rels.tab[i].rela[j].r_info = elfRead32(e);
+
+      if (elfI->rels.tab[i].relType == SHT_RELA)
+      {
+        elfI->rels.tab[i].rela[j].r_addend = elfRead32(e);
+      }
+    }
+  }
+}
+
+unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo)
+{
+  Elf32_Shdr*    sH = &elfI->sections.tab[sectionNo];
   unsigned char* section = elfReadUC_s(e, sH->sh_offset, sH->sh_size);
   return section;
 }
@@ -86,8 +147,12 @@ bool parseElf(ElfImageP elfI, Elf e)
   {
     parseSectionHeaders(elfI, e);
     parseStringTable(elfI, e);
+    parseSymbolTable(elfI, e);
+    parseRelocations(elfI, e);
     return true;
-  }else {
+  }
+  else
+  {
     return false;
   }
 }

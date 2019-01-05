@@ -291,9 +291,115 @@ void showSection(ElfImageP elfI, Elf32_Word sectionNo, unsigned char const* sect
 
 void showSymbols(ElfImageP elfI)
 {
-  printf("WIP");
+  printf("Symbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
+  printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
+
+  for (size_t i = 0; i < elfI->symbols.size; i++)
+  {
+    // num
+    char strNum[7];
+    snprintf(strNum, 6, "%ld:", i);
+    fixPrintR(strNum, 7);
+    // value
+    printf(" %.8x ", elfI->symbols.tab[i].st_value);
+    // length
+    snprintf(strNum, 5, "%d", elfI->symbols.tab[i].st_size);
+    fixPrintR(strNum, 5);
+    // type
+    unsigned char info = elfI->symbols.tab[i].st_info;
+    printf("%s", getElfType(stt, ELF32_ST_TYPE(info)));
+    //link
+    printf("%s", getElfType(stb, ELF32_ST_BIND(info)));
+    // range
+    printf("%s", getElfType(stv, ELF32_ST_VISIBILITY(elfI->symbols.tab[i].st_other)));
+    // section index
+    switch (elfI->symbols.tab[i].st_shndx)
+    {
+    case SHN_UNDEF:
+      printf("UND ");
+      break;
+    case SHN_LOPROC:
+      printf("LOP ");
+      break;
+    case SHN_HIPROC:
+      printf("HIP ");
+      break;
+    case SHN_ABS:
+      printf("ABS ");
+      break;
+    case SHN_COMMON:
+      printf("COM ");
+      break;
+    case SHN_HIRESERVE:
+      printf("HIR ");
+      break;
+
+    default:
+      printf("%3i ", elfI->symbols.tab[i].st_shndx);
+      break;
+    }
+
+    // name
+    char* strName = getSymbolString(elfI, i);
+
+    fixPrint(strName, 20);
+    putchar('\n');
+  }
 }
 void showRelocations(ElfImageP elfI)
 {
-  printf("WIP");
+  if (elfI->rels.size == 0)
+  {
+    printf("There are no relocations in this file.\n");
+  }
+
+  for (size_t i = 0; i < elfI->rels.size; i++)
+  {
+    printf("Relocation section '%s' at offset 0x%x contains %i entries:\n",
+           getSectionString(elfI, elfI->rels.tab[i].sectionIdx),
+           elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset,
+           elfI->rels.tab[i].nbRel);
+
+    if (elfI->rels.tab[i].relType == SHT_RELA)
+    {
+      printf(" Offset     Info    Type            Sym.Value  Sym. Name + Addend\n");
+    }
+    else
+    {
+      printf(" Offset     Info    Type            Sym.Value  Sym. Name\n");
+    }
+
+    for (size_t j = 0; j < elfI->rels.tab[i].nbRel; j++)
+    {
+      //offset
+      printf("%.8x  ", elfI->rels.tab[i].rela[j].r_offset);
+      //info
+      printf("%.8x ", elfI->rels.tab[i].rela[j].r_info);
+      //type
+      Elf32_Word info = elfI->rels.tab[i].rela[j].r_info;
+      fixPrint(getElfType(r_code, ELF32_R_TYPE(info)), 17);
+      //valSym
+      int symIdx = ELF32_R_SYM(info);
+      printf(" %.8x", elfI->symbols.tab[symIdx].st_value);
+      //name
+      switch (elfI->symbols.tab[i].st_shndx)
+      {
+      case SHN_UNDEF:
+      case SHN_LOPROC:
+      case SHN_HIPROC:
+      case SHN_ABS:
+      case SHN_COMMON:
+      case SHN_HIRESERVE:
+      default:
+        printf("   %s", getSymbolName(elfI, symIdx));
+        // addend handle
+        if (elfI->rels.tab[i].relType == SHT_RELA)
+        {
+          printf(" + %.8x\n", elfI->rels.tab[i].rela[j].r_addend);
+        }
+        printf("\n");
+        break;
+      }
+    }
+  }
 }

@@ -39,6 +39,19 @@ void fixPrint(char const* str, int len)
   }
 }
 
+void fixPrintR(char const* str, int len)
+{
+  len -= strlen(str);
+  if (len > 0)
+  {
+    for (; len > 0; len--)
+    {
+      putchar(' ');
+    }
+    printf("%s", str);
+  }
+}   
+
 void fixPrintaddr(char const* str, int len)
 {
   len -= strlen(str);
