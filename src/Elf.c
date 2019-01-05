@@ -25,5 +25,24 @@ void deleteElfImage(ElfImageP elfI)
     free(elfI->strTable.symStrs);
   }
 
+  if (elfI->symbols.tab)
+  {
+    free(elfI->symbols.tab);
+  }
+
+  if (elfI->rels.tab)
+  {
+    for (size_t i = 0; i < elfI->rels.size; i++)
+    {
+
+      if (elfI->rels.tab[i].rela)
+      {
+        free(elfI->rels.tab[i].rela);
+      }
+    }
+
+    free(elfI->rels.tab);
+  }
+
   // TODO: add other free function for ElfImage
 }
