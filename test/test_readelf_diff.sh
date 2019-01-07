@@ -6,12 +6,15 @@ if (($# != 2 && $# != 3)); then
 	exit 2
 fi
 
+exclude="NOTE: This section has relocations against it, but these have NOT been applied to this dump."
+# exclude="$exclude|somemore"
+
 p=$(dirname $0)
 
 tmp1=$(mktemp)
 tmp2=$(mktemp)
 
-readelf $1 $2 $3 &>$tmp1
+readelf $1 $2 $3 | grep -Ev "$exclude" &>$tmp1
 $p/../build/src/readelf $1 $2 $3 &>$tmp2
 
 if diff -ZBbE --old-group-format=$'\e[0;31m< %<\e[0m' \

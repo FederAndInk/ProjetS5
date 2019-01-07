@@ -50,7 +50,7 @@ void fixPrintR(char const* str, int len)
     }
     printf("%s", str);
   }
-}   
+}
 
 void fixPrintaddr(char const* str, int len)
 {
@@ -69,7 +69,7 @@ void printBytes(unsigned char const* bytes, int nb)
 {
   for (int i = 0; i < nb; i++)
   {
-    if (isgraph(bytes[i]))
+    if (isprint(bytes[i]))
     {
       putchar(bytes[i]);
     }
