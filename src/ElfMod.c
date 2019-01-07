@@ -37,4 +37,15 @@ void writeSectionsInFile(ElfImageP elfI, Elf dest, Elf input)
   }
 }
 
+void writeElfHeaderInFile(ElfImageP elfI, Elf dest, Elf input)
+{
+
+    elfGoTo(input, 0);
+    elfWriteUC(dest, elfReadUC(input));
+    for (size_t i = 1; i < elfI->hdr.e_ehsize; i++)
+    {
+      elfWriteUC(dest, elfReadUC(input));
+    }
+}
+
 void writeSSH(ElfImageP elfI, Elf dest, Elf input) {}
