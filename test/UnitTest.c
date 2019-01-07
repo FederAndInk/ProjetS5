@@ -73,6 +73,9 @@ void endTests()
 
 void addTest(char const* testName, char const* format, ...)
 {
+  fflush(stdout);
+  fflush(stderr);
+
   if (currentTest)
   {
     finishTest(currentTest);
@@ -93,6 +96,8 @@ void addTest(char const* testName, char const* format, ...)
 
 void finishTest(char const* testName)
 {
+  fflush(stdout);
+  fflush(stderr);
   puts(">==============================<");
   printf("Test %s finished\n", testName);
   printf("\e[1;36m%ld/%ld\e[0m checks passed\n", nbCheckPassed, nbCheck);
