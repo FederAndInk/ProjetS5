@@ -3,7 +3,7 @@
 
 bool check(bool cond, char const* expl, ...);
 
-void beginTests();
+void beginTests(char const* name);
 void endTests();
 
 void addTest(char const* testName, char const* format, ...);
