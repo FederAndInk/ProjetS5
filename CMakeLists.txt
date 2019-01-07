@@ -16,8 +16,6 @@ link_libraries(
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/cmake)
 
-add_subdirectory(external/cunit/CUnit)
-
 add_subdirectory(src)
 
 add_subdirectory(test)
