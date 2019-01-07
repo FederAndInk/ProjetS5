@@ -45,36 +45,32 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   fclose(f);
 }
 
-void testElfRead32(const char* f, Elf32_Word expect_vers, bool elfIsLE)
+void testElfRead32(const char* f, Elf32_Word expected_vers, bool elfIsLE)
 {
-  DECLARE_TEST("expect_vers: %u", expect_vers);
-
+  /*expected_vers is the expected version of the file, which should always be 1*/
+  DECLARE_TEST("expected_vers: %u", expected_vers);
   Elf file_elf = elfOpen(f);
   elfGoTo(file_elf, 14);
   Elf32_Word mot = elfRead32(file_elf);
   check(ftell(file_elf->f) == 18, "not well-placed cursor");
-  check(expect_vers == mot, "didn't read correctly");
+  check(expected_vers == mot, "didn't read correctly");
+}
+
+void testElfRead16(const char* f, Elf32_Half expected_type, bool elfIsLE)
+{
+  DECLARE_TEST("expected_type: %u", expected_type);
+  Elf file_elf = elfOpen(f);
+  elfGoTo(file_elf, 10);
+  Elf32_Half mot = elfRead16(file_elf);
+  check(ftell(file_elf->f) == 12, "not well-placed cursor");
+  check(expected_type == mot, "didn't read correctly");
 }
 
 /*int testHeader(char const* f)
 {
-  printf("===> test on: %s\n", f);
-  fflush(stdout);
-
-  Elf e = elfOpen(f);
-  if (!isElf(e))
-  {
-    fprintf(stderr, "(isElf): %s is not an ELF file !\n", f);
-    return 1;
-  }
 
   check(ftell(e->f) == 0,
         "The position of the cursor should be at the begining of the file");
-
-  check(elfReadUC(e) == ELFMAG0, "first byte should be the MAG0");
-  check(elfReadUC(e) == ELFMAG1, "second byte should be the MAG1");
-  check(elfReadUC(e) == ELFMAG2, "third byte should be the MAG2");
-  check(elfReadUC(e) == ELFMAG3, "fourth byte should be the MAG3");
 
   elfGoTo(e, 0);
   check(elfReadUC(e) == ELFMAG0, "first byte (after goto 0) should be the MAG0");
@@ -106,6 +102,8 @@ int main(int argc, char* argv[])
   testIsElf(argv[3], false);
   testElfRead32(argv[1], 1, true);
   testElfRead32(argv[2], 1, false);
+  testElfRead16(argv[1], 1, true);
+  testElfRead16(argv[2], 1, false);
   // TODO: add more tests
   END_TESTS();
 }
