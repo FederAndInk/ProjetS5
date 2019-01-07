@@ -12,6 +12,7 @@ bool check(bool cond, char const* expl, ...)
   if (!cond)
   {
     fflush(stdout);
+    fflush(stderr);
     fputs("\e[31m", stderr);
 
     va_list list;
@@ -20,6 +21,7 @@ bool check(bool cond, char const* expl, ...)
     va_end(list);
     fputs("\e[0m", stderr);
     fputc('\n', stderr);
+    fflush(stdout);
     fflush(stderr);
   }
   else
