@@ -13,9 +13,9 @@ else
 fi
 # ADD An elif block for other toolchain
 
-C_FLAGS="-mbig-endian"
-LD_FLAGS="-nostdlib --entry main -n --section-start .text=0x20 --section-start .data=0x2800 -EB"
-GCC_LD_FLAGS="-no-pie -nostdlib --entry main -n -Wl,--section-start,.text=0x20,--section-start,.data=0x2800,-EB"
+C_FLAGS=""
+LD_FLAGS="-nostdlib --entry main -n --section-start .text=0x20 --section-start .data=0x2800"
+GCC_LD_FLAGS="-no-pie -nostdlib --entry main -n -Wl,--section-start,.text=0x20,--section-start,.data=0x2800"
 
 ${TOOLCHAIN}gcc -mno-thumb-interwork -S test1.c
 ${TOOLCHAIN}gcc -mno-thumb-interwork -S test1_include.c

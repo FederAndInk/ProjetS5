@@ -45,25 +45,57 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   fclose(f);
 }
 
-void testElfRead32(const char* f, Elf32_Word expected_vers, bool elfIsLE)
+void testElfRead32(const char* f, Elf32_Word e_version, bool elfIsLE)
 {
-  /*expected_vers is the expected version of the file, which should always be 1*/
-  DECLARE_TEST("expected_vers: %u", expected_vers);
+  /*e_version is the expected version of the file, which should always be 1 - byte 0x14*/
+  DECLARE_TEST("e_version: %u\n"
+               "Little endian: %s",
+               e_version, elfIsLE ? "yes" : "no");
   Elf file_elf = elfOpen(f);
-  elfGoTo(file_elf, 14);
+  elfGoTo(file_elf, 0x14);
   Elf32_Word mot = elfRead32(file_elf);
-  check(ftell(file_elf->f) == 18, "not well-placed cursor");
-  check(expected_vers == mot, "didn't read correctly");
+  check(ftell(file_elf->f) == 0x18, "Misplaced cursor at %ld instead of %d",
+        ftell(file_elf->f), 0x18);
+  check(e_version == mot, "Read %u instead of %u (e_version)", mot, e_version);
+  if (isElf(file_elf))
+  {
+    elfClose(file_elf);
+  }
+}
+void testElfRead16(const char* f, Elf32_Half e_type, bool elfIsLE)
+{
+  /* e_type is the expected type of the file, 0x01 for ET_REL - Byte 0x10 */
+  DECLARE_TEST("e_type: %u\n"
+               "Little endian: %s",
+               e_type, elfIsLE ? "yes" : "no");
+  Elf file_elf = elfOpen(f);
+  elfGoTo(file_elf, 0x10);
+  Elf32_Half mot = elfRead16(file_elf);
+  check(ftell(file_elf->f) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
+        ftell(file_elf->f), 0x12);
+  check(e_type == mot, "Read %u instead of %u (e_type)", mot, e_type);
+  if (isElf(file_elf))
+  {
+    elfClose(file_elf);
+  }
 }
 
-void testElfRead16(const char* f, Elf32_Half expected_type, bool elfIsLE)
+void testElfReadUC(const char* f, Elf32_Half ei_version, bool elfIsLE)
 {
-  DECLARE_TEST("expected_type: %u", expected_type);
+  /*  */
+  DECLARE_TEST("ei_version: %u\n"
+               "Little endian: %s",
+               ei_version, elfIsLE ? "yes" : "no");
   Elf file_elf = elfOpen(f);
-  elfGoTo(file_elf, 10);
+  elfGoTo(file_elf, 0x06);
   Elf32_Half mot = elfRead16(file_elf);
-  check(ftell(file_elf->f) == 12, "not well-placed cursor");
-  check(expected_type == mot, "didn't read correctly");
+  check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
+        ftell(file_elf->f), 0x07);
+  check(ei_version == mot, "Read %u instead of %u (ei_version)", mot, ei_version);
+  if (isElf(file_elf))
+  {
+    elfClose(file_elf);
+  }
 }
 
 /*int testHeader(char const* f)
@@ -91,19 +123,28 @@ int main(int argc, char* argv[])
 {
   if (argc != 4)
   {
-    fprintf(stderr, "Usage : %s LE_ElfFile BE_ElfFile nonElfFile\n", argv[0]);
+    fprintf(stderr, "Usage : %s LE_ElfV1File BE_ElfV1File nonElfFile\n", argv[0]);
     return 1;
   }
 
+  char* elfLE = argv[1];
+  char* elfBE = argv[2];
+  char* nonElf = argv[3];
+
   // SEE: On encadre nos tests comme ça
   BEGIN_TESTS("TestElfReader");
-  testIsElf(argv[1], true);
-  testIsElf(argv[2], true);
-  testIsElf(argv[3], false);
-  testElfRead32(argv[1], 1, true);
-  testElfRead32(argv[2], 1, false);
-  testElfRead16(argv[1], 1, true);
-  testElfRead16(argv[2], 1, false);
+  testIsElf(elfLE, true);
+  testIsElf(elfBE, true);
+  testIsElf(nonElf, false);
+
+  testElfRead32(elfLE, EV_CURRENT, true);
+  testElfRead32(elfBE, EV_CURRENT, false);
+
+  testElfRead16(elfLE, ET_REL, true);
+  testElfRead16(elfBE, ET_REL, false);
+
+  testElfReadUC(elfLE, EV_CURRENT, true);
+  testElfReadUC(elfBE, EV_CURRENT, false);
   // TODO: add more tests
   END_TESTS();
 }
