@@ -12,6 +12,7 @@ bool check(bool cond, char const* expl, ...)
   if (!cond)
   {
     fflush(stdout);
+    fflush(stderr);
     fputs("\e[31m", stderr);
 
     va_list list;
@@ -20,6 +21,7 @@ bool check(bool cond, char const* expl, ...)
     va_end(list);
     fputs("\e[0m", stderr);
     fputc('\n', stderr);
+    fflush(stdout);
     fflush(stderr);
   }
   else
@@ -73,9 +75,6 @@ void endTests()
 
 void addTest(char const* testName, char const* format, ...)
 {
-  fflush(stdout);
-  fflush(stderr);
-
   if (currentTest)
   {
     finishTest(currentTest);
@@ -92,6 +91,8 @@ void addTest(char const* testName, char const* format, ...)
   va_end(args);
   putchar('\n');
   puts("<========Program Output========>");
+  fflush(stdout);
+  fflush(stderr);
 }
 
 void finishTest(char const* testName)
