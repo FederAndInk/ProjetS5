@@ -3,6 +3,8 @@
 
 ElfImageP deleteRelocationSections(ElfImageP elfI);
 
+void writeElfHeaderInFile(ElfImageP elfI, Elf dest);
+
 void writeSections(ElfImageP elfI, Elf dest, Elf src);
 
 void writeSectionHeaders(ElfImageP elfI, Elf dest);

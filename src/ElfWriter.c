@@ -24,6 +24,8 @@ ElfImageP deleteRelocationSections(ElfImageP elfI)
   return elfI;
 }
 
+void writeElfHeaderInFile(ElfImageP elfI, Elf dest) {}
+
 void writeSections(ElfImageP elfI, Elf dest, Elf src)
 {
   for (size_t i = 0; i < elfI->sections.size; i++)
