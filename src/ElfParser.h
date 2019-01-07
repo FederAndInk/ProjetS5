@@ -1,6 +1,6 @@
 #pragma once
+#include "ElfIO.h"
 #include "ElfImage.h"
-#include "ElfReader.h"
 #include <stdbool.h>
 
 /**

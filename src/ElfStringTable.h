@@ -1,6 +1,6 @@
 #pragma once
+#include "ElfIO.h"
 #include "ElfImage.h"
-#include "ElfReader.h"
 
 /**
  * @brief Get the Section String name of the given section number

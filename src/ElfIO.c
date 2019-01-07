@@ -1,4 +1,4 @@
-#include "ElfReader.h"
+#include "ElfIO.h"
 #include "util.h"
 #include <elf.h>
 #include <stdio.h>

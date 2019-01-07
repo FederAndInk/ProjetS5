@@ -6,7 +6,7 @@ add_compile_options($<$<CONFIG:Debug>:-Wall>
 
 add_library(util util.c util.h)
 
-add_library(ElfReader ./ElfReader.c ./ElfReader.h)
+add_library(ElfReader ./ElfIO.c ./ElfIO.h)
 target_link_libraries(ElfReader util)
 
 add_library(ElfString ElfString.c ElfString.h)

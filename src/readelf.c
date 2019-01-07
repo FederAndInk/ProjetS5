@@ -1,6 +1,6 @@
+#include "ElfIO.h"
 #include "ElfParser.h"
 #include "ElfPrinter.h"
-#include "ElfReader.h"
 #include "ElfStringTable.h"
 #include <getopt.h>
 #include <stdio.h>
