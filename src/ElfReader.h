@@ -126,3 +126,9 @@ void elfClose(Elf f);
  *  @return a pointer to the chunk allocated onto the heap
  */
 unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size);
+
+/**
+ * @brief write a chunk of data of size size at offset
+ * 
+ */
+void elfWriteUC_s(Elf e, size_t offset, size_t size, unsigned char* buf);

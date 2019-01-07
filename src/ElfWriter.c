@@ -1,4 +1,4 @@
-#include "Elf.h"
+#include "ElfWriter.h"
 #include "ElfParser.h"
 #include "ElfReader.h"
 #include "ElfString.h"
@@ -8,39 +8,38 @@
 #include <stdlib.h>
 #include <string.h>
 
-ElfImageP deleteRelocationSectionsInElfI(ElfImageP elfI)
+ElfImageP deleteRelocationSections(ElfImageP elfI)
 {
-  int table[elfI->sections.size];
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
     if (elfI->sections.tab[i].sh_type == SHT_REL ||
         elfI->sections.tab[i].sh_type == SHT_RELA)
     {
-      arrayRemove(table, sizeof(int), elfI->sections.size, i);
+      arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab), elfI->sections.size,
+                  i);
+      elfI->sections.size--;
     }
   }
+  elfI->hdr.e_shnum = elfI->sections.size;
   return elfI;
 }
 
-void writeSectionsInFile(ElfImageP elfI, Elf dest, Elf input)
+void writeSections(ElfImageP elfI, Elf dest, Elf src)
 {
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
-    elfGoTo(input, elfI->sections.tab[i].sh_offset);
+    elfGoTo(src, elfI->sections.tab[i].sh_offset);
     elfI->sections.tab[i].sh_offset = elfTell(dest); // set new offset
-    for (size_t k = 0; k < elfI->sections.tab[i].sh_size; k++)
-    {
-      elfWriteUC(dest, elfReadUC(input));
-    }
+
+    unsigned char* buf = elfReadUC_s(src, elfTell(src), elfI->sections.tab[i].sh_size);
+    elfWriteUC_s(dest, elfTell(dest), elfI->sections.tab[i].sh_size, buf);
+    free(buf);
     // section copied
   }
 }
 
-void writeSectionHeaders(ElfImageP elfI, Elf dest, Elf input)
+void writeSectionHeaders(ElfImageP elfI, Elf dest)
 {
-  elfI->sections.size = elfI->hdr.e_shnum;
-
-  elfI->sections.tab = (Elf32_Shdr*)malloc(elfI->sections.size * sizeof(Elf32_Shdr));
   elfI->hdr.e_shoff = elfTell(dest);
   for (Elf32_Word i = 0; i < elfI->sections.size; i++)
   {
@@ -56,7 +55,7 @@ void writeSectionHeaders(ElfImageP elfI, Elf dest, Elf input)
   }
 }
 
-void modifyElfHeader(ElfImageP elfI, Elf dest)
+void setNewOffsets(ElfImageP elfI, Elf dest)
 {
   //modify e_phoff
   elfGoTo(dest, 0x1c);

@@ -160,6 +160,8 @@ void elfClose(Elf f)
 
 unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
 {
+  elfOpenIn(e, READ);
+
   elfGoTo(e, offset);
 
   unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
@@ -167,4 +169,13 @@ unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
   fread(str, sizeof(unsigned char), size, e->f);
 
   return str;
+}
+
+void elfWriteUC_s(Elf e, size_t offset, size_t size, unsigned char* buf)
+{
+  elfOpenIn(e, WRITE);
+
+  elfGoTo(e, offset);
+
+  fwrite(buf, sizeof(unsigned char), size, e->f);
 }
