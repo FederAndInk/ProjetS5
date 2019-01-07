@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-bool parseHeader(ElfImageP elfI, Elf e)
+bool parseHeader(ElfImageP elfI, ElfFile e)
 {
   elfGoTo(e, 0);
 
@@ -35,7 +35,7 @@ bool parseHeader(ElfImageP elfI, Elf e)
   }
 }
 
-void parseSectionHeaders(ElfImageP elfI, Elf e)
+void parseSectionHeaders(ElfImageP elfI, ElfFile e)
 {
   elfI->sections.size = elfI->hdr.e_shnum;
 
@@ -56,7 +56,7 @@ void parseSectionHeaders(ElfImageP elfI, Elf e)
   }
 }
 
-void parseStringTable(ElfImageP elfI, Elf e)
+void parseStringTable(ElfImageP elfI, ElfFile e)
 {
   elfI->strTable.secStrs =
       elfReadUC_s(e, elfI->sections.tab[elfI->hdr.e_shstrndx].sh_offset,
@@ -75,7 +75,7 @@ void parseStringTable(ElfImageP elfI, Elf e)
   }
 }
 
-void parseSymbolTable(ElfImageP elfI, Elf e)
+void parseSymbolTable(ElfImageP elfI, ElfFile e)
 {
 
   Elf32_Word index = getSectionIdFromStr(elfI, ".symtab");
@@ -95,7 +95,7 @@ void parseSymbolTable(ElfImageP elfI, Elf e)
   }
 }
 
-void parseRelocations(ElfImageP elfI, Elf e)
+void parseRelocations(ElfImageP elfI, ElfFile e)
 {
   size_t nbrel = 0;
   int    table[elfI->sections.size];
@@ -134,14 +134,14 @@ void parseRelocations(ElfImageP elfI, Elf e)
   }
 }
 
-unsigned char* readSection(ElfImageP elfI, Elf e, Elf32_Word sectionNo)
+unsigned char* readSection(ElfImageP elfI, ElfFile e, Elf32_Word sectionNo)
 {
   Elf32_Shdr*    sH = &elfI->sections.tab[sectionNo];
   unsigned char* section = elfReadUC_s(e, sH->sh_offset, sH->sh_size);
   return section;
 }
 
-bool parseElf(ElfImageP elfI, Elf e)
+bool parseElf(ElfImageP elfI, ElfFile e)
 {
   if (parseHeader(elfI, e))
   {

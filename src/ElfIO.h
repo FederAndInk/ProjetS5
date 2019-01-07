@@ -13,15 +13,15 @@ typedef enum ElfMode
 } ElfMode;
 
 // TODO: Handle errors (R/W + goto)
-typedef struct Elf_t
+typedef struct ElfFile_t
 {
   char const*   fileName;
   FILE*         f;
   ElfMode       openMode;
   unsigned char eiData;
-} * Elf;
+} * ElfFile;
 
-bool isElf(Elf f);
+bool isElf(ElfFile f);
 
 /**
  * @brief indique si f à la meme endianess que la plateform courante
@@ -31,7 +31,7 @@ bool isElf(Elf f);
  * @return true si f à la meme endianess que la plateform courante
  * @return false sinon
  */
-bool elfIsSameEndianess(Elf f);
+bool elfIsSameEndianess(ElfFile f);
 
 /**
  * @brief ouvre fileName en tant que fichier ELF
@@ -40,7 +40,7 @@ bool elfIsSameEndianess(Elf f);
  * @param fileName
  * @return Elf
  */
-Elf elfOpen(char const* fileName);
+ElfFile elfOpen(char const* fileName);
 
 /**
  * @brief lit 32 bits brut du fichier elf f
@@ -51,7 +51,7 @@ Elf elfOpen(char const* fileName);
  * @param f
  * @return Elf32_Word
  */
-Elf32_Word elfRead32(Elf f);
+Elf32_Word elfRead32(ElfFile f);
 
 /**
  * @brief lit 16 bits brut du fichier elf f
@@ -61,7 +61,7 @@ Elf32_Word elfRead32(Elf f);
  * @param f
  * @return Elf32_Half
  */
-Elf32_Half elfRead16(Elf f);
+Elf32_Half elfRead16(ElfFile f);
 
 /**
  * @brief lit un unsigned char du fichier elf f
@@ -72,7 +72,7 @@ Elf32_Half elfRead16(Elf f);
  * @param f
  * @return Elf32_Half
  */
-unsigned char elfReadUC(Elf f);
+unsigned char elfReadUC(ElfFile f);
 
 /**
  * @brief ecrit 32 bits (e) dans le fichier f à la position du curseur
@@ -83,7 +83,7 @@ unsigned char elfReadUC(Elf f);
  * @param f
  * @param e
  */
-void elfWrite32(Elf f, Elf32_Word e);
+void elfWrite32(ElfFile f, Elf32_Word e);
 
 /**
  * @brief ecrit 16 bits (e) dans le fichier f à la position du curseur
@@ -94,7 +94,7 @@ void elfWrite32(Elf f, Elf32_Word e);
  * @param f
  * @param e
  */
-void elfWrite16(Elf f, Elf32_Half e);
+void elfWrite16(ElfFile f, Elf32_Half e);
 
 /**
  * @brief ecrit un unsigned char dans le fichier f à la position du curseur
@@ -105,7 +105,7 @@ void elfWrite16(Elf f, Elf32_Half e);
  * @param f
  * @return Elf32_Half
  */
-void elfWriteUC(Elf f, unsigned char e);
+void elfWriteUC(ElfFile f, unsigned char e);
 
 /**
  * @brief aller à l'octet to
@@ -114,7 +114,7 @@ void elfWriteUC(Elf f, unsigned char e);
  * @param f
  * @param to
  */
-void elfGoTo(Elf f, size_t to);
+void elfGoTo(ElfFile f, size_t to);
 
 /**
  * @brief se deplace de offset octets
@@ -123,7 +123,7 @@ void elfGoTo(Elf f, size_t to);
  * @param f
  * @param offset
  */
-void elfGoToRel(Elf f, size_t offset);
+void elfGoToRel(ElfFile f, size_t offset);
 
 /**
  * @brief close the elf f
@@ -131,11 +131,11 @@ void elfGoToRel(Elf f, size_t offset);
  * @pre isElf(f) == true
  * @param f 
  */
-void elfClose(Elf f);
+void elfClose(ElfFile f);
 
 /**
  * get a chunk of data of size size at offset
  * @pre isElf(f) == true
  * @return a pointer to the chunk allocated onto the heap
  */
-unsigned char* elfReadUC_s(Elf f, size_t offset, size_t size);
+unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size);

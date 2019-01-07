@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
   if (optind < argc)
   {
-    Elf e = elfOpen(argv[optind]);
+    ElfFile e = elfOpen(argv[optind]);
 
     if (!isElf(e))
     {
