@@ -6,10 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-void testIsElf(char const* fStr, bool hasToBeElf)
+void testIsElf(char const* fStr, bool hasToBeElf, bool elfIsLE)
 {
   // SEE: On declare notre test
-  DECLARE_TEST("hasToBeElf: %s", hasToBeElf ? "true" : "false");
+  DECLARE_TEST("hasToBeElf: %s\n"
+               "Little endian: %s",
+               hasToBeElf ? "true" : "false", elfIsLE ? "yes" : "no");
 
   bool isElfTmp;
   Elf  e = elfOpen(fStr);
@@ -80,7 +82,7 @@ void testElfRead16(const char* f, Elf32_Half e_type, bool elfIsLE)
   }
 }
 
-void testElfReadUC(const char* f, Elf32_Half ei_version, bool elfIsLE)
+void testElfReadUC(const char* f, unsigned char ei_version, bool elfIsLE)
 {
   /*  */
   DECLARE_TEST("ei_version: %u\n"
@@ -88,7 +90,7 @@ void testElfReadUC(const char* f, Elf32_Half ei_version, bool elfIsLE)
                ei_version, elfIsLE ? "yes" : "no");
   Elf file_elf = elfOpen(f);
   elfGoTo(file_elf, 0x06);
-  Elf32_Half mot = elfRead16(file_elf);
+  unsigned char mot = elfReadUC(file_elf);
   check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
         ftell(file_elf->f), 0x07);
   check(ei_version == mot, "Read %u instead of %u (ei_version)", mot, ei_version);
@@ -133,9 +135,9 @@ int main(int argc, char* argv[])
 
   // SEE: On encadre nos tests comme ça
   BEGIN_TESTS("TestElfReader");
-  testIsElf(elfLE, true);
-  testIsElf(elfBE, true);
-  testIsElf(nonElf, false);
+  testIsElf(elfLE, true, true);
+  testIsElf(elfBE, true, false);
+  testIsElf(nonElf, false, false);
 
   testElfRead32(elfLE, EV_CURRENT, true);
   testElfRead32(elfBE, EV_CURRENT, false);
