@@ -89,10 +89,14 @@ void addTest(char const* testName, char const* format, ...)
   va_end(args);
   putchar('\n');
   puts("<========Program Output========>");
+  fflush(stdout);
+  fflush(stderr);
 }
 
 void finishTest(char const* testName)
 {
+  fflush(stdout);
+  fflush(stderr);
   puts(">==============================<");
   printf("Test %s finished\n", testName);
   printf("\e[1;36m%ld/%ld\e[0m checks passed\n", nbCheckPassed, nbCheck);
