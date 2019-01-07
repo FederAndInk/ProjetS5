@@ -45,7 +45,7 @@ void testIsElf(char const* fStr, bool hasToBeElf)
   fclose(f);
 }
 
-void testElfRead32(const char* f, Elf32_Word expect_vers)
+void testElfRead32(const char* f, Elf32_Word expect_vers, bool elfIsLE)
 {
   DECLARE_TEST("expect_vers: %u", expect_vers);
 
@@ -104,6 +104,8 @@ int main(int argc, char* argv[])
   testIsElf(argv[1], true);
   testIsElf(argv[2], true);
   testIsElf(argv[3], false);
+  testElfRead32(argv[1], 1, true);
+  testElfRead32(argv[2], 1, false);
   // TODO: add more tests
   END_TESTS();
 }
