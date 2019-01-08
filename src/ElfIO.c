@@ -149,8 +149,11 @@ void elfGoToRel(ElfFile f, size_t offset)
 
 void elfClose(ElfFile f)
 {
-  fclose(f->f);
-  free(f);
+  if (f)
+  {
+    fclose(f->f);
+    free(f);
+  }
 }
 
 unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size)

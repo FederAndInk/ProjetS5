@@ -1,23 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 project(test)
 
-configure_file(compileTest1.sh compileTest1.sh
-               COPYONLY)
-configure_file(test1.c test1.c COPYONLY)
-configure_file(test1_include.c test1_include.c
-               COPYONLY)
-configure_file(test1_include.h test1_include.h
-               COPYONLY)
-
-add_custom_command(OUTPUT test1 test1.o
-                          test1Linked.o
-                   COMMAND ./compileTest1.sh
-                   DEPENDS ./test1.c
-                           ./test1_include.c
-                           ./test1_include.h)
-add_custom_target(RunCompileTest1 ALL
-                  DEPENDS test1)
-
 add_library(UnitTest UnitTest.c UnitTest.h)
 
 add_executable(TestElfReader testElfReader.c)
@@ -37,5 +20,7 @@ target_link_libraries(TestElfReader ElfReader
 add_test(
   NAME TestElfReader
   COMMAND TestElfReader
-          ${CMAKE_CURRENT_BINARY_DIR}/test1.o
+          ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_LE_REL_ARM32.o
+          ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_BE_REL_ARM32.o
+          ${CMAKE_CURRENT_LIST_DIR}/bin/NONELF.c
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
