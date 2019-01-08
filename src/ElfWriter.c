@@ -1,4 +1,5 @@
 #include "ElfWriter.h"
+#include "ElfIO.h"
 #include "ElfParser.h"
 #include "ElfString.h"
 #include "ElfStringTable.h"
@@ -6,6 +7,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+void symbolNdxUpdate(ElfImageP elfI, Elf32_Half minNdx)
+{
+  for (size_t k = 0; k < elfI->symbols.size; k++)
+  {
+    if (elfI->symbols.tab[k].st_shndx > minNdx)
+    {
+      elfI->symbols.tab[k].st_shndx--;
+    }
+  }
+}
 
 void deleteRelocationSections(ElfImageP elfI)
 {
@@ -18,6 +30,7 @@ void deleteRelocationSections(ElfImageP elfI)
     {
       elfI->sections.size = arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab),
                                         elfI->sections.size, i);
+      symbolNdxUpdate(elfI, i);
     }
   }
   elfI->hdr.e_shnum = elfI->sections.size;
