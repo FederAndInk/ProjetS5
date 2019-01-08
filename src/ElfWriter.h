@@ -7,4 +7,4 @@ void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src);
 
 void writeSectionHeaders(ElfImageP elfI, ElfFile dest);
 
-void setNewOffsets(ElfImageP elfI, ElfFile dest);
+void setNewOffsets(ElfImageConstP elfI, ElfFile dest);

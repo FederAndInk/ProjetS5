@@ -67,7 +67,7 @@ void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
   }
 }
 
-void setNewOffsets(ElfImageP elfI, ElfFile dest)
+void setNewOffsets(ElfImageConstP elfI, ElfFile dest)
 {
   // update e_type
   elfGoTo(dest, 0x10);

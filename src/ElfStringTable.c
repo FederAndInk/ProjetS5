@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* getSectionString(ElfImageP elfI, Elf32_Word sectionNo)
+char* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo)
 {
   return (char*)&elfI->strTable.secStrs[elfI->sections.tab[sectionNo].sh_name];
 }
 
-char* getSymbolString(ElfImageP elfI, Elf32_Word symbolIdx)
+char* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx)
 {
   return (char*)&elfI->strTable.symStrs[elfI->symbols.tab[symbolIdx].st_name];
 }
 
-char* getSymbolName(ElfImageP elfI, Elf32_Word symbolIdx)
+char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx)
 {
   Elf32_Sym* sym = &elfI->symbols.tab[symbolIdx];
 
@@ -26,7 +26,7 @@ char* getSymbolName(ElfImageP elfI, Elf32_Word symbolIdx)
   }
 }
 
-Elf32_Word getSectionIdFromStr(ElfImageP elfI, char const* str)
+Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str)
 {
   Elf32_Word i;
 

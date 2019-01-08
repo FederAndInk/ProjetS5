@@ -57,7 +57,7 @@ void parseRelocations(ElfImageP elfI, ElfFile e);
  * void free(void*)
  * @endcode
  */
-unsigned char* readSection(ElfImageP elfI, ElfFile e, Elf32_Word sectionNo);
+unsigned char* readSection(ElfImageConstP elfI, ElfFile e, Elf32_Word sectionNo);
 
 /**
  * @brief parse the entire elf

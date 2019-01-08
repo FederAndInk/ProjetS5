@@ -134,7 +134,7 @@ void parseRelocations(ElfImageP elfI, ElfFile e)
   }
 }
 
-unsigned char* readSection(ElfImageP elfI, ElfFile e, Elf32_Word sectionNo)
+unsigned char* readSection(ElfImageConstP elfI, ElfFile e, Elf32_Word sectionNo)
 {
   Elf32_Shdr*    sH = &elfI->sections.tab[sectionNo];
   unsigned char* section = elfReadUC_s(e, sH->sh_offset, sH->sh_size);

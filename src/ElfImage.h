@@ -45,6 +45,8 @@ typedef struct
 
 typedef ElfImage* ElfImageP;
 
+typedef ElfImage const* ElfImageConstP;
+
 void initElfImage(ElfImageP elfI);
 
 void deleteElfImage(ElfImageP elfI);
