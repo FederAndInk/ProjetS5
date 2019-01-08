@@ -125,6 +125,10 @@ void elfGoTo(ElfFile f, size_t to);
  */
 void elfGoToRel(ElfFile f, size_t offset);
 
+void elfGoToEnd(ElfFile f);
+
+long elfTell(ElfFile f);
+
 /**
  * @brief close the elf f
  * 
@@ -139,3 +143,9 @@ void elfClose(ElfFile f);
  * @return a pointer to the chunk allocated onto the heap
  */
 unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size);
+
+/**
+ * @brief write a chunk of data of size size at offset
+ * 
+ */
+void elfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf);

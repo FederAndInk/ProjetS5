@@ -65,6 +65,20 @@ void fixPrintaddr(char const* str, int len)
   printf("%s", str);
 }
 
+size_t arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx)
+{
+  // nothing to do if the element is the last one
+  if (idx != tabLen - 1)
+  {
+    char* ptr = (char*)tab;
+    for (size_t i = idx * elemSize; i < (tabLen - 1) * elemSize; i += elemSize)
+    {
+      memcpy(&ptr[i], &ptr[i + elemSize], elemSize);
+    }
+  }
+  return tabLen - 1;
+}
+
 void printBytes(unsigned char const* bytes, int nb)
 {
   for (int i = 0; i < nb; i++)

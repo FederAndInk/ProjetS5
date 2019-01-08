@@ -147,6 +147,16 @@ void elfGoToRel(ElfFile f, size_t offset)
   fseek(f->f, offset, SEEK_CUR);
 }
 
+void elfGoToEnd(ElfFile f)
+{
+  fseek(f->f, 0, SEEK_END);
+}
+
+long elfTell(ElfFile f)
+{
+  return ftell(f->f);
+}
+
 void elfClose(ElfFile f)
 {
   if (f)
@@ -158,6 +168,7 @@ void elfClose(ElfFile f)
 
 unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size)
 {
+  elfOpenIn(f, READ);
   elfGoTo(f, offset);
 
   unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
@@ -165,4 +176,13 @@ unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size)
   fread(str, sizeof(unsigned char), size, f->f);
 
   return str;
+}
+
+void elfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf)
+{
+  elfOpenIn(f, WRITE);
+
+  elfGoTo(f, offset);
+
+  fwrite(buf, sizeof(unsigned char), size, f->f);
 }

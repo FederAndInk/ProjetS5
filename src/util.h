@@ -12,6 +12,8 @@ void fixPrintR(char const* str, int len);
 
 void fixPrintaddr(char const* str, int len);
 
+size_t arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx);
+
 /**
  * @brief fancy print bytes
  * if printable (eg: graph) print the byte or print a dot '.' otherwise

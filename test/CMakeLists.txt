@@ -9,7 +9,7 @@ target_include_directories(
   TestElfReader
   PRIVATE "${CMAKE_SOURCE_DIR}/src/")
 
-target_link_libraries(TestElfReader ElfReader
+target_link_libraries(TestElfReader ElfIO
                       UnitTest)
 
 # add_test( NAME TestElfHeader COMMAND
@@ -19,8 +19,9 @@ target_link_libraries(TestElfReader ElfReader
 
 add_test(
   NAME TestElfReader
-  COMMAND TestElfReader
-          ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_LE_REL_ARM32.o
-          ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_BE_REL_ARM32.o
-          ${CMAKE_CURRENT_LIST_DIR}/bin/NONELF.c
+  COMMAND
+    TestElfReader
+    ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_LE_REL_ARM32.o
+    ${CMAKE_CURRENT_LIST_DIR}/bin/ELFV1_BE_REL_ARM32.o
+    ${CMAKE_CURRENT_LIST_DIR}/bin/NONELF.c
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
