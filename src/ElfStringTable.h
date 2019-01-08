@@ -9,7 +9,7 @@
  * @param sectionNo the section number
  * @return char* 
  */
-char* getSectionString(ElfImageP elfI, Elf32_Word sectionNo);
+char* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo);
 
 /**
  * @brief Get the Symbol String name of the given symbol index into the symbol table
@@ -20,7 +20,7 @@ char* getSectionString(ElfImageP elfI, Elf32_Word sectionNo);
  * @param symbolIdx index of the symbol into the symbol table
  * @return char* 
  */
-char* getSymbolString(ElfImageP elfI, Elf32_Word symbolIdx);
+char* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx);
 
 /**
  * @brief Get the Symbol Name of the given symbol index into the symbol table
@@ -30,7 +30,7 @@ char* getSymbolString(ElfImageP elfI, Elf32_Word symbolIdx);
  * @param symbolIdx index of the symbol into the symbol table 
  * @return char* 
  */
-char* getSymbolName(ElfImageP elfI, Elf32_Word symbolIdx);
+char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx);
 
 /**
  * @brief Get the Section Id From String
@@ -40,4 +40,4 @@ char* getSymbolName(ElfImageP elfI, Elf32_Word symbolIdx);
  * @param name 
  * @return Elf32_Word the section number or elfI->sections.size (sectionHdrs size) if no section found (out of range or no section with name str)
  */
-Elf32_Word getSectionIdFromStr(ElfImageP elfI, char const* str);
+Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str);

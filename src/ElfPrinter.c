@@ -14,7 +14,7 @@ void unknownX(uint32_t i)
   printf("<unknown: %x>\n", i);
 }
 
-void showHeader(ElfImageP elfI)
+void showHeader(ElfImageConstP elfI)
 {
   printf("ELF Header:\n");
   printf("  Magic:   ");
@@ -142,7 +142,7 @@ void showHeader(ElfImageP elfI)
   printf("  Section header string table index: %d\n", elfI->hdr.e_shstrndx);
 }
 
-void showSectionHeader(ElfImageP elfI)
+void showSectionHeader(ElfImageConstP elfI)
 {
   printf("There are %d section headers, starting at offset 0x%x:\n\n", elfI->hdr.e_shnum,
          elfI->hdr.e_shoff);
@@ -239,7 +239,7 @@ void showSectionHeader(ElfImageP elfI)
          "  y (purecode), p (processor specific)");
 }
 
-void showSection(ElfImageP elfI, Elf32_Word sectionNo, unsigned char const* section)
+void showSection(ElfImageConstP elfI, Elf32_Word sectionNo, unsigned char const* section)
 {
   if (elfI->sections.tab[sectionNo].sh_size == 0)
   {
@@ -284,7 +284,7 @@ void showSection(ElfImageP elfI, Elf32_Word sectionNo, unsigned char const* sect
   }
 }
 
-void showSymbols(ElfImageP elfI)
+void showSymbols(ElfImageConstP elfI)
 {
   printf("Symbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
   printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
@@ -341,7 +341,7 @@ void showSymbols(ElfImageP elfI)
     putchar('\n');
   }
 }
-void showRelocations(ElfImageP elfI)
+void showRelocations(ElfImageConstP elfI)
 {
   if (elfI->rels.size == 0)
   {

@@ -54,7 +54,7 @@ void __fixEndianess(ElfFile f, void* ptr, size_t size)
 
 #define fixEndianess(elf, e) __fixEndianess(elf, &e, sizeof(e))
 
-void writeElfHeader(Elf32_Ehdr* eHdr, ElfFile dest)
+void writeElfHeader(Elf32_Ehdr const* eHdr, ElfFile dest)
 {
   elfGoTo(dest, 0);
 
@@ -87,7 +87,7 @@ void writeElfHeader(Elf32_Ehdr* eHdr, ElfFile dest)
   elfWrite16(dest, eHdr->e_shstrndx);
 }
 
-ElfFile elfCreate(Elf32_Ehdr* eHdr, char const* fileName)
+ElfFile elfCreate(Elf32_Ehdr const* eHdr, char const* fileName)
 {
   ElfFile res = NULL;
   res = (ElfFile)malloc(sizeof(struct ElfFile_t));
