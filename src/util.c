@@ -1,5 +1,6 @@
 #include "util.h"
 #include <assert.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -38,6 +39,19 @@ void fixPrint(char const* str, int len)
   }
 }
 
+void fixPrintR(char const* str, int len)
+{
+  len -= strlen(str);
+  if (len > 0)
+  {
+    for (; len > 0; len--)
+    {
+      putchar(' ');
+    }
+    printf("%s", str);
+  }
+}
+
 void fixPrintaddr(char const* str, int len)
 {
   len -= strlen(str);
@@ -49,4 +63,19 @@ void fixPrintaddr(char const* str, int len)
     }
   }
   printf("%s", str);
+}
+
+void printBytes(unsigned char const* bytes, int nb)
+{
+  for (int i = 0; i < nb; i++)
+  {
+    if (isprint(bytes[i]))
+    {
+      putchar(bytes[i]);
+    }
+    else
+    {
+      putchar('.');
+    }
+  }
 }

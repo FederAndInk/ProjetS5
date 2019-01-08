@@ -1,4 +1,4 @@
-#include "ElfReader.h"
+#include "ElfIO.h"
 #include "UnitTest.h"
 #include <elf.h>
 #include <stdbool.h>
@@ -14,7 +14,7 @@ void testIsElf(char const* fStr, bool hasToBeElf, bool elfIsLE)
                hasToBeElf ? "true" : "false", elfIsLE ? "yes" : "no");
 
   bool isElfTmp;
-  Elf  e = elfOpen(fStr);
+  ElfFile  e = elfOpen(fStr);
   isElfTmp = isElf(e);
   check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
@@ -53,7 +53,7 @@ void testElfRead32(const char* f, Elf32_Word e_version, bool elfIsLE)
   DECLARE_TEST("e_version: %u\n"
                "Little endian: %s",
                e_version, elfIsLE ? "yes" : "no");
-  Elf file_elf = elfOpen(f);
+  ElfFile file_elf = elfOpen(f);
   elfGoTo(file_elf, 0x14);
   Elf32_Word mot = elfRead32(file_elf);
   check(ftell(file_elf->f) == 0x18, "Misplaced cursor at %ld instead of %d",
@@ -70,7 +70,7 @@ void testElfRead16(const char* f, Elf32_Half e_type, bool elfIsLE)
   DECLARE_TEST("e_type: %u\n"
                "Little endian: %s",
                e_type, elfIsLE ? "yes" : "no");
-  Elf file_elf = elfOpen(f);
+  ElfFile file_elf = elfOpen(f);
   elfGoTo(file_elf, 0x10);
   Elf32_Half mot = elfRead16(file_elf);
   check(ftell(file_elf->f) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
@@ -88,7 +88,7 @@ void testElfReadUC(const char* f, unsigned char ei_version, bool elfIsLE)
   DECLARE_TEST("ei_version: %u\n"
                "Little endian: %s",
                ei_version, elfIsLE ? "yes" : "no");
-  Elf file_elf = elfOpen(f);
+  ElfFile file_elf = elfOpen(f);
   elfGoTo(file_elf, 0x06);
   unsigned char mot = elfReadUC(file_elf);
   check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
