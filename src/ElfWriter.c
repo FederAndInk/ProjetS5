@@ -10,16 +10,15 @@
 
 void deleteRelocationSections(ElfImageP elfI)
 {
-  // TODO: update e_shstrndx, 
+  // TODO: update e_shstrndx,
 
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
     if (elfI->sections.tab[i].sh_type == SHT_REL ||
         elfI->sections.tab[i].sh_type == SHT_RELA)
     {
-      arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab), elfI->sections.size,
-                  i);
-      elfI->sections.size--;
+      elfI->sections.size = arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab),
+                                        elfI->sections.size, i);
     }
   }
   elfI->hdr.e_shnum = elfI->sections.size;

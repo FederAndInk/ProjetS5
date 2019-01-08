@@ -64,25 +64,16 @@ void fixPrintaddr(char const* str, int len)
   printf("%s", str);
 }
 
-void arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx)
+size_t arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx)
 {
-
-     if(idx < 0 || idx > tabLen)
+  // nothing to do if the element is the last one
+  if (idx != tabLen - 1)
+  {
+    char* ptr = (char*)tab;
+    for (size_t i = idx * elemSize; i < (tabLen - 1) * elemSize; i += elemSize)
     {
-        printf("Invalid position! Please use a position between 0 to %d", tabLen-1);
+      memcpy(&ptr[i], &ptr[i + elemSize], elemSize);
     }
-    else if (idx+elemSize > tabLen)
-    {
-        printf("The size of the element is to big");
-    }
-    else
-    {
-        char * ptr = (char *) tab;
-        for(int i=(idx-1)+elemSize; i<tabLen-1; i++)
-        {
-             ptr[i] = ptr[i + 1];
-        }
-        realloc(tab,tabLen-elemSize);
-    }
-
+  }
+  return tabLen - 1;
 }

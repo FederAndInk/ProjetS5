@@ -12,5 +12,4 @@ void fixPrintR(char const* str, int len);
 
 void fixPrintaddr(char const* str, int len);
 
-void arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx);
-
+size_t arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx);
