@@ -104,6 +104,7 @@ ElfFile elfCreate(Elf32_Ehdr* eHdr, char const* fileName)
     else
     {
       res->openMode = WRITE;
+      res->eiData = eHdr->e_ident[EI_DATA];
       writeElfHeader(eHdr, res);
     }
   }
