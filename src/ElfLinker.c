@@ -6,7 +6,6 @@
 #include "ElfWriter.h"
 #include "elf.h"
 #include "util.h"
-#include <ElfWriter.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,13 +35,13 @@ void setSymbolsAddr(ElfImageP elfi)
 
 void getSectionNameAndAddress(char* str, char** sectionName, Elf32_Addr* sectionAddress)
 {
-  *sectionName = (char*)malloc(strlen(str));
+  *sectionName = (char*)malloc(strlen(str) + 1);
   int i = 0;
-  for (i; str[i] != '\0' && str[i] != '='; i++)
+  for (; str[i] != '\0' && str[i] != '='; i++)
   {
-    *(sectionName)[i] = str[i];
+    (*sectionName)[i] = str[i];
   }
-  *(sectionName)[i + 1] = '\0';
+  (*sectionName)[i + 1] = '\0';
 
   if (str[i] != '=')
   {
@@ -81,4 +80,6 @@ int main(int argc, char* argv[])
   ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
   writeSections(elfIp, dest, e);
   writeSectionHeaders(elfIp, dest);
+  elfClose(e);
+  elfClose(dest);
 }
