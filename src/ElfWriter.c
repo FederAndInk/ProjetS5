@@ -8,8 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-ElfImageP deleteRelocationSections(ElfImageP elfI)
+void deleteRelocationSections(ElfImageP elfI)
 {
+  // TODO: update e_shstrndx, 
+
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
     if (elfI->sections.tab[i].sh_type == SHT_REL ||
@@ -21,10 +23,40 @@ ElfImageP deleteRelocationSections(ElfImageP elfI)
     }
   }
   elfI->hdr.e_shnum = elfI->sections.size;
-  return elfI;
 }
 
-void writeElfHeaderInFile(ElfImageP elfI, Elf dest) {}
+void writeElfHeader(ElfImageP elfI, Elf dest)
+{
+  elfGoTo(dest, 0);
+
+  for (size_t i = 0; i < EI_NIDENT; i++)
+  {
+    elfWriteUC(dest, elfI->hdr.e_ident[i]);
+  }
+
+  // to update after changing type of elf (REL to EXEC)
+  elfWrite16(dest, elfI->hdr.e_type);
+
+  elfWrite16(dest, elfI->hdr.e_machine);
+  elfWrite32(dest, elfI->hdr.e_version);
+  elfWrite32(dest, elfI->hdr.e_entry);
+  elfWrite32(dest, elfI->hdr.e_phoff);
+
+  // to update after moving sh
+  elfWrite32(dest, elfI->hdr.e_shoff);
+
+  elfWrite32(dest, elfI->hdr.e_flags);
+  elfWrite16(dest, elfI->hdr.e_ehsize);
+  elfWrite16(dest, elfI->hdr.e_phentsize);
+  elfWrite16(dest, elfI->hdr.e_phnum);
+  elfWrite16(dest, elfI->hdr.e_shentsize);
+
+  // to update after deleting/adding section(s)
+  elfWrite16(dest, elfI->hdr.e_shnum);
+
+  // to update after deleting/adding section(s)
+  elfWrite16(dest, elfI->hdr.e_shstrndx);
+}
 
 void writeSections(ElfImageP elfI, Elf dest, Elf src)
 {
@@ -59,15 +91,19 @@ void writeSectionHeaders(ElfImageP elfI, Elf dest)
 
 void setNewOffsets(ElfImageP elfI, Elf dest)
 {
-  //modify e_phoff
-  elfGoTo(dest, 0x1c);
-  //TODO set e_phoff
+  // update e_type
+  elfGoTo(dest, 0x10);
+  // TODO: set new type
 
-  //modify e_shstrndx
-  elfGoTo(dest, 0x30);
-  //elfWrite16(dest, )
+  // update e_shoff
+  elfGoTo(dest, 0x20);
+  elfWrite32(dest, elfI->hdr.e_shoff);
 
-  //modify e_shnum
+  // update e_shnum
   elfGoTo(dest, 0x30);
-  elfWrite16(dest, elfI->sections.size);
+  elfWrite16(dest, elfI->hdr.e_shnum);
+
+  // update e_shstrndx
+  elfGoTo(dest, 0x32);
+  elfWrite16(dest, elfI->hdr.e_shstrndx);
 }

@@ -1,9 +1,9 @@
 #include "Elf.h"
 #include "ElfReader.h"
 
-ElfImageP deleteRelocationSections(ElfImageP elfI);
+void deleteRelocationSections(ElfImageP elfI);
 
-void writeElfHeaderInFile(ElfImageP elfI, Elf dest);
+void writeElfHeader(ElfImageP elfI, Elf dest);
 
 void writeSections(ElfImageP elfI, Elf dest, Elf src);
 

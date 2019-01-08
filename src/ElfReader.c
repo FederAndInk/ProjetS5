@@ -147,6 +147,11 @@ void elfGoToRel(Elf f, size_t offset)
   fseek(f->f, offset, SEEK_CUR);
 }
 
+void elfGoToEnd(Elf f)
+{
+  fseek(f->f, 0, SEEK_END);
+}
+
 long elfTell(Elf f)
 {
   return ftell(f->f);

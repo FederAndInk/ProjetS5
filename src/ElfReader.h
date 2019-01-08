@@ -117,6 +117,8 @@ void elfGoTo(Elf f, size_t to);
  */
 void elfGoToRel(Elf f, size_t offset);
 
+void elfGoToEnd(Elf f);
+
 long elfTell(Elf f);
 
 void elfClose(Elf f);
