@@ -6,6 +6,7 @@
 #include "ElfWriter.h"
 #include "elf.h"
 #include "util.h"
+#include <ElfWriter.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,17 +62,23 @@ int main(int argc, char* argv[])
     showHelp(argv[0]);
     exit(1);
   }
-
+  ElfFile   e = elfOpen(argv[1]);
   ElfImage  elfi;
   ElfImageP elfIp = &elfi;
   initElfImage(elfIp);
-
-  for (int k = 3; k < argc; k++)
+  if (parseElf(elfIp, e))
   {
-    Elf32_Addr secAddr;
-    char*      secName;
-    getSectionNameAndAddress(argv[k], &secName, &secAddr);
-    setSectionAddr(elfIp, secName, secAddr);
+    deleteRelocationSections(elfIp);
+    for (int k = 3; k < argc; k++)
+    {
+      Elf32_Addr secAddr;
+      char*      secName;
+      getSectionNameAndAddress(argv[k], &secName, &secAddr);
+      setSectionAddr(elfIp, secName, secAddr);
+    }
+    setSymbolsAddr(elfIp);
   }
-  setSymbolsAddr(elfIp);
+  ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
+  writeSections(elfIp, dest, e);
+  writeSectionHeaders(elfIp, dest);
 }
