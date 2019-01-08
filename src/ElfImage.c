@@ -1,4 +1,4 @@
-#include "Elf.h"
+#include "ElfImage.h"
 #include <stdlib.h>
 #include <string.h>
 

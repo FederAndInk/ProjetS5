@@ -1,4 +1,4 @@
-#include "ElfReader.h"
+#include "ElfIO.h"
 #include "UnitTest.h"
 #include "elf.h"
 #include <stdlib.h>
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
   printf("===> test on: %s\n", argv[1]);
   fflush(stdout);
 
-  Elf e = elfOpen(argv[1]);
+  ElfFile e = elfOpen(argv[1]);
   if (!isElf(e))
   {
     fputs("(isElf): File given isn't an ELF file !\n", stderr);
