@@ -1,4 +1,4 @@
-#include "ElfReader.h"
+#include "ElfIO.h"
 #include "util.h"
 #include <elf.h>
 #include <stdio.h>
@@ -14,9 +14,9 @@
  * @param f
  * @param m
  */
-void elfOpenIn(Elf f, ElfMode m);
+void elfOpenIn(ElfFile f, ElfMode m);
 
-void elfOpenIn(Elf f, ElfMode m)
+void elfOpenIn(ElfFile f, ElfMode m)
 {
   if (f->openMode != m)
   {
@@ -33,18 +33,18 @@ void elfOpenIn(Elf f, ElfMode m)
 
 // End Implementation function
 
-bool isElf(Elf f)
+bool isElf(ElfFile f)
 {
   return f != NULL;
 }
 
-bool elfIsSameEndianess(Elf f)
+bool elfIsSameEndianess(ElfFile f)
 {
   return (f->eiData == ELFDATA2MSB && is_big_endian()) ||
          (f->eiData == ELFDATA2LSB && !is_big_endian());
 }
 
-void __fixEndianess(Elf f, void* ptr, size_t size)
+void __fixEndianess(ElfFile f, void* ptr, size_t size)
 {
   if (!elfIsSameEndianess(f))
   {
@@ -54,10 +54,10 @@ void __fixEndianess(Elf f, void* ptr, size_t size)
 
 #define fixEndianess(elf, e) __fixEndianess(elf, &e, sizeof(e))
 
-Elf elfOpen(char const* fileName)
+ElfFile elfOpen(char const* fileName)
 {
-  Elf res = NULL;
-  res = (Elf)malloc(sizeof(struct Elf_t));
+  ElfFile res = NULL;
+  res = (ElfFile)malloc(sizeof(struct ElfFile_t));
   if (res)
   {
     res->fileName = fileName;
@@ -91,7 +91,7 @@ Elf elfOpen(char const* fileName)
   return res;
 }
 
-Elf32_Word elfRead32(Elf f)
+Elf32_Word elfRead32(ElfFile f)
 {
   elfOpenIn(f, READ);
   Elf32_Word res = 0;
@@ -100,7 +100,7 @@ Elf32_Word elfRead32(Elf f)
   return res;
 }
 
-Elf32_Half elfRead16(Elf f)
+Elf32_Half elfRead16(ElfFile f)
 {
   elfOpenIn(f, READ);
   Elf32_Half res = 0;
@@ -109,7 +109,7 @@ Elf32_Half elfRead16(Elf f)
   return res;
 }
 
-unsigned char elfReadUC(Elf f)
+unsigned char elfReadUC(ElfFile f)
 {
   elfOpenIn(f, READ);
   unsigned char res = 0;
@@ -117,70 +117,72 @@ unsigned char elfReadUC(Elf f)
   return res;
 }
 
-void elfWrite32(Elf f, Elf32_Word e)
+void elfWrite32(ElfFile f, Elf32_Word e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfWrite16(Elf f, Elf32_Half e)
+void elfWrite16(ElfFile f, Elf32_Half e)
 {
   elfOpenIn(f, WRITE);
   fixEndianess(f, e);
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfWriteUC(Elf f, unsigned char e)
+void elfWriteUC(ElfFile f, unsigned char e)
 {
   elfOpenIn(f, WRITE);
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfGoTo(Elf f, size_t to)
+void elfGoTo(ElfFile f, size_t to)
 {
   fseek(f->f, to, SEEK_SET);
 }
 
-void elfGoToRel(Elf f, size_t offset)
+void elfGoToRel(ElfFile f, size_t offset)
 {
   fseek(f->f, offset, SEEK_CUR);
 }
 
-void elfGoToEnd(Elf f)
+void elfGoToEnd(ElfFile f)
 {
   fseek(f->f, 0, SEEK_END);
 }
 
-long elfTell(Elf f)
+long elfTell(ElfFile f)
 {
   return ftell(f->f);
 }
 
-void elfClose(Elf f)
+void elfClose(ElfFile f)
 {
-  fclose(f->f);
-  free(f);
+  if (f)
+  {
+    fclose(f->f);
+    free(f);
+  }
 }
 
-unsigned char* elfReadUC_s(Elf e, size_t offset, size_t size)
+unsigned char* elfReadUC_s(ElfFile f, size_t offset, size_t size)
 {
-  elfOpenIn(e, READ);
-
-  elfGoTo(e, offset);
+  elfOpenIn(f, READ);
+  elfGoTo(f, offset);
 
   unsigned char* str = (unsigned char*)malloc(sizeof(unsigned char) * size);
 
-  fread(str, sizeof(unsigned char), size, e->f);
+  fread(str, sizeof(unsigned char), size, f->f);
 
   return str;
 }
 
-void elfWriteUC_s(Elf e, size_t offset, size_t size, unsigned char* buf)
+void elfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf)
 {
-  elfOpenIn(e, WRITE);
+  elfOpenIn(f, WRITE);
 
-  elfGoTo(e, offset);
+  elfGoTo(f, offset);
 
-  fwrite(buf, sizeof(unsigned char), size, e->f);
+  fwrite(buf, sizeof(unsigned char), size, f->f);
 }

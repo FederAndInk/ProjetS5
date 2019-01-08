@@ -1,10 +1,10 @@
 #include "ElfParser.h"
-#include "ElfReader.h"
+#include "ElfIO.h"
 #include "ElfStringTable.h"
 #include <stddef.h>
 #include <stdlib.h>
 
-void parseHeader(ElfImageP elfI, Elf e)
+bool parseHeader(ElfImageP elfI, ElfFile e)
 {
   elfGoTo(e, 0);
 
@@ -29,10 +29,13 @@ void parseHeader(ElfImageP elfI, Elf e)
     elfI->hdr.e_shentsize = elfRead16(e);
     elfI->hdr.e_shnum = elfRead16(e);
     elfI->hdr.e_shstrndx = elfRead16(e);
+    return true;
+  }else {
+    return false;
   }
 }
 
-void parseSectionHeaders(ElfImageP elfI, Elf e)
+void parseSectionHeaders(ElfImageP elfI, ElfFile e)
 {
   elfI->sections.size = elfI->hdr.e_shnum;
 
@@ -53,7 +56,7 @@ void parseSectionHeaders(ElfImageP elfI, Elf e)
   }
 }
 
-void parseStringTable(ElfImageP elfI, Elf e)
+void parseStringTable(ElfImageP elfI, ElfFile e)
 {
   elfI->strTable.secStrs =
       elfReadUC_s(e, elfI->sections.tab[elfI->hdr.e_shstrndx].sh_offset,
@@ -72,7 +75,7 @@ void parseStringTable(ElfImageP elfI, Elf e)
   }
 }
 
-void parseSymbolTable(ElfImageP elfI, Elf e)
+void parseSymbolTable(ElfImageP elfI, ElfFile e)
 {
 
   Elf32_Word index = getSectionIdFromStr(elfI, ".symtab");
@@ -92,7 +95,7 @@ void parseSymbolTable(ElfImageP elfI, Elf e)
   }
 }
 
-void parseRelocations(ElfImageP elfI, Elf e)
+void parseRelocations(ElfImageP elfI, ElfFile e)
 {
   size_t nbrel = 0;
   int    table[elfI->sections.size];
@@ -128,5 +131,28 @@ void parseRelocations(ElfImageP elfI, Elf e)
         elfI->rels.tab[i].rela[j].r_addend = elfRead32(e);
       }
     }
+  }
+}
+
+unsigned char* readSection(ElfImageP elfI, ElfFile e, Elf32_Word sectionNo)
+{
+  Elf32_Shdr*    sH = &elfI->sections.tab[sectionNo];
+  unsigned char* section = elfReadUC_s(e, sH->sh_offset, sH->sh_size);
+  return section;
+}
+
+bool parseElf(ElfImageP elfI, ElfFile e)
+{
+  if (parseHeader(elfI, e))
+  {
+    parseSectionHeaders(elfI, e);
+    parseStringTable(elfI, e);
+    parseSymbolTable(elfI, e);
+    parseRelocations(elfI, e);
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }

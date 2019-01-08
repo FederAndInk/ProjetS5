@@ -7,7 +7,7 @@ Todo:
       - 32 fct R/W
       - 16 fct R/W
       - test endianess R/W
-      - add some files (elfs or not) to git for testing (do not base the test upon compiling these files)
+      ✔ add some files (elfs or not) to git for testing (do not base the test upon compiling these files) @done(18-12-20 10:18)
     ☐ ElfHeader
       - Unsupported elf
       - Unsupported files (not elf)

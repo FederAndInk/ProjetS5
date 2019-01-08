@@ -6,56 +6,40 @@ add_compile_options($<$<CONFIG:Debug>:-Wall>
 
 add_library(util util.c util.h)
 
-add_library(ElfReader ./ElfReader.c ./ElfReader.h)
-target_link_libraries(ElfReader util)
+add_library(ElfIO ./ElfIO.c ./ElfIO.h)
+target_link_libraries(ElfIO util)
 
 add_library(ElfString ElfString.c ElfString.h)
 
-add_library(Elf Elf.c Elf.h)
+add_library(ElfImage ElfImage.c ElfImage.h)
 
 add_library(ElfStringTable ElfStringTable.c
             ElfStringTable.h)
-target_link_libraries(ElfStringTable ElfReader
-                      Elf)
+target_link_libraries(ElfStringTable ElfIO
+                      ElfImage)
 
 add_library(ElfParser ./ElfParser.c ./ElfParser.h)
 target_link_libraries(ElfParser
-                      ElfReader
+                      ElfIO
                       ElfStringTable
-                      Elf)
+                      ElfImage)
 
-add_executable(ElfHeader ElfHeader.c)
-target_link_libraries(ElfHeader
-                      ElfParser
-                      ElfReader
-                      Elf)
-
-add_executable(ElfSectionheader
-               ElfSectionheader.c)
-target_link_libraries(ElfSectionheader
-                      ElfParser
-                      ElfReader
+add_library(ElfPrinter ElfPrinter.c ElfPrinter.h)
+target_link_libraries(ElfPrinter
+                      ElfImage
                       ElfString
                       ElfStringTable
-                      Elf)
-
-add_executable(ElfSymbol ElfSymbol.c)
-target_link_libraries(ElfSymbol
-                      ElfParser
-                      ElfReader
-                      ElfString
-                      ElfStringTable
-                      Elf)
-add_executable(ElfRelocation ElfRelocation.c)
-target_link_libraries(ElfRelocation
-                      ElfParser
-                      ElfReader
-                      ElfString
-                      ElfStringTable
-                      Elf)
+                      ElfIO)
 
 add_library(ElfWriter ElfWriter.c ElfWriter.h)
 
 add_executable(ElfLinker ElfLinker.c)
 
 target_link_libraries(ElfLinker ElfWriter)
+
+add_executable(readelf readelf.c)
+
+target_link_libraries(readelf
+                      ElfPrinter
+                      ElfParser
+                      ElfIO)

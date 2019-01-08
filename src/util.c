@@ -1,5 +1,6 @@
 #include "util.h"
 #include <assert.h>
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -76,4 +77,19 @@ size_t arrayRemove(void* tab, size_t elemSize, size_t tabLen, size_t idx)
     }
   }
   return tabLen - 1;
+}
+
+void printBytes(unsigned char const* bytes, int nb)
+{
+  for (int i = 0; i < nb; i++)
+  {
+    if (isprint(bytes[i]))
+    {
+      putchar(bytes[i]);
+    }
+    else
+    {
+      putchar('.');
+    }
+  }
 }

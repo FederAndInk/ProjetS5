@@ -1,6 +1,5 @@
 #include "ElfWriter.h"
 #include "ElfParser.h"
-#include "ElfReader.h"
 #include "ElfString.h"
 #include "ElfStringTable.h"
 #include "util.h"
@@ -24,7 +23,7 @@ void deleteRelocationSections(ElfImageP elfI)
   elfI->hdr.e_shnum = elfI->sections.size;
 }
 
-void writeElfHeader(ElfImageP elfI, Elf dest)
+void writeElfHeader(ElfImageP elfI, ElfFile dest)
 {
   elfGoTo(dest, 0);
 
@@ -57,7 +56,7 @@ void writeElfHeader(ElfImageP elfI, Elf dest)
   elfWrite16(dest, elfI->hdr.e_shstrndx);
 }
 
-void writeSections(ElfImageP elfI, Elf dest, Elf src)
+void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
 {
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
@@ -71,7 +70,7 @@ void writeSections(ElfImageP elfI, Elf dest, Elf src)
   }
 }
 
-void writeSectionHeaders(ElfImageP elfI, Elf dest)
+void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
 {
   elfI->hdr.e_shoff = elfTell(dest);
   for (Elf32_Word i = 0; i < elfI->sections.size; i++)
@@ -88,7 +87,7 @@ void writeSectionHeaders(ElfImageP elfI, Elf dest)
   }
 }
 
-void setNewOffsets(ElfImageP elfI, Elf dest)
+void setNewOffsets(ElfImageP elfI, ElfFile dest)
 {
   // update e_type
   elfGoTo(dest, 0x10);

@@ -3,6 +3,14 @@
 [![Travis](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=master)](https://travis-ci.org/FederAndInk/ProjetS5)
 [![codecov](https://codecov.io/gh/FederAndInk/ProjetS5/branch/master/graph/badge.svg)](https://codecov.io/gh/FederAndInk/ProjetS5)
 
+## Telecharger
+
+```bash
+git clone --recursive https://github.com/FederAndInk/ProjetS5.git
+# ou initialiser les submodules:
+git submodules init
+git submodules update
+```
 
 ## Pour compiler
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "Elf.h"
-#include "ElfReader.h"
+#include "ElfIO.h"
+#include "ElfImage.h"
 
 /**
  * @brief Get the Section String name of the given section number
@@ -32,4 +32,12 @@ char* getSymbolString(ElfImageP elfI, Elf32_Word symbolIdx);
  */
 char* getSymbolName(ElfImageP elfI, Elf32_Word symbolIdx);
 
-Elf32_Word getSectionIdFromStr(ElfImageP elfI, char const* name);
+/**
+ * @brief Get the Section Id From String
+ * String can be the name of the section or a number as a string
+ * 
+ * @param elfI 
+ * @param name 
+ * @return Elf32_Word the section number or elfI->sections.size (sectionHdrs size) if no section found (out of range or no section with name str)
+ */
+Elf32_Word getSectionIdFromStr(ElfImageP elfI, char const* str);
