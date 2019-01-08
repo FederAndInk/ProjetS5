@@ -33,6 +33,16 @@ bool isElf(ElfFile f);
  */
 bool elfIsSameEndianess(ElfFile f);
 
+void writeElfHeader(Elf32_Ehdr* eHdr, ElfFile dest);
+
+/**
+ * @brief create a new elf file with header eHdr written
+ * 
+ * @param fileName 
+ * @return ElfFile 
+ */
+ElfFile elfCreate(Elf32_Ehdr* eHdr, char const* fileName);
+
 /**
  * @brief ouvre fileName en tant que fichier ELF
  * retourne NULL si fileName n'est pas un fichier elf (traité par isElf)

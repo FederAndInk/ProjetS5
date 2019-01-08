@@ -54,6 +54,63 @@ void __fixEndianess(ElfFile f, void* ptr, size_t size)
 
 #define fixEndianess(elf, e) __fixEndianess(elf, &e, sizeof(e))
 
+void writeElfHeader(Elf32_Ehdr* eHdr, ElfFile dest)
+{
+  elfGoTo(dest, 0);
+
+  for (size_t i = 0; i < EI_NIDENT; i++)
+  {
+    elfWriteUC(dest, eHdr->e_ident[i]);
+  }
+
+  // to update after changing type of elf (REL to EXEC)
+  elfWrite16(dest, eHdr->e_type);
+
+  elfWrite16(dest, eHdr->e_machine);
+  elfWrite32(dest, eHdr->e_version);
+  elfWrite32(dest, eHdr->e_entry);
+  elfWrite32(dest, eHdr->e_phoff);
+
+  // to update after moving sh
+  elfWrite32(dest, eHdr->e_shoff);
+
+  elfWrite32(dest, eHdr->e_flags);
+  elfWrite16(dest, eHdr->e_ehsize);
+  elfWrite16(dest, eHdr->e_phentsize);
+  elfWrite16(dest, eHdr->e_phnum);
+  elfWrite16(dest, eHdr->e_shentsize);
+
+  // to update after deleting/adding section(s)
+  elfWrite16(dest, eHdr->e_shnum);
+
+  // to update after deleting/adding section(s)
+  elfWrite16(dest, eHdr->e_shstrndx);
+}
+
+ElfFile elfCreate(Elf32_Ehdr* eHdr, char const* fileName)
+{
+  ElfFile res = NULL;
+  res = (ElfFile)malloc(sizeof(struct ElfFile_t));
+  if (res)
+  {
+    res->fileName = fileName;
+    res->f = fopen(res->fileName, "wb+");
+    if (!res->f)
+    {
+      perror("Erreur d'ouverture de fichier");
+      free(res);
+      res = NULL;
+    }
+    else
+    {
+      res->openMode = WRITE;
+      writeElfHeader(eHdr, res);
+    }
+  }
+
+  return res;
+}
+
 ElfFile elfOpen(char const* fileName)
 {
   ElfFile res = NULL;
