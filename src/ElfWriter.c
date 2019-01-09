@@ -49,7 +49,7 @@ void deleteRelocationSections(ElfImageP elfI)
   elfI->hdr.e_shnum = elfI->sections.size;
 }
 
-void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
+void copySections(ElfImageP elfI, ElfFile dest, ElfFile src)
 {
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
@@ -65,8 +65,7 @@ void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
 
 void writeSymbols(ElfImageP elfI, ElfFile dest)
 {
-  // TODO: elfGoTo(offset of symbols)
-
+  long offSave = elfTell(dest);
   elfGoTo(dest, elfI->sections.tab[getSectionIdFromStr(elfI, ".symtab")].sh_offset);
   for (Elf32_Word i = 0; i < elfI->symbols.size; i++)
   {
@@ -75,8 +74,9 @@ void writeSymbols(ElfImageP elfI, ElfFile dest)
     elfWrite32(dest, elfI->symbols.tab[i].st_size);
     elfWriteUC(dest, elfI->symbols.tab[i].st_info);
     elfWriteUC(dest, elfI->symbols.tab[i].st_other);
-    elfWrite32(dest, elfI->symbols.tab[i].st_shndx);
+    elfWrite16(dest, elfI->symbols.tab[i].st_shndx);
   }
+  elfGoTo(dest, offSave);
 }
 
 void writeSectionHeaders(ElfImageP elfI, ElfFile dest)

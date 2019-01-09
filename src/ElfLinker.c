@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     }
     setSymbolsAddr(elfIp);
     ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
-    writeSections(elfIp, dest, e);
+    copySections(elfIp, dest, e);
     writeSymbols(elfIp, dest);
     writeSectionHeaders(elfIp, dest);
 

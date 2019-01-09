@@ -195,12 +195,12 @@ void elfWriteUC(ElfFile f, unsigned char e)
   fwrite(&e, sizeof(e), 1, f->f);
 }
 
-void elfGoTo(ElfFile f, size_t to)
+void elfGoTo(ElfFile f, long to)
 {
   fseek(f->f, to, SEEK_SET);
 }
 
-void elfGoToRel(ElfFile f, size_t offset)
+void elfGoToRel(ElfFile f, long offset)
 {
   fseek(f->f, offset, SEEK_CUR);
 }

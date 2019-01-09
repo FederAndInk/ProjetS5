@@ -124,7 +124,7 @@ void elfWriteUC(ElfFile f, unsigned char e);
  * @param f
  * @param to
  */
-void elfGoTo(ElfFile f, size_t to);
+void elfGoTo(ElfFile f, long to);
 
 /**
  * @brief se deplace de offset octets
@@ -133,7 +133,7 @@ void elfGoTo(ElfFile f, size_t to);
  * @param f
  * @param offset
  */
-void elfGoToRel(ElfFile f, size_t offset);
+void elfGoToRel(ElfFile f, long offset);
 
 void elfGoToEnd(ElfFile f);
 
