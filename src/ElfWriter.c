@@ -63,8 +63,20 @@ void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
   }
 }
 
-void writeSymbols(ElfImageP elfI, ElfFile dest) {
+void writeSymbols(ElfImageP elfI, ElfFile dest)
+{
   // TODO: elfGoTo(offset of symbols)
+
+  elfGoTo(dest, elfI->sections.tab[getSectionIdFromStr(elfI, ".symtab")].sh_offset);
+  for (Elf32_Word i = 0; i < elfI->symbols.size; i++)
+  {
+    elfWrite32(dest, elfI->symbols.tab[i].st_name);
+    elfWrite32(dest, elfI->symbols.tab[i].st_value);
+    elfWrite32(dest, elfI->symbols.tab[i].st_size);
+    elfWriteUC(dest, elfI->symbols.tab[i].st_info);
+    elfWriteUC(dest, elfI->symbols.tab[i].st_other);
+    elfWrite32(dest, elfI->symbols.tab[i].st_shndx);
+  }
 }
 
 void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
