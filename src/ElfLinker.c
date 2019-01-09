@@ -24,11 +24,9 @@ void setSectionAddr(ElfImageP elfI, char const* name, Elf32_Addr addr)
 
 void setSymbolsAddr(ElfImageP elfi)
 {
-
   for (size_t i = 0; i < elfi->symbols.size; i++)
   {
-    elfi->symbols.tab[i].st_value =
-        elfi->symbols.tab[i].st_value +
+    elfi->symbols.tab[i].st_value +=
         elfi->sections.tab[elfi->symbols.tab[i].st_shndx].sh_addr;
   }
 }
@@ -41,7 +39,7 @@ void getSectionNameAndAddress(char* str, char** sectionName, Elf32_Addr* section
   {
     (*sectionName)[i] = str[i];
   }
-  (*sectionName)[i + 1] = '\0';
+  (*sectionName)[i] = '\0';
 
   if (str[i] != '=')
   {
@@ -74,12 +72,22 @@ int main(int argc, char* argv[])
       char*      secName;
       getSectionNameAndAddress(argv[k], &secName, &secAddr);
       setSectionAddr(elfIp, secName, secAddr);
+      free(secName);
     }
     setSymbolsAddr(elfIp);
+    ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
+    writeSections(elfIp, dest, e);
+    writeSymbols(elfIp, dest);
+    writeSectionHeaders(elfIp, dest);
+
+    // rewrite header to update offsets and ndx
+    writeElfHeader(&elfIp->hdr, dest);
+    elfClose(dest);
+    deleteElfImage(elfIp);
   }
-  ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
-  writeSections(elfIp, dest, e);
-  writeSectionHeaders(elfIp, dest);
+  else
+  {
+    printf("%s can't be parsed", argv[1]);
+  }
   elfClose(e);
-  elfClose(dest);
 }
