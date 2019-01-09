@@ -12,6 +12,14 @@ typedef enum ElfMode
   WRITE
 } ElfMode;
 
+typedef enum
+{
+  DEFAULT_ENDIANNESS,
+  SYSTEM_ENDIANNESS,
+  LE,
+  BE
+} Endianness;
+
 // TODO: Handle errors (R/W + goto)
 typedef struct ElfFile_t
 {
@@ -33,7 +41,7 @@ bool isElf(ElfFile f);
  */
 bool elfIsSameEndianess(ElfFile f);
 
-bool elfIsBigEndian(ElfFile f);
+bool elfIsEndianness(ElfFile f, Endianness end);
 
 void writeElfHeader(Elf32_Ehdr const* eHdr, ElfFile dest);
 
