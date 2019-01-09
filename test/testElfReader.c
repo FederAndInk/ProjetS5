@@ -58,8 +58,8 @@ void testElfRead32(const char* f, Elf32_Word e_version, bool elfIsLE)
   {
     elfGoTo(file_elf, 0x14);
     Elf32_Word mot = elfRead32(file_elf);
-    check(ftell(file_elf->f) == 0x18, "Misplaced cursor at %ld instead of %d",
-          ftell(file_elf->f), 0x18);
+    check(elfTell(file_elf) == 0x18, "Misplaced cursor at %ld instead of %d",
+          elfTell(file_elf), 0x18);
     check(e_version == mot, "Read %u instead of %u (e_version)", mot, e_version);
     elfClose(file_elf);
   }
@@ -76,8 +76,8 @@ void testElfRead16(const char* f, Elf32_Half e_type, bool elfIsLE)
   {
     elfGoTo(file_elf, 0x10);
     Elf32_Half mot = elfRead16(file_elf);
-    check(ftell(file_elf->f) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
-          ftell(file_elf->f), 0x12);
+    check(elfTell(file_elf) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
+          elfTell(file_elf), 0x12);
     check(e_type == mot, "Read %u instead of %u (e_type)", mot, e_type);
     elfClose(file_elf);
   }
@@ -95,8 +95,8 @@ void testElfReadUC(const char* f, unsigned char ei_version, bool elfIsLE)
   {
     elfGoTo(file_elf, 0x06);
     unsigned char mot = elfReadUC(file_elf);
-    check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
-          ftell(file_elf->f), 0x07);
+    check(elfTell(file_elf) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
+          elfTell(file_elf), 0x07);
     check(ei_version == mot, "Read %u instead of %u (ei_version)", mot, ei_version);
     elfClose(file_elf);
   }
@@ -112,8 +112,8 @@ void testElfReadUC_s(const char* f, size_t offset, size_t size, unsigned char* e
   {
     unsigned char* str = elfReadUC_s(file_elf, offset, size);
 
-    check(ftell(file_elf->f) == offset + size, "Misplaced cursor at %ld instead of %d",
-          ftell(file_elf->f), offset + size);
+    check(elfTell(file_elf) == offset + size, "Misplaced cursor at %ld instead of %d",
+          elfTell(file_elf), offset + size);
 
     check(strncmp((char*)str, (char*)e_read, size) == 0,
           "Didn't read the expected value : %u %u %u instead of %u %u %u", str[0], str[1],
@@ -152,9 +152,9 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  char* elfLE = argv[1];
-  char* elfBE = argv[2];
-  char* nonElf = argv[3];
+  const char* elfLE = argv[1];
+  const char* elfBE = argv[2];
+  const char* nonElf = argv[3];
 
   // SEE: On encadre nos tests comme ça
   BEGIN_TESTS("TestElfReader");
