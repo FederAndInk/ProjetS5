@@ -31,6 +31,11 @@ void setSymbolsAddr(ElfImageP elfi)
   }
 }
 
+void setEntry(ElfImageP elfI, char const* symName)
+{
+  elfI->hdr.e_entry = elfI->symbols.tab[getSymbolIdFromStr(elfI, symName)].st_value;
+}
+
 void getSectionNameAndAddress(char* str, char** sectionName, Elf32_Addr* sectionAddress)
 {
   *sectionName = (char*)malloc(strlen(str) + 1);
@@ -75,6 +80,8 @@ int main(int argc, char* argv[])
       free(secName);
     }
     setSymbolsAddr(elfIp);
+    setEntry(elfIp, "main");
+
     ElfFile dest = elfCreate(&elfIp->hdr, argv[2]);
     copySections(elfIp, dest, e);
     writeSymbols(elfIp, dest);

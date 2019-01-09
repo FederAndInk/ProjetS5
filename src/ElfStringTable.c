@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo)
+char const* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo)
 {
   return (char*)&elfI->strTable.secStrs[elfI->sections.tab[sectionNo].sh_name];
 }
 
-char* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx)
+char const* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx)
 {
   return (char*)&elfI->strTable.symStrs[elfI->symbols.tab[symbolIdx].st_name];
 }
 
-char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx)
+char const* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx)
 {
   Elf32_Sym* sym = &elfI->symbols.tab[symbolIdx];
 
@@ -26,7 +26,10 @@ char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx)
   }
 }
 
-Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str)
+typedef char const* (*GetStringFn)(ElfImageConstP elfI, Elf32_Word idx);
+
+Elf32_Word getIdFromStr(char const* str, Elf32_Word tabSize, GetStringFn getString,
+                        ElfImageConstP elfI)
 {
   Elf32_Word i;
 
@@ -38,16 +41,26 @@ Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str)
   if (str == strEndParse)
   {
     i = 0;
-    while (i < elfI->sections.size && strcmp((char*)getSectionString(elfI, i), str) != 0)
+    while (i < tabSize && strcmp(getString(elfI, i), str) != 0)
     {
       i++;
     }
   }
 
-  if (i >= elfI->sections.size)
+  if (i >= tabSize)
   {
-    i = elfI->sections.size;
+    i = tabSize;
   }
 
   return i;
+}
+
+Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str)
+{
+  return getIdFromStr(str, elfI->sections.size, getSectionString, elfI);
+}
+
+Elf32_Word getSymbolIdFromStr(ElfImageConstP elfI, char const* str)
+{
+  return getIdFromStr(str, elfI->symbols.size, getSymbolString, elfI);
 }

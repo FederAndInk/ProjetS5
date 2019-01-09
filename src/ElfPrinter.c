@@ -155,7 +155,7 @@ void showSectionHeader(ElfImageConstP elfI)
     snprintf(id, 10, "  [%2d] ", i);
     fixPrint(id, 4);
 
-    char* str = getSectionString(elfI, i);
+    char const* str = getSectionString(elfI, i);
     fixPrint(str, 18);
 
     char const* strType = getElfType(sht, elfI->sections.tab[i].sh_type);
@@ -335,7 +335,7 @@ void showSymbols(ElfImageConstP elfI)
     }
 
     // name
-    char* strName = getSymbolString(elfI, i);
+    char const* strName = getSymbolString(elfI, i);
 
     fixPrint(strName, 20);
     putchar('\n');
