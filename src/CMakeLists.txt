@@ -35,7 +35,13 @@ add_library(ElfWriter ElfWriter.c ElfWriter.h)
 
 add_executable(ElfLinker ElfLinker.c)
 
-target_link_libraries(ElfLinker ElfWriter)
+target_link_libraries(ElfLinker
+                      ElfWriter
+                      util
+                      ElfImage
+                      ElfParser
+                      ElfStringTable
+                      ElfIO)
 
 add_executable(readelf readelf.c)
 

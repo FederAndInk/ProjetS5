@@ -1,4 +1,5 @@
 #include "ElfWriter.h"
+#include "ElfIO.h"
 #include "ElfParser.h"
 #include "ElfString.h"
 #include "ElfStringTable.h"
@@ -7,10 +8,27 @@
 #include <stdlib.h>
 #include <string.h>
 
+void ndxUpdate(ElfImageP elfI, Elf32_Half minNdx)
+{
+  for (size_t k = 0; k < elfI->symbols.size; k++)
+  {
+    if (elfI->symbols.tab[k].st_shndx > minNdx)
+    {
+      elfI->symbols.tab[k].st_shndx--;
+    }
+  }
+
+  for (size_t k = 0; k < elfI->sections.size; k++)
+  {
+    if (elfI->sections.tab[k].sh_link > minNdx)
+    {
+      elfI->sections.tab[k].sh_link--;
+    }
+  }
+}
+
 void deleteRelocationSections(ElfImageP elfI)
 {
-  // TODO: update e_shstrndx,
-
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
     if (elfI->sections.tab[i].sh_type == SHT_REL ||
@@ -18,12 +36,20 @@ void deleteRelocationSections(ElfImageP elfI)
     {
       elfI->sections.size = arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab),
                                         elfI->sections.size, i);
+      ndxUpdate(elfI, i);
+    }
+
+    // update e_shstrndx
+    if (elfI->sections.tab[i].sh_type == SHT_STRTAB &&
+        strcmp(".shstrtab", getSectionString(elfI, i)) == 0)
+    {
+      elfI->hdr.e_shstrndx = i;
     }
   }
   elfI->hdr.e_shnum = elfI->sections.size;
 }
 
-void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
+void copySections(ElfImageP elfI, ElfFile dest, ElfFile src)
 {
   for (size_t i = 0; i < elfI->sections.size; i++)
   {
@@ -37,6 +63,22 @@ void writeSections(ElfImageP elfI, ElfFile dest, ElfFile src)
   }
 }
 
+void writeSymbols(ElfImageP elfI, ElfFile dest)
+{
+  long offSave = elfTell(dest);
+  elfGoTo(dest, elfI->sections.tab[getSectionIdFromStr(elfI, ".symtab")].sh_offset);
+  for (Elf32_Word i = 0; i < elfI->symbols.size; i++)
+  {
+    elfWrite32(dest, elfI->symbols.tab[i].st_name);
+    elfWrite32(dest, elfI->symbols.tab[i].st_value);
+    elfWrite32(dest, elfI->symbols.tab[i].st_size);
+    elfWriteUC(dest, elfI->symbols.tab[i].st_info);
+    elfWriteUC(dest, elfI->symbols.tab[i].st_other);
+    elfWrite16(dest, elfI->symbols.tab[i].st_shndx);
+  }
+  elfGoTo(dest, offSave);
+}
+
 void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
 {
   elfI->hdr.e_shoff = elfTell(dest);
@@ -44,6 +86,7 @@ void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
   {
     elfWrite32(dest, elfI->sections.tab[i].sh_name);
     elfWrite32(dest, elfI->sections.tab[i].sh_type);
+    elfWrite32(dest, elfI->sections.tab[i].sh_flags);
     elfWrite32(dest, elfI->sections.tab[i].sh_addr);
     elfWrite32(dest, elfI->sections.tab[i].sh_offset);
     elfWrite32(dest, elfI->sections.tab[i].sh_size);

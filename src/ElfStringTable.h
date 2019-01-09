@@ -9,7 +9,7 @@
  * @param sectionNo the section number
  * @return char* 
  */
-char* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo);
+char const* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo);
 
 /**
  * @brief Get the Symbol String name of the given symbol index into the symbol table
@@ -20,7 +20,7 @@ char* getSectionString(ElfImageConstP elfI, Elf32_Word sectionNo);
  * @param symbolIdx index of the symbol into the symbol table
  * @return char* 
  */
-char* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx);
+char const* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx);
 
 /**
  * @brief Get the Symbol Name of the given symbol index into the symbol table
@@ -30,7 +30,7 @@ char* getSymbolString(ElfImageConstP elfI, Elf32_Word symbolIdx);
  * @param symbolIdx index of the symbol into the symbol table 
  * @return char* 
  */
-char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx);
+char const* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx);
 
 /**
  * @brief Get the Section Id From String
@@ -41,3 +41,13 @@ char* getSymbolName(ElfImageConstP elfI, Elf32_Word symbolIdx);
  * @return Elf32_Word the section number or elfI->sections.size (sectionHdrs size) if no section found (out of range or no section with name str)
  */
 Elf32_Word getSectionIdFromStr(ElfImageConstP elfI, char const* str);
+
+/**
+ * @brief Get the Symbol Id From String
+ * String can be the name of the symbol or a number as a string
+ * 
+ * @param elfI 
+ * @param str 
+ * @return Elf32_Word 
+ */
+Elf32_Word getSymbolIdFromStr(ElfImageConstP elfI, char const* str);
