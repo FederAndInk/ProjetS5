@@ -49,3 +49,29 @@ target_link_libraries(readelf
                       ElfPrinter
                       ElfParser
                       ElfIO)
+
+add_library(ArmSimulator
+            arm_simulator_interface.c
+            arm_simulator_interface.h
+            csapp.c
+            csapp.h
+            debug.c
+            debug.h
+            gdb_protocol.c
+            gdb_protocol.h
+            scanner.c
+            scanner.h)
+target_link_libraries(ArmSimulator util pthread)
+
+add_executable(ArmRunnerExample
+               ./ARM_runner_example.c)
+target_link_libraries(ArmRunnerExample
+                      ArmSimulator)
+
+add_executable(ArmRun ArmRun.c)
+target_link_libraries(ArmRun
+                      ArmSimulator
+                      ElfImage
+                      ElfIO
+                      ElfStringTable
+                      ElfParser)

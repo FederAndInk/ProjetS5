@@ -30,7 +30,9 @@ bool parseHeader(ElfImageP elfI, ElfFile e)
     elfI->hdr.e_shnum = elfRead16(e);
     elfI->hdr.e_shstrndx = elfRead16(e);
     return true;
-  }else {
+  }
+  else
+  {
     return false;
   }
 }
