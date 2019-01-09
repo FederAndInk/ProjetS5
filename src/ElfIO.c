@@ -37,6 +37,10 @@ bool isElf(ElfFile f)
 {
   return f != NULL;
 }
+bool elfIsBigEndian(ElfFile f)
+{
+  return (f->eiData == ELFDATA2MSB);
+}
 
 bool elfIsSameEndianess(ElfFile f)
 {

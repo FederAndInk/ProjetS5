@@ -33,6 +33,8 @@ bool isElf(ElfFile f);
  */
 bool elfIsSameEndianess(ElfFile f);
 
+bool elfIsBigEndian(ElfFile f);
+
 void writeElfHeader(Elf32_Ehdr const* eHdr, ElfFile dest);
 
 /**
