@@ -13,8 +13,8 @@ void testIsElf(char const* fStr, bool hasToBeElf, bool elfIsLE)
                "Little endian: %s",
                hasToBeElf ? "true" : "false", elfIsLE ? "yes" : "no");
 
-  bool isElfTmp;
-  ElfFile  e = elfOpen(fStr);
+  bool    isElfTmp;
+  ElfFile e = elfOpen(fStr);
   isElfTmp = isElf(e);
   check(isElf(e) == hasToBeElf, "%s has to be %s file.", fStr,
         hasToBeElf ? "an Elf" : "a non Elf");
@@ -54,13 +54,13 @@ void testElfRead32(const char* f, Elf32_Word e_version, bool elfIsLE)
                "Little endian: %s",
                e_version, elfIsLE ? "yes" : "no");
   ElfFile file_elf = elfOpen(f);
-  elfGoTo(file_elf, 0x14);
-  Elf32_Word mot = elfRead32(file_elf);
-  check(ftell(file_elf->f) == 0x18, "Misplaced cursor at %ld instead of %d",
-        ftell(file_elf->f), 0x18);
-  check(e_version == mot, "Read %u instead of %u (e_version)", mot, e_version);
-  if (isElf(file_elf))
+  if (check(isElf(file_elf), "File %s is not an Elf file", f))
   {
+    elfGoTo(file_elf, 0x14);
+    Elf32_Word mot = elfRead32(file_elf);
+    check(ftell(file_elf->f) == 0x18, "Misplaced cursor at %ld instead of %d",
+          ftell(file_elf->f), 0x18);
+    check(e_version == mot, "Read %u instead of %u (e_version)", mot, e_version);
     elfClose(file_elf);
   }
 }
@@ -71,31 +71,54 @@ void testElfRead16(const char* f, Elf32_Half e_type, bool elfIsLE)
                "Little endian: %s",
                e_type, elfIsLE ? "yes" : "no");
   ElfFile file_elf = elfOpen(f);
-  elfGoTo(file_elf, 0x10);
-  Elf32_Half mot = elfRead16(file_elf);
-  check(ftell(file_elf->f) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
-        ftell(file_elf->f), 0x12);
-  check(e_type == mot, "Read %u instead of %u (e_type)", mot, e_type);
-  if (isElf(file_elf))
+
+  if (check(isElf(file_elf), "File %s is not an Elf file", f))
   {
+    elfGoTo(file_elf, 0x10);
+    Elf32_Half mot = elfRead16(file_elf);
+    check(ftell(file_elf->f) == 0x10 + 0x2, "Misplaced cursor at %ld instead of %d",
+          ftell(file_elf->f), 0x12);
+    check(e_type == mot, "Read %u instead of %u (e_type)", mot, e_type);
     elfClose(file_elf);
   }
 }
 
 void testElfReadUC(const char* f, unsigned char ei_version, bool elfIsLE)
 {
-  /*  */
+  /* ei_version is the expected version of the file, 0x01 for current version - Byte 0x06 */
   DECLARE_TEST("ei_version: %u\n"
                "Little endian: %s",
                ei_version, elfIsLE ? "yes" : "no");
   ElfFile file_elf = elfOpen(f);
-  elfGoTo(file_elf, 0x06);
-  unsigned char mot = elfReadUC(file_elf);
-  check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
-        ftell(file_elf->f), 0x07);
-  check(ei_version == mot, "Read %u instead of %u (ei_version)", mot, ei_version);
-  if (isElf(file_elf))
+
+  if (check(isElf(file_elf), "File %s is not an Elf file", f))
   {
+    elfGoTo(file_elf, 0x06);
+    unsigned char mot = elfReadUC(file_elf);
+    check(ftell(file_elf->f) == 0x06 + 0x01, "Misplaced cursor at %ld instead of %d",
+          ftell(file_elf->f), 0x07);
+    check(ei_version == mot, "Read %u instead of %u (ei_version)", mot, ei_version);
+    elfClose(file_elf);
+  }
+}
+
+void testElfReadUC_s(const char* f, size_t offset, size_t size, unsigned char* e_read,
+                     bool elfIsLE)
+{
+  /* e_read is the expected chunk of data to read */
+  DECLARE_TEST("Little endian : %s", elfIsLE ? "yes" : "no");
+  ElfFile file_elf = elfOpen(f);
+  if (check(isElf(file_elf), "File %s is not an Elf file", f))
+  {
+    unsigned char* str = elfReadUC_s(file_elf, offset, size);
+
+    check(ftell(file_elf->f) == offset + size, "Misplaced cursor at %ld instead of %d",
+          ftell(file_elf->f), offset + size);
+
+    check(strncmp((char*)str, (char*)e_read, size) == 0,
+          "Didn't read the expected value : %u %u %u instead of %u %u %u", str[0], str[1],
+          str[2], e_read[0], e_read[1], e_read[2]);
+    free(str);
     elfClose(file_elf);
   }
 }
@@ -147,6 +170,13 @@ int main(int argc, char* argv[])
 
   testElfReadUC(elfLE, EV_CURRENT, true);
   testElfReadUC(elfBE, EV_CURRENT, false);
+
+  unsigned char e_read_1[] = {ELFCLASS32, ELFDATA2LSB, EV_CURRENT};
+  testElfReadUC_s(elfLE, 0x04, 3, e_read_1, true);
+
+  unsigned char e_read_2[] = {ELFCLASS32, ELFDATA2MSB, EV_CURRENT};
+  testElfReadUC_s(elfBE, 0x04, 3, e_read_2, false);
+
   // TODO: add more tests
   END_TESTS();
 }
