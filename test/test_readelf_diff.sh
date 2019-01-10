@@ -7,7 +7,12 @@ if (($# != 2 && $# != 3)); then
 fi
 
 exclude="NOTE: This section has relocations against it, but these have NOT been applied to this dump."
-# exclude="$exclude|somemore"
+exclude="$exclude|W \(write\), A \(alloc\), X \(execute\), M \(merge\), S \(strings\), I \(info\)"
+exclude="$exclude|O \(extra OS processing required\), G \(group\), T \(TLS\),"
+exclude="$exclude|C \(compressed\), x \(unknown\), o \(OS specific\), E \(exclude\),"
+exclude="$exclude|y \(purecode\), p \(processor specific\)"
+exclude="$exclude|Key to Flags:"
+# exclude="$exclude|"
 
 p=$(dirname $0)
 
@@ -16,11 +21,11 @@ tmp2=$(mktemp)
 
 if [[ $1 == -*h* ]]; then
 	readelf $1 $2 $3 | grep -Ev "$exclude" | sed -r 's/(Flags:\s+0x[0-9a-fA-F]+)(,.*)/\1/g' &>$tmp1
-else 
+else
 	readelf $1 $2 $3 | grep -Ev "$exclude" &>$tmp1
 fi
 
-$p/../build/src/readelf $1 $2 $3 &>$tmp2
+$p/../build/src/readelf $1 $2 $3 | grep -Ev "$exclude" &>$tmp2
 
 if diff -ZBbE --old-group-format=$'\e[0;31m< %<\e[0m' \
 	--new-group-format=$'\e[0;32m> %>\e[0m' \
