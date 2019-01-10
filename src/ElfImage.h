@@ -25,6 +25,7 @@ typedef struct
   Elf32_Word  relType; // SHT_RELA ou SHT_REL
   Elf32_Word  nbRel;
   // rel section id
+  Elf32_Word relSectionIdx;
   Elf32_Word sectionIdx;
 } Elf32Rels;
 

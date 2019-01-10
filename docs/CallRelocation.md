@@ -14,6 +14,7 @@ but in this section there is nothing about writing back the result in the instru
 
 I have made some tests and found when comparing a ".o" with the executable to see how the linker (arm-linux-eabi-gcc) implement this relocation that he just shift right of 2, so it give me something like:
 insn[23:0] = result_mask(X) >> 2
+EDIT: an instruction is 4 bytes long that's why we shift by 2
 
 but I would like to found that on the documentation to do a correct implementation.
 

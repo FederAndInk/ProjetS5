@@ -89,6 +89,7 @@ int main(int argc, char* argv[])
 
     // rewrite header to update offsets and ndx
     writeElfHeader(&elfIp->hdr, dest);
+    applyRelocation(elfIp, dest);
     elfClose(dest);
     deleteElfImage(elfIp);
   }

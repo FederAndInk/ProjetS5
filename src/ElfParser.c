@@ -30,7 +30,9 @@ bool parseHeader(ElfImageP elfI, ElfFile e)
     elfI->hdr.e_shnum = elfRead16(e);
     elfI->hdr.e_shstrndx = elfRead16(e);
     return true;
-  }else {
+  }
+  else
+  {
     return false;
   }
 }
@@ -119,7 +121,8 @@ void parseRelocations(ElfImageP elfI, ElfFile e)
     elfI->rels.tab[i].nbRel =
         elfI->sections.tab[table[i]].sh_size / elfI->sections.tab[table[i]].sh_entsize;
     elfI->rels.tab[i].rela = malloc(sizeof(Elf32_Rela) * elfI->rels.tab[i].nbRel);
-    elfI->rels.tab[i].sectionIdx = table[i];
+    elfI->rels.tab[i].relSectionIdx = table[i];
+    elfI->rels.tab[i].sectionIdx = elfI->sections.tab[table[i]].sh_info;
     for (size_t j = 0; j < elfI->rels.tab[i].nbRel; j++)
     {
 

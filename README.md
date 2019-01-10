@@ -36,8 +36,8 @@ build/src/<program>
 - [ ] Renumérotation des sections
 - [ ] Correction des symboles
 - [ ] Réimplantations de type R_ARM_ABS*
-- [ ] Réimplantation de type R_ARM_JUMP24 et R ARM CALL
-- [ ] Interfaçage avec le simulateur ARM
+- [X] Réimplantation de type R_ARM_JUMP24 et R ARM CALL
+- [X] Interfaçage avec le simulateur ARM (not tested yet)
 - [ ] Exécution à l’aide du simulateur arm-eabi-run.
 
 ## Tests
