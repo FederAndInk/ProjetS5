@@ -30,11 +30,11 @@ build/src/<program>
 
 - [x] Affichage de l’en-tête
 - [x] Affichage de la table des sections et des détails relatifs à chaque section
-- [ ] Affichage du contenu d’une section
-- [ ] Affichage de la table des symboles et des détails relatifs à chaque symbole
-- [ ] Affichage des tables de réimplantation et des détails relatifs à chaque entrée
-- [ ] Renumérotation des sections
-- [ ] Correction des symboles
+- [X] Affichage du contenu d’une section
+- [X] Affichage de la table des symboles et des détails relatifs à chaque symbole
+- [X] Affichage des tables de réimplantation et des détails relatifs à chaque entrée
+- [X] Renumérotation des sections
+- [X] Correction des symboles
 - [ ] Réimplantations de type R_ARM_ABS*
 - [ ] Réimplantation de type R_ARM_JUMP24 et R ARM CALL
 - [ ] Interfaçage avec le simulateur ARM
