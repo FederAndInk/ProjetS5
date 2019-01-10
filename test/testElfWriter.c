@@ -1,5 +1,6 @@
 #include "ElfIO.h"
 #include "UnitTest.h"
+#include "util.h"
 #include <elf.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -12,8 +13,9 @@ void testElfWriteUC(const char* f, unsigned char e, bool elfIsLe)
   ElfFile       file_elf = elfOpen(f);
   unsigned char result;
 
-  if (isElf(file_elf))
+  if (check(isElf(file_elf), "%s is not an Elf file.", f))
   {
+    elfGoTo(file_elf, 0x28);
     elfWriteUC(file_elf, e);
 
     elfGoTo(file_elf, elfTell(file_elf) - 1);
@@ -25,44 +27,66 @@ void testElfWriteUC(const char* f, unsigned char e, bool elfIsLe)
   }
 }
 
-void testElfWrite16(const char* f, Elf32_Half e, bool elfIsLe)
+void testElfWrite16(const char* f, bool elfIsLe)
 {
   DECLARE_TEST("Little endian : %s", elfIsLe ? "yes" : "no");
-  ElfFile    file_elf = elfOpen(f);
-  Elf32_Half result;
+  ElfFile       file_elf = elfOpen(f);
+  unsigned char result[2];
 
   if (isElf(file_elf))
   {
-    elfWrite16(file_elf, e);
+    elfGoTo(file_elf, 0x28);
+    long pos = elfTell(file_elf);
+    elfWrite16(file_elf, 1);
+    elfGoTo(file_elf, pos);
+    fread(result, 2, 1, file_elf->f);
 
-    elfGoTo(file_elf, elfTell(file_elf) - 2);
-    result = elfRead16(file_elf);
-
-    check(e == result, "Wrong word written in file %s : %d instead of %d", f, result, e);
-
+    if (elfIsLe)
+    {
+      check((result[0] == 1) && (result[1] == 0),
+            "Wrong word written in file %s : %u %u instead of 1 0", f, result[0],
+            result[1]);
+    }
+    else
+    {
+      check(result[0] == 0 && result[1] == 1,
+            "Wrong word written in file %s : %u %u instead of 0 1", f, result[0],
+            result[1]);
+    }
     elfClose(file_elf);
   }
 }
-void testElfWrite32(const char* f, Elf32_Word e, bool elfIsLe)
+void testElfWrite32(const char* f, bool elfIsLe)
 {
   DECLARE_TEST("Little endian : %s", elfIsLe ? "yes" : "no");
-  ElfFile    file_elf = elfOpen(f);
-  Elf32_Word result;
+  ElfFile       file_elf = elfOpen(f);
+  unsigned char result[4];
 
-  if (isElf(file_elf))
+  if (check(isElf(file_elf), "%s is not an Elf file.", f))
   {
-    elfWrite32(file_elf, e);
+    elfGoTo(file_elf, 0x28);
+    long pos = elfTell(file_elf);
+    elfWrite32(file_elf, 1);
+    elfGoTo(file_elf, pos);
+    fread(result, 4, 1, file_elf->f);
 
-    elfGoTo(file_elf, elfTell(file_elf) - 4);
-    result = elfRead32(file_elf);
-
-    check(e == result, "Wrong word written in file %s : %d instead of %d", f, result, e);
-
+    if (elfIsLe)
+    {
+      check((result[0] == 1) && (result[1] == 0) && (result[2] == 0) && (result[3] == 0),
+            "Wrong word written in file %s : %u %u %u %u instead of 1 0 0 0", f,
+            result[0], result[1], result[2], result[3]);
+    }
+    else
+    {
+      check((result[0] == 0) && (result[1] == 0) && (result[2] == 0) && (result[3] == 1),
+            "Wrong word written in file %s : %u %u %u %u instead of 0 0 0 1", f,
+            result[0], result[1], result[2], result[3]);
+    }
     elfClose(file_elf);
   }
 }
 
-void elfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf) {}
+void testElfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf) {}
 
 int main(int argc, char const* argv[])
 {
@@ -77,6 +101,12 @@ int main(int argc, char const* argv[])
 
   // SEE: On encadre nos tests comme ça
   BEGIN_TESTS("TestElfReader");
+
+  testElfWrite16(elfLE, true);
+  testElfWrite16(elfBE, false);
+
+  testElfWrite32(elfLE, true);
+  testElfWrite32(elfBE, false);
 
   // TODO: add more tests
   END_TESTS();
