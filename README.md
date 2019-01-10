@@ -50,11 +50,11 @@ build/src/<program>
 
 1. **testReadElf.sh** : script effectuant les tests fonctionnels : appel du readelf du projet avec toutes les options possibles sur tous les fichiers dans le répertoire bin et comparaison des sorties avec les sorties de la commande readelf du système.
 
-2. **testIsElf.c** Sert à vérifier si le fichier lu est bien au format attendu (ELF ou non).
+2. **testIsElf** Sert à vérifier si le fichier lu est bien au format attendu (ELF ou non).
 
-3. **testElfRead32.c** Sert à vérifier la bonne lecture d’un caractère codé sur 4 octets dans un endroit précis (vérifiable) du fichier, notamment si c’est bien un fichier ELF, si oui : si le caractère lu est correct, si les endianness ont été bien gérées par les fonctions et si la position du curseur est correcte après la lecture (s’il est bien déplacé de 4 octets).
+3. **testElfRead32** Sert à vérifier la bonne lecture d’un caractère codé sur 4 octets dans un endroit précis (vérifiable) du fichier, notamment si c’est bien un fichier ELF, si oui : si le caractère lu est correct, si les endianness ont été bien gérées par les fonctions et si la position du curseur est correcte après la lecture (s’il est bien déplacé de 4 octets).
 
-4. **testElfRead16.c** Sert à vérifier la bonne lecture d’un caractère codé sur 2 octets dans un endroit précis (vérifiable) du fichier, notamment si c’est bien un fichier ELF, si oui : si le caractère lu est correct, si les endianness ont été bien gérées par les fonctions et si la position du curseur est correcte après la lecture (s’il est bien déplacé de 2 octets).
+4. **testElfRead16** Sert à vérifier la bonne lecture d’un caractère codé sur 2 octets dans un endroit précis (vérifiable) du fichier, notamment si c’est bien un fichier ELF, si oui : si le caractère lu est correct, si les endianness ont été bien gérées par les fonctions et si la position du curseur est correcte après la lecture (s’il est bien déplacé de 2 octets).
 
 5. **testElfReadUC** Sert à vérifier la bonne lecture d’un caractère codé sur 1 octet dans un endroit précis (vérifiable) du fichier, notamment si c’est bien un fichier ELF, si oui : si le caractère lu est correct et si la position du curseur est correcte après la lecture (s’il est bien déplacé de 1 octet).
 
@@ -62,9 +62,13 @@ build/src/<program>
 
 7. **testElfWriteUC** Sert à vérifier la bonne écriture d’un caractère codé sur 1 octet dans une section du fichier différente de celles du mot magique (les 16 premiers octets, afin de ne pas modifier la nature du fichier ELF pour de futurs tests).
 
-8. **testElfWrite16** Sert à vérifier la bonne écriture d’un caractère connu codé sur 2 octets dans une section du fichier différente de celles du mot magique (les 16 premiers octets, afin de ne pas modifier la nature du fichier ELF pour de futurs tests) et de taille suffisamment grande pour contenir 2 octets, on verifie aussi la bonne gestion de l’endianness. 
+8. **testElfWrite16** Sert à vérifier la bonne écriture d’un caractère connu codé sur 2 octets
+dans une section du fichier différente de celles du mot magique (les 16 premiers octets, afin de ne pas modifier la nature du fichier ELF pour de futurs tests) et de taille suffisamment grande pour contenir 2 octets, on verifie aussi la bonne gestion de l’endianness. 
 
-9. **testElfWrite32** Sert à vérifier la bonne écriture d’un caractère connu codé sur 4 octets dans une section du fichier différente de celles du mot magique (les 16 premiers octets, afin de ne pas modifier la nature du fichier ELF pour de futurs tests) et de taille suffisamment grande pour contenir 4 octets, on verifie aussi la bonne gestion de l’endianness. 
+9. **testElfWrite32** Sert à vérifier la bonne écriture d’un caractère connu codé sur 4 octets 
+dans une section du fichier différente de celles du mot magique (les 16 premiers octets, 
+afin de ne pas modifier la nature du fichier ELF pour de futurs tests) et de taille suffisamment
+grande pour contenir 4 octets, on verifie aussi la bonne gestion de l’endianness. 
 
 ## Docs
 
