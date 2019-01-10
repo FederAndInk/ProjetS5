@@ -60,6 +60,19 @@ void parseRelocations(ElfImageP elfI, ElfFile e);
 unsigned char* readSection(ElfImageConstP elfI, ElfFile e, Elf32_Word sectionNo);
 
 /**
+ * @brief read a section as code (4 bytes instructions)
+ * the section size must be a multiple of 4
+ * 
+ * @param elfI 
+ * @param e 
+ * @param sectionNo 
+ * @param wantedEnd 
+ * @return Elf32_Word* 
+ */
+Elf32_Word* readCode(ElfImageConstP elfI, ElfFile e, Elf32_Word sectionNo,
+                     Endianness wantedEnd);
+
+/**
  * @brief parse the entire elf
  * call:
  * - parseHeader

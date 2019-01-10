@@ -20,14 +20,21 @@ Contact: Guillaume.Huard@imag.fr
          51 avenue Jean Kuntzmann
          38330 Montbonnot Saint-Martin
 */
-#ifndef __UTIL_H__
-#define __UTIL_H__
+#ifndef __GDB_PROTOCOL_H__
+#define __GDB_PROTOCOL_H__
+#include <stdint.h>
+#include <stddef.h>
 
-int is_big_endian();
+typedef struct gdb_protocol_data *gdb_protocol_data_t;
 
-#define reverse_2(x) ((((x)&0xFF)<<8)|(((x)>>8)&0xFF))
-#define reverse_4(x) ((((x)&0xFF)<<24)|((((x)>>8)&0xFF)<<16)|\
-						((((x)>>16)&0xFF)<<8)|(((x)>>24)&0xFF))
+gdb_protocol_data_t gdb_init_data(int fd);
+void gdb_destroy_data(gdb_protocol_data_t gdb);
+void gdb_write_register(gdb_protocol_data_t gdb, uint8_t num, uint32_t value);
+void gdb_write_memory(gdb_protocol_data_t gdb, uint32_t address, void *buffer, size_t size);
+void gdb_cont(gdb_protocol_data_t gdb);
+int gdb_step(gdb_protocol_data_t gdb);
+void gdb_require_retransmission(gdb_protocol_data_t gdb);
+int gdb_packet_check(gdb_protocol_data_t gdb, char *packet, int length);
+void gdb_transmit_packet(gdb_protocol_data_t gdb);
 
-#define min(x,y) ((x)<(y)?(x):(y))
 #endif

@@ -38,6 +38,20 @@ bool isElf(ElfFile f)
   return f != NULL;
 }
 
+bool elfIsEndianness(ElfFile f, Endianness end)
+{
+  if (end == ENDIAN_SYSTEM)
+  {
+    return elfIsSameEndianess(f);
+  }
+  else
+  {
+    return end == ENDIAN_DEFAULT || //
+           (f->eiData == ELFDATA2MSB && end == ENDIAN_BIG) ||
+           (f->eiData == ELFDATA2LSB && end == ENDIAN_LITTLE);
+  }
+}
+
 bool elfIsSameEndianess(ElfFile f)
 {
   return (f->eiData == ELFDATA2MSB && is_big_endian()) ||
