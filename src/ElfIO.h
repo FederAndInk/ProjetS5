@@ -14,10 +14,14 @@ typedef enum ElfMode
 
 typedef enum
 {
-  DEFAULT_ENDIANNESS,
-  SYSTEM_ENDIANNESS,
-  LE,
-  BE
+  /// endianess of the file
+  ENDIAN_DEFAULT,
+  /// endianess of the system
+  ENDIAN_SYSTEM,
+  /// little endian
+  ENDIAN_LITTLE,
+  /// big endian
+  ENDIAN_BIG
 } Endianness;
 
 // TODO: Handle errors (R/W + goto)

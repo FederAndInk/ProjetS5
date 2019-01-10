@@ -23,6 +23,7 @@ Contact: Guillaume.Huard@imag.fr
 #ifndef __GDB_PROTOCOL_H__
 #define __GDB_PROTOCOL_H__
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct gdb_protocol_data *gdb_protocol_data_t;
 

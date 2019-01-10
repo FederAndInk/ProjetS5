@@ -4,6 +4,8 @@ project(Elf VERSION 0.1.0)
 add_compile_options($<$<CONFIG:Debug>:-Wall>
                     $<$<CONFIG:Debug>:-Wextra>)
 
+add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
+
 add_library(util util.c util.h)
 
 add_library(ElfIO ./ElfIO.c ./ElfIO.h)
@@ -61,7 +63,7 @@ add_library(ArmSimulator
             gdb_protocol.h
             scanner.c
             scanner.h)
-target_link_libraries(ArmSimulator util pthread)
+target_link_libraries(ArmSimulator util pthread m)
 
 add_executable(ArmRunnerExample
                ./ARM_runner_example.c)

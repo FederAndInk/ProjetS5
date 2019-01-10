@@ -40,15 +40,15 @@ bool isElf(ElfFile f)
 
 bool elfIsEndianness(ElfFile f, Endianness end)
 {
-  if (end == SYSTEM_ENDIANNESS)
+  if (end == ENDIAN_SYSTEM)
   {
     return elfIsSameEndianess(f);
   }
   else
   {
-    return end == DEFAULT_ENDIANNESS || //
-           (f->eiData == ELFDATA2MSB && end == BE) ||
-           (f->eiData == ELFDATA2LSB && end == LE);
+    return end == ENDIAN_DEFAULT || //
+           (f->eiData == ELFDATA2MSB && end == ENDIAN_BIG) ||
+           (f->eiData == ELFDATA2LSB && end == ENDIAN_LITTLE);
   }
 }
 

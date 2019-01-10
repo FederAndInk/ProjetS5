@@ -26,6 +26,7 @@ Contact: Guillaume.Huard@imag.fr
 #include "scanner.h"
 #include "util.h"
 #include <assert.h>
+#include <math.h>
 #include <pthread.h>
 #include <stdio.h>
 
@@ -233,7 +234,7 @@ int gdb_packet_check(gdb_protocol_data_t gdb, char* packet, int length)
     check += packet[i];
   sscanf(packet + i + 1, "%x", &given);
   debug("Received packet : ");
-  debug_raw_binary(packet, min(16, strlen(packet)));
+  debug_raw_binary(packet, fmin(16, strlen(packet)));
   if (check == given)
   {
     debug_raw(", checksum ok\n");
