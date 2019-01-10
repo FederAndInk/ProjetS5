@@ -6,7 +6,14 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
-cd ..
+cd ../../test
+
+./testReadElf.sh
+if [[ $? != 0 ]]; then
+  exit 1
+fi
+
+cd ../build
 
 rm -r coverage
 mkdir -p coverage

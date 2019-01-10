@@ -352,8 +352,8 @@ void showRelocations(ElfImageConstP elfI)
   for (size_t i = 0; i < elfI->rels.size; i++)
   {
     printf("Relocation section '%s' at offset 0x%x contains %i %s:\n",
-           getSectionString(elfI, elfI->rels.tab[i].sectionIdx),
-           elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset,
+           getSectionString(elfI, elfI->rels.tab[i].relSectionIdx),
+           elfI->sections.tab[elfI->rels.tab[i].relSectionIdx].sh_offset,
            elfI->rels.tab[i].nbRel, elfI->rels.tab[i].nbRel == 1 ? "entry" : "entries");
 
     if (elfI->rels.tab[i].relType == SHT_RELA)
