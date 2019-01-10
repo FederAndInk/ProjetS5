@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/FederAndInk/ProjetS5/branch/master/graph/badge.svg)](https://codecov.io/gh/FederAndInk/ProjetS5)
 
 ## Telecharger
-
+ **testElfReader**
 ```bash
 git clone --recursive https://github.com/FederAndInk/ProjetS5.git
 # ou initialiser les submodules:
@@ -44,10 +44,11 @@ build/src/<program>
 
 ```bash
 ./launchTest.sh
+./testReadElf.sh
 ```
 
-0. **test1** (test1.c test1_include.{ch}): programme compilé avec la toolchain ARM avec `compileTest1.sh`
-1. **testElfReader** test du lecteur de fichier elf utilise:
+0. **launchTest.sh** (test1.c test1_include.{ch}): programme compilé avec la toolchain ARM avec `compileTest1.sh`
+1. **testReadElf.sh** test du lecteur de fichier elf utilise:
     - test1.o (généré par `compileTest1.sh`)
     - test1 (potentiellement ?)
 

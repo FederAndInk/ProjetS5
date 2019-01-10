@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void testElfWriteUC(const char* f, unsigned char e, bool elfIsLe)
+void testElfWriteUC(const char* f, bool elfIsLe)
 {
   DECLARE_TEST("Little endian : %s", elfIsLe ? "yes" : "no");
   ElfFile       file_elf = elfOpen(f);
@@ -16,12 +16,14 @@ void testElfWriteUC(const char* f, unsigned char e, bool elfIsLe)
   if (check(isElf(file_elf), "%s is not an Elf file.", f))
   {
     elfGoTo(file_elf, 0x28);
-    elfWriteUC(file_elf, e);
+    long pos = elfTell(file_elf);
 
-    elfGoTo(file_elf, elfTell(file_elf) - 1);
-    result = elfReadUC(file_elf);
+    elfWriteUC(file_elf, 1);
 
-    check(e == result, "Wrong word written in file %s : %u instead of %u", f, result, e);
+    elfGoTo(file_elf, pos);
+    fread(&result, 1, 1, file_elf->f);
+
+    check(1 == result, "Wrong word written in file %s : %u instead of 1", f, result);
 
     elfClose(file_elf);
   }
@@ -86,8 +88,6 @@ void testElfWrite32(const char* f, bool elfIsLe)
   }
 }
 
-void testElfWriteUC_s(ElfFile f, size_t offset, size_t size, unsigned char* buf) {}
-
 int main(int argc, char const* argv[])
 {
   if (argc != 3)
@@ -107,6 +107,9 @@ int main(int argc, char const* argv[])
 
   testElfWrite32(elfLE, true);
   testElfWrite32(elfBE, false);
+
+  testElfWriteUC(elfLE, true);
+  testElfWriteUC(elfBE, false);
 
   // TODO: add more tests
   END_TESTS();

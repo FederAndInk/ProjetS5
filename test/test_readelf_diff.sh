@@ -16,6 +16,8 @@ tmp2=$(mktemp)
 
 if [[ $1 == -*h* ]]; then
 	readelf $1 $2 $3 | grep -Ev "$exclude" | sed -r 's/(Flags:\s+0x[0-9a-fA-F]+)(,.*)/\1/g' &>$tmp1
+else 
+	readelf $1 $2 $3 | grep -Ev "$exclude" &>$tmp1
 fi
 
 $p/../build/src/readelf $1 $2 $3 &>$tmp2
@@ -29,9 +31,11 @@ else
 	echo "Outputs:"
 	echo "-------------------------"
 	echo "System readelf:"
+	echo ""
 	cat $tmp1
 	echo "-------------------------"
 	echo "Project readelf:"
+	echo ""
 	cat $tmp2
 	echo "-------------------------"
 	exit 1
