@@ -77,6 +77,9 @@ dans une section du fichier différente de celles du mot magique (les 16 premier
 afin de ne pas modifier la nature du fichier ELF pour de futurs tests) et de taille suffisamment
 grande pour contenir 4 octets, on verifie aussi la bonne gestion de l’endianness. 
 
+## Journal
+Un [journal](https://github.com/FederAndInk/ProjetS5/projects/1) à été maintenu tout au long du projet disponible sur la page du repo.
+
 ## Docs
 
 - [Elf reading](https://wiki.osdev.org/ELF_Tutorial)
