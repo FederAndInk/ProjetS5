@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
   }
   else
   {
-    printf("No Elf file provided");
+    printf("No Elf file provided\n");
     printHelp(argv[0]);
     return 1;
   }

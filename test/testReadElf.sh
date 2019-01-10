@@ -18,6 +18,18 @@ for file in bin/*.o; do
 			((nbTestsPassed++))
 		fi
 	done
+	for sec in ".data" ".text"; do
+		./test_readelf_diff.sh -x $sec "$file"
+		ret=$?
+		((nbTests++))
+		if [[ $ret != 0 ]]; then
+			echo "./test_readelf_diff.sh -x $sec $file"
+			echo "returned $ret"
+		else
+			((nbTestsPassed++))
+		fi
+	done
+
 done
 
 if (($nbTestsPassed != $nbTests)); then

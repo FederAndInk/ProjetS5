@@ -1,10 +1,10 @@
 #include "ElfParser.h"
 #include "ElfIO.h"
-#include "util.h"
 #include "ElfStringTable.h"
+#include "util.h"
+#include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <assert.h>
 
 bool parseHeader(ElfImageP elfI, ElfFile e)
 {
@@ -153,8 +153,9 @@ Elf32_Word* readCode(ElfImageConstP elfI, ElfFile e, Elf32_Word sectionNo,
   assert((sH->sh_size % 4) == 0);
   Elf32_Word* code = (Elf32_Word*)readSection(elfI, e, sectionNo);
 
-  if (!elfIsEndianness(e, wantedEnd)) {
-    Elf32_Word* codeEnd = code + sH->sh_size;
+  if (!elfIsEndianness(e, wantedEnd))
+  {
+    Elf32_Word* codeEnd = code + (sH->sh_size / 4);
     for (Elf32_Word* codeTmp = code; codeTmp != codeEnd; codeTmp++)
     {
       reverseEndianess(codeTmp, sizeof(Elf32_Word));

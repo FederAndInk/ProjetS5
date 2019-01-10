@@ -25,9 +25,10 @@ void addSection(arm_simulator_data_t simulator, ElfImageConstP elfI, ElfFile e,
   Elf32_Shdr currentSect = elfI->sections.tab[sectionNo];
 
   // SEE: if we want ENDIAN_LITTLE or other for arm_write_memory
-  Elf32_Word* code = readCode(elfI, e, sectionNo, ENDIAN_LITTLE);
+  unsigned char* code = readSection(elfI, e, sectionNo);
 
   arm_write_memory(simulator, currentSect.sh_addr, code, currentSect.sh_size);
+  free(code);
 }
 
 void setInitalPc(arm_simulator_data_t simulator, ElfImageConstP elfI)
@@ -45,9 +46,20 @@ void run(char* hostname, char* servicename, char const* filename)
   initElfImage(elfIp);
   if (parseElf(elfIp, e))
   {
-    addSection(simulator, elfIp, e, getSectionIdFromStr(elfIp, ".text"));
-    addSection(simulator, elfIp, e, getSectionIdFromStr(elfIp, ".data"));
+    Elf32_Word textSec = getSectionIdFromStr(elfIp, ".text");
+    Elf32_Word dataSec = getSectionIdFromStr(elfIp, ".data");
+
+    if (textSec < elfIp->sections.size)
+    {
+      addSection(simulator, elfIp, e, textSec);
+    }
+    if (dataSec < elfIp->sections.size)
+    {
+      addSection(simulator, elfIp, e, dataSec);
+    }
+    elfClose(e);
     setInitalPc(simulator, elfIp);
+    deleteElfImage(elfIp);
     arm_run(simulator);
   }
   else
@@ -91,6 +103,15 @@ int main(int argc, char* argv[])
       exit(1);
     }
   }
-
-  char const* fileName = argv[optind];
+  if (optind < argc)
+  {
+    char const* fileName = argv[optind];
+    run(hostname, servicename, fileName);
+  }
+  else
+  {
+    fprintf(stderr, "No Elf file provided\n");
+    usage(argv[0]);
+    return 1;
+  }
 }
