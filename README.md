@@ -49,6 +49,9 @@ program:
 
 ## Tests
 
+certain test peuvent failed car nous nous basons pour l'instant sur le readelf du system.
+Il faudrait embarquer un readelf dans le projet pour un total controle.
+
 ```bash
 ./launchTest.sh
 ./testReadElf.sh
