@@ -7,7 +7,7 @@ if (($# != 2 && $# != 3)); then
 fi
 
 exclude="NOTE: This section has relocations against it, but these have NOT been applied to this dump."
-exclude="$exclude|W \(write\), A \(alloc\), X \(execute\), M \(merge\), S \(strings\), I \(info\)"
+exclude="$exclude|W \(write\), A \(alloc\), X \(execute\), M \(merge\), S \(strings\)"
 exclude="$exclude|O \(extra OS processing required\), G \(group\), T \(TLS\),"
 exclude="$exclude|C \(compressed\), x \(unknown\), o \(OS specific\), E \(exclude\),"
 exclude="$exclude|y \(purecode\), p \(processor specific\)"
