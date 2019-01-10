@@ -233,9 +233,8 @@ void showSectionHeader(ElfImageConstP elfI)
     printf(" %2d \n", elfI->sections.tab[i].sh_addralign);
   }
   printf("\nKey to Flags:\n");
-  printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),  L "
-         "(link order),\n"
-         "  O (extra OS processing required), G (group), T (TLS),\n"
+  printf("  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),\n"
+         "  L (link order), O (extra OS processing required), G (group), T (TLS),\n"
          "  C (compressed), x (unknown), o (OS specific), E (exclude),\n"
          "  y (purecode), p (processor specific)");
 }
@@ -287,7 +286,8 @@ void showSection(ElfImageConstP elfI, Elf32_Word sectionNo, unsigned char const*
 
 void showSymbols(ElfImageConstP elfI)
 {
-  printf("Symbol table '.symtab' contains %i %s:\n", elfI->symbols.size, "entries");
+  printf("Symbol table '.symtab' contains %i %s:\n", elfI->symbols.size,
+         elfI->symbols.size == 1 ? "entry" : "entries");
   printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
 
   for (size_t i = 0; i < elfI->symbols.size; i++)
@@ -354,7 +354,7 @@ void showRelocations(ElfImageConstP elfI)
     printf("Relocation section '%s' at offset 0x%x contains %i %s:\n",
            getSectionString(elfI, elfI->rels.tab[i].relSectionIdx),
            elfI->sections.tab[elfI->rels.tab[i].relSectionIdx].sh_offset,
-           elfI->rels.tab[i].nbRel, "entries");
+           elfI->rels.tab[i].nbRel, elfI->rels.tab[i].nbRel == 1 ? "entry" : "entries");
 
     if (elfI->rels.tab[i].relType == SHT_RELA)
     {

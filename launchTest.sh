@@ -34,4 +34,4 @@ if command -v gcovr; then
 	rm *.gcno
 fi
 
-printf "\e[32;4mTests passed !\e[1m\n"
+printf "\e[32;4mTests passed !\e[0m\n"
