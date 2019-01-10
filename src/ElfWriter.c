@@ -188,6 +188,7 @@ void applyRelocation(ElfImageP elfI, ElfFile dest)
         inst &= ~0x00FFFFFF;
         break;
       }
+      // >> 2 because inst size is 4 bytes long
       X = (X & mask) >> 2;
       Elf32_Word newWord = inst | X;
       elfGoTo(dest, elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset);
