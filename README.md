@@ -3,13 +3,12 @@
 [![Travis](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=master)](https://travis-ci.org/FederAndInk/ProjetS5)
 [![codecov](https://codecov.io/gh/FederAndInk/ProjetS5/branch/master/graph/badge.svg)](https://codecov.io/gh/FederAndInk/ProjetS5)
 
+[GitHub Repository](https://github.com/FederAndInk/ProjetS5)
+
 ## Telecharger
  **testElfReader**
 ```bash
-git clone --recursive https://github.com/FederAndInk/ProjetS5.git
-# ou initialiser les submodules:
-git submodules init
-git submodules update
+git clone https://github.com/FederAndInk/ProjetS5.git
 ```
 
 ## Pour compiler
@@ -18,13 +17,21 @@ git submodules update
 ./compile.sh
 ```
 
-lance les tests à la fin
+lance les tests à la fin de la compilation:
+```bash
+./launchTest.sh
+```
 
 ## Executer
 
 ```bash
 build/src/<program>
 ```
+program:
+- readelf
+- ElfLinker (not all rels completed)
+- ArmRun (can't be run after ElfLinker, rels not completed)
+- ArmRunnerExample (see ./sample_run.sh)
 
 ## To do
 
