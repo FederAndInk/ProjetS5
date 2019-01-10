@@ -1,6 +1,6 @@
 # Custom ELF Loader intended for pedagogic use
 
-[![Travis](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=master)](https://travis-ci.org/FederAndInk/ProjetS5)
+[![Build Status](https://travis-ci.org/FederAndInk/ProjetS5.svg?branch=develop)](https://travis-ci.org/FederAndInk/ProjetS5)
 [![codecov](https://codecov.io/gh/FederAndInk/ProjetS5/branch/master/graph/badge.svg)](https://codecov.io/gh/FederAndInk/ProjetS5)
 
 [GitHub Repository](https://github.com/FederAndInk/ProjetS5)
