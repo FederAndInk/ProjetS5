@@ -36,4 +36,6 @@ void writeSymbols(ElfImageP elfI, ElfFile dest);
  */
 void writeSectionHeaders(ElfImageP elfI, ElfFile dest);
 
+void applyRelocation(ElfImageP elfI, ElfFile dest);
+
 void setNewOffsets(ElfImageConstP elfI, ElfFile dest);

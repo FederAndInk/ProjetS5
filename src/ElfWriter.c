@@ -4,6 +4,9 @@
 #include "ElfString.h"
 #include "ElfStringTable.h"
 #include "util.h"
+#include <assert.h>
+#include <math.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +28,14 @@ void ndxUpdate(ElfImageP elfI, Elf32_Half minNdx)
       elfI->sections.tab[k].sh_link--;
     }
   }
+
+  for (size_t k = 0; k < elfI->rels.size; k++)
+  {
+    if (elfI->rels.tab[k].sectionIdx > minNdx)
+    {
+      elfI->rels.tab[k].sectionIdx--;
+    }
+  }
 }
 
 void deleteRelocationSections(ElfImageP elfI)
@@ -34,6 +45,7 @@ void deleteRelocationSections(ElfImageP elfI)
     if (elfI->sections.tab[i].sh_type == SHT_REL ||
         elfI->sections.tab[i].sh_type == SHT_RELA)
     {
+
       elfI->sections.size = arrayRemove(elfI->sections.tab, sizeof(*elfI->sections.tab),
                                         elfI->sections.size, i);
       ndxUpdate(elfI, i);
@@ -94,6 +106,95 @@ void writeSectionHeaders(ElfImageP elfI, ElfFile dest)
     elfWrite32(dest, elfI->sections.tab[i].sh_info);
     elfWrite32(dest, elfI->sections.tab[i].sh_addralign);
     elfWrite32(dest, elfI->sections.tab[i].sh_entsize);
+  }
+}
+
+bool getBit(Elf32_Word nb, size_t no)
+{
+  assert(no < 32);
+  return (nb >> no) & 1;
+}
+
+Elf32_Word truncate(Elf32_Word nbToTruncate, size_t max)
+{
+  assert(max < 32);
+
+  Elf32_Word mask = 1;
+  for (size_t i = 0; i < max; i++)
+  {
+    mask = (mask << 1) | 1;
+  }
+  nbToTruncate &= mask;
+
+  return nbToTruncate;
+}
+
+int32_t signExtend(Elf32_Word nb, size_t bit)
+{
+  if (getBit(nb, bit) == 1)
+  {
+    Elf32_Word mask = 1;
+    for (size_t i = 0; i < bit; i++)
+    {
+      mask = (mask << 1) | 1;
+    }
+    nb |= ~mask;
+  }
+  return nb;
+}
+
+void applyRelocation(ElfImageP elfI, ElfFile dest)
+{
+  for (size_t i = 0; i < elfI->rels.size; i++)
+  {
+
+    for (size_t k = 0; k < elfI->rels.tab[i].nbRel; k++)
+    {
+      Elf32_Word    info = elfI->rels.tab[i].rela[k].r_info;
+      Elf32_Word    symIdx = ELF32_R_SYM(info);
+      unsigned char relType = ELF32_R_TYPE(info);
+
+      elfGoTo(dest, elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset);
+      elfGoToRel(dest, elfI->rels.tab[i].rela[k].r_offset);
+      Elf32_Word inst = elfRead32(dest); // to transform in a
+      int32_t    A;
+      Elf32_Word S = elfI->symbols.tab[symIdx].st_value;
+      Elf32_Word P = elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_addr +
+                     elfI->rels.tab[i].rela[k].r_offset;
+      Elf32_Word X;
+      Elf32_Word mask;
+      switch (relType)
+      {
+      case R_ARM_ABS32:
+        A = inst;
+        X = S + A;
+        mask = 0xFFFFFFFF;
+        break;
+      case R_ARM_ABS16:
+        A = signExtend(truncate(inst, 16), 16);
+        X = S + A;
+        mask = 0xFFFF;
+        break;
+      case R_ARM_ABS8:
+        A = signExtend(truncate(inst, 8), 8);
+        X = S + A;
+        mask = 0xFF;
+        break;
+      case R_ARM_CALL:
+      case R_ARM_JUMP24:
+        A = signExtend(truncate(inst, 23) << 2, 23);
+        X = S + A - P;
+        mask = 0x03FFFFFE;
+        inst &= ~0x00FFFFFF;
+        break;
+      }
+      // >> 2 because inst size is 4 bytes long
+      X = (X & mask) >> 2;
+      Elf32_Word newWord = inst | X;
+      elfGoTo(dest, elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset);
+      elfGoToRel(dest, elfI->rels.tab[i].rela[k].r_offset);
+      elfWrite32(dest, newWord);
+    }
   }
 }
 
