@@ -286,7 +286,8 @@ void showSection(ElfImageConstP elfI, Elf32_Word sectionNo, unsigned char const*
 
 void showSymbols(ElfImageConstP elfI)
 {
-  printf("Symbol table '.symtab' contains %i entries:\n", elfI->symbols.size);
+  printf("Symbol table '.symtab' contains %i %s:\n", elfI->symbols.size,
+         elfI->symbols.size == 1 ? "entry" : "entries");
   printf("   Num:    Value  Size Type    Bind   Vis      Ndx Name\n");
 
   for (size_t i = 0; i < elfI->symbols.size; i++)
@@ -350,10 +351,10 @@ void showRelocations(ElfImageConstP elfI)
 
   for (size_t i = 0; i < elfI->rels.size; i++)
   {
-    printf("Relocation section '%s' at offset 0x%x contains %i entries:\n",
-           getSectionString(elfI, elfI->rels.tab[i].relSectionIdx),
-           elfI->sections.tab[elfI->rels.tab[i].relSectionIdx].sh_offset,
-           elfI->rels.tab[i].nbRel);
+    printf("Relocation section '%s' at offset 0x%x contains %i %s:\n",
+           getSectionString(elfI, elfI->rels.tab[i].sectionIdx),
+           elfI->sections.tab[elfI->rels.tab[i].sectionIdx].sh_offset,
+           elfI->rels.tab[i].nbRel, elfI->rels.tab[i].nbRel == 1 ? "entry" : "entries");
 
     if (elfI->rels.tab[i].relType == SHT_RELA)
     {

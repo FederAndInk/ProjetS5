@@ -37,7 +37,7 @@ ElfType stb[] = {{STB_LOCAL, "LOCAL  "},  {STB_GLOBAL, "GLOBAL "}, {STB_HIOS, "H
                  {STB_HIPROC, "HIPROC "}, {-1, ELF_UNKNOWN}};
 
 ElfType stt[] = {
-    {STT_NOTYPE, " NOTYPE  "},    {STT_OBJECT, " OBJECT  "}, {STT_FUNC, " FUNCTION"},
+    {STT_NOTYPE, " NOTYPE  "},    {STT_OBJECT, " OBJECT  "}, {STT_FUNC, " FUNC    "},
     {STT_SECTION, " SECTION "},   {STT_FILE, " FILE    "},   {STT_COMMON, " COMMON   "},
     {STT_TLS, " TLS     "},       {STT_NUM, " NUM     "},    {STT_LOOS, " LOOS    "},
     {STT_GNU_IFUNC, " GNUIFCT "}, {STT_HIOS, " HIOS     "},  {STT_LOPROC, " LOPROC  "},
